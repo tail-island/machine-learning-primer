@@ -24,4 +24,4 @@ _, names = names_collection
 
 # 実際に予測させてみます。
 for name, y, pred_y in zip(names, ys, model.predict(xs)):
-    print(f'{name}:\t{y:,.2f}\t{pred_y:,.2f}')
+    print(f'{name}:\t{y:,.2f}\t{pred_y:,.2f}\t{pred_y / y:.2f}')
