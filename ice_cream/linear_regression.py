@@ -11,7 +11,7 @@ model = LinearRegression()
 model.fit(*dataset)
 
 # 機械学習で作成されたパラメーターを表示します
-print(f'アイスクリーム月別支出額 = {model.coef_[0]} * 東京の月平均気温 + {model.intercept_}')
+# print(f'アイスクリーム月別支出額 = {model.coef_[0]} * 東京の月平均気温 + {model.intercept_}')
 
 # 図を作成して精度をチェックします
 check(dataset, model)

@@ -1,0 +1,49 @@
+import numpy as np
+import os.path as path
+import pandas as pd
+
+
+def get_dataset(seed=0):
+    rng = np.random.default_rng(seed)
+
+    # CSVを読み込みます。
+    data_frame = pd.read_csv(path.join('..', 'bike-bros-catalog.csv'))
+
+    # 不要なデータを削除します。
+    data_frame = data_frame.dropna()                         # NaN（Not a Number）値がある行を削除します。
+    data_frame = data_frame.drop_duplicates(subset=['URL'])  # 重複した行を削除します。
+
+    # 列を選択します。
+    xs = pd.get_dummies(data_frame[['全長 (mm)',
+                                    '全幅 (mm)',
+                                    '全高 (mm)',
+                                    'ホイールベース (mm)',
+                                    'シート高 (mm)',
+                                    '車両重量 (kg)',
+                                    '気筒数',
+                                    'シリンダ配列',
+                                    '排気量 (cc)',
+                                    'カム・バルブ駆動方式',
+                                    '気筒あたりバルブ数',
+                                    '最高出力（kW）',
+                                    '最高出力回転数（rpm）',
+                                    '最大トルク（N・m）',
+                                    '最大トルク回転数（rpm）']],
+                        columns=['シリンダ配列', 'カム・バルブ駆動方式']).values
+    ys = data_frame['価格'].values
+    ns = data_frame['車名'].values
+
+    # 訓練データのインデックスと検証データのインデックスを取得します。
+    indices = rng.permutation(np.arange(len(xs)))
+    train_indices = indices[50:]
+    valid_indices = indices[:50]
+
+    # データセットをリターンします。
+    return (xs[train_indices], ys[train_indices]), (xs[valid_indices], ys[valid_indices]), (ns[train_indices], ns[valid_indices])
+
+
+if __name__ == '__main__':
+    (train_xs, train_ys), (valid_xs, valid_ys), (train_ns, valid_ns) = get_dataset(0)
+
+    for x, y, n in zip(valid_xs, valid_ys, valid_ns):
+        print(n, x, y)
