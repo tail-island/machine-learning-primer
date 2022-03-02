@@ -6,7 +6,7 @@ import pandas as pd
 # 訓練データのインデックスと検証データのインデックスを取得します。
 def get_train_indices_and_valid_indices(ys, valid_size, rng):
     size_per_y = min(map(lambda y: len(ys[ys == y]), range(max(ys) + 1)))
-    genre_indices_collection = map(lambda y: rng.permutation(rng.choice(np.arange(len(ys))[ys == y], size=size_per_y)), range(max(ys) + 1))
+    genre_indices_collection = map(lambda y: rng.choice(np.arange(len(ys))[ys == y], size=size_per_y, replace=False), range(max(ys) + 1))
     train_indices_collection, valid_indices_collection = zip(*map(lambda indices: (indices[valid_size:], indices[:valid_size]), genre_indices_collection))
 
     return np.concatenate(train_indices_collection), np.concatenate(valid_indices_collection)
