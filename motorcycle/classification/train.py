@@ -23,5 +23,5 @@ xs, ys = valid_dataset
 _, names = names_collection
 
 # 実際に予測させてみます。
-for name, y, pred_y in zip(names, ys, model.predict_proba(xs)):
-    print(f'{name}:\t{y}\t{pred_y}')
+for name, y, pred_y, pred_y_proba in zip(names, ys, model.predict(xs), model.predict_proba(xs)):
+    print(f'{name}:\t{y}\t{pred_y}\t{pred_y_proba}')
