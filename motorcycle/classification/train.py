@@ -2,11 +2,14 @@ from dataset import get_dataset
 from sklearn.ensemble import RandomForestClassifier
 
 
+# 乱数のシード。
+RANDOM_SEED = 0
+
 # データセットを取得します。
-train_dataset, valid_dataset, names_collection = get_dataset()
+train_dataset, valid_dataset, names_collection = get_dataset(RANDOM_SEED)
 
 # モデルを作成して、機械学習します。
-model = RandomForestClassifier(random_state=0)  # とりあえず、ハイパー・パラメーターはデフォルト値。
+model = RandomForestClassifier(random_state=RANDOM_SEED)  # とりあえず、ハイパー・パラメーターはデフォルト値。
 model.fit(*train_dataset)
 
 # 訓練データセットを使用して、モデルの精度を表示します。
