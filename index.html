@@ -614,7 +614,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a h
 <span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># データセットをリターンします。</span></span>
 <span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> xs, ns</span></code></pre></div>
 <p>正解データが不要なので、これまでとは違って<code>ys</code>を作成しません。その代わりに、データを正規化しています。正規化をした理由は、この後に使用するK-meansってのがデータ間の距離を使って似ているか判断する手法だから。金額が100万円違うのと排気量が100cc違うのが並んでいると、金額の差の大きさに目を奪われてK-meansはほぼ金額だけでクラスタリングしちゃう。これじゃあ困るので、どの列の値も0～1の間になるようにしているわけ。</p>
-<p>あと、データを分類することが目的で、これからやってくる新しいデータにも通用する分類方式を編み出すわけじゃないので、訓練データと検証データに分けることもしません。</p>
+<p>あと、データを分類することが目的で、未知の新しいデータにも通用する分類方式を作るわけじゃないので、訓練データと検証データに分けることもしません。</p>
 <p>で、機械学習する部分のコードはこちら。</p>
 <div class="sourceCode" id="cb14"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_dataset</span>
