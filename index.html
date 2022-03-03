@@ -12,6 +12,69 @@
     div.column{display: inline-block; vertical-align: top; width: 50%;}
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     ul.task-list{list-style: none;}
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+        color: #aaaaaa;
+      }
+    pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+    div.sourceCode
+      {   }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+    code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+    code span.at { color: #7d9029; } /* Attribute */
+    code span.bn { color: #40a070; } /* BaseN */
+    code span.bu { } /* BuiltIn */
+    code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #4070a0; } /* Char */
+    code span.cn { color: #880000; } /* Constant */
+    code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+    code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+    code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+    code span.dt { color: #902000; } /* DataType */
+    code span.dv { color: #40a070; } /* DecVal */
+    code span.er { color: #ff0000; font-weight: bold; } /* Error */
+    code span.ex { } /* Extension */
+    code span.fl { color: #40a070; } /* Float */
+    code span.fu { color: #06287e; } /* Function */
+    code span.im { } /* Import */
+    code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+    code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+    code span.op { color: #666666; } /* Operator */
+    code span.ot { color: #007020; } /* Other */
+    code span.pp { color: #bc7a00; } /* Preprocessor */
+    code span.sc { color: #4070a0; } /* SpecialChar */
+    code span.ss { color: #bb6688; } /* SpecialString */
+    code span.st { color: #4070a0; } /* String */
+    code span.va { color: #19177c; } /* Variable */
+    code span.vs { color: #4070a0; } /* VerbatimString */
+    code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
     .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.1.0/github-markdown.min.css" />
@@ -39,10 +102,545 @@
 </head>
 <body>
 <article class="markdown-body">
-<p>「君のような勘のいいガキと、あと数学は嫌いだよ」<br>
-「何が嫌いかより、何が好きかで自分を語れよ‼」<br>
-「先生…‼　機械学習がしたいです……」</p>
-<p>というわけで、文系の文系による文系のための機械学習ガイドです。今どきの機械学習ライブラリはとてもよくできているので、私のような数学ダメダメなプログラマーでも機械学習できちゃうんですな。機械学習してみたい文系プログラマーの皆様、すげー簡単ですから、一緒に機械学習しちゃいましょう。</p>
+<p>文系の文系による文系のためのプログラマー向けの機械学習ガイドです。今どきの機械学習ライブラリはとてもよくできているので、私のような数学ダメダメな文系プログラマーでも機械学習できちゃうんですな。機械学習してみたい文系プログラマーの皆様、すげー簡単ですから、一緒に機械学習しちゃいましょう。</p>
+<p>本稿で使用したプログラムは、<a
+href="https://github.com/tail-island/machine-learning-primer"><a
+href="https://github.com/tail-island/machine-learning-primer">https://github.com/tail-island/machine-learning-primer</a></a>にあります。</p>
+<h1 id="機械学習とは">機械学習とは？</h1>
+<p>コンピューターは頭が悪い。コンピューターは頭が悪くて「アレをイイ感じにやっておいて」を理解できないから、我々プログラマーが細かくやり方を指示するプログラムを書いているんですもんね。そんなへっぽこなコンピューターが学習などという高度なことをできるなんて、とても信じられない！</p>
+<p>はい。おっしゃる通り。実は機械学習（machine
+learning）ってのは無から有を生み出すすごいものではなくて、プログラム中のパラメーター（変数の値）を調整してくれるだけの、学習っちゃあ学習なんだけどなんだかなぁってものなんです。</p>
+<p>具体例で考えましょう。西暦を令和に変換するプログラムを手で書いてみてください。たぶん、こんなコードになるんじゃないでしょうか？</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> hand_made_version(year):</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> year <span class="op">-</span> <span class="dv">2018</span></span></code></pre></div>
+<p>で、このコードの<code>2018</code>の部分を書くのが面倒くさいなぁ、コンピューターが自動で設定してくれれば楽だなぁと思ったとしてください。そんな時は、機械学習が有効です。コードはこんな感じ。</p>
+<div class="sourceCode" id="cb2"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> ((<span class="dv">2019</span>,), (<span class="dv">2020</span>,), (<span class="dv">2021</span>,), (<span class="dv">2022</span>,), (<span class="dv">2023</span>,), (<span class="dv">2024</span>,), (<span class="dv">2025</span>,), (<span class="dv">2026</span>,), (<span class="dv">2027</span>,))</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> (<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> LinearRegression()</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>model.fit(xs, ys)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> machine_learning_version(year):</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>    xs <span class="op">=</span> ((year,),)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    ys <span class="op">=</span> model.predict(xs)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ys[<span class="dv">0</span>]</span></code></pre></div>
+<p>コードが増えてるやんけ、という批判は忘れて、どうしてこのコードで西暦を令和に変換できるのかを考えてみましょう。</p>
+<p><code>LinearRegression</code>クラスは、線形回帰（linear
+regression）と呼ばれる機械学習の手法を実装したクラスで、線警回帰は、<code>a1 * x[0] + a2 * x[1] + a3 * x[2] ... + b</code>というプログラムで表現可能な場合向けの手法です。西暦から令和の場合は<code>1 * year - 2018</code>で表現できますから、この線形回帰がバッチリあてはまります。</p>
+<p>で、その<code>a1 = 1</code>や<code>b = -2018</code>はどうやって導くのかというと、データから導きます。そのデータが上のコードの<code>xs</code>と<code>ys</code>。2019の時に1になるにはパラメーターをどんな値にすればよいのかなぁ、2020の時に2になるにはどうすればよいのかなぁと試して、できるだけ相違が少ない値を設定していきます。それを実現するための数学のテクニックがいろいろあるらしいのですけど、我々プログラマーがやらなければならないのは<code>fit()</code>メソッドを呼び出すだけなんですよ。</p>
+<p>以上で機械学習してパラメーターを適切な値に調整してくれるので、あとは、<code>predict()</code>メソッドを呼び出して予測させればオッケー。線形回帰は入力が配列であることを期待しているのと、あと、一回で複数データ分の予測ができるように作られているので、<code>xs = ((year,),)</code>したり<code>ys[0]</code>をリターンしたりしています。</p>
+<p>このように、機械学習ってのは、与えられたデータに合うようにパラメーターを調整しているだけなんです。これは、深層学習のような最先端の手法でも同じ。ほら、機械学習って簡単そうでしょ？</p>
+<h1
+id="機械学習には様々な手法がある">機械学習には、様々な手法がある</h1>
+<p>もう少し複雑な問題で、もっと機械学習してみましょう。東京都の月平均気温からアイスクリーム月別支出額を予測する場合でやってみます。</p>
+<p>まずはデータです。<a
+href="https://www.data.jma.go.jp/obd/stats/etrn/">気象庁のWebサイト</a>から東京都の月平均気温を、<a
+href="https://www.icecream.or.jp/biz/data/expenditures.html">日本アイスクリーム協会のWebサイト</a>からアイスクリーム月別支出金額をもらってきました。</p>
+<p>で、再利用性を高めるためにモジュール化したコードはこんな感じ。</p>
+<div class="sourceCode" id="cb3"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 東京都の月平均気温。https://www.data.jma.go.jp/obd/stats/etrn/</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> np.array((</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    (<span class="fl">6.1</span>,), (<span class="fl">7.2</span>,), (<span class="fl">10.1</span>,), (<span class="fl">15.4</span>,), (<span class="fl">20.2</span>,), (<span class="fl">22.4</span>,), (<span class="fl">25.4</span>,), (<span class="fl">27.1</span>,), (<span class="fl">24.4</span>,), (<span class="fl">18.7</span>,), (<span class="fl">11.4</span>,), (<span class="fl">8.9</span>,),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    (<span class="fl">5.8</span>,), (<span class="fl">6.9</span>,), (<span class="fl">8.5</span>,), (<span class="fl">14.7</span>,), (<span class="dv">20</span>,), (<span class="dv">22</span>,), (<span class="fl">27.3</span>,), (<span class="fl">26.4</span>,), (<span class="fl">22.8</span>,), (<span class="fl">16.8</span>,), (<span class="fl">11.9</span>,), (<span class="fl">6.6</span>,),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    (<span class="fl">4.7</span>,), (<span class="fl">5.4</span>,), (<span class="fl">11.5</span>,), (<span class="dv">17</span>,), (<span class="fl">19.8</span>,), (<span class="fl">22.4</span>,), (<span class="fl">28.3</span>,), (<span class="fl">28.1</span>,), (<span class="fl">22.9</span>,), (<span class="fl">19.1</span>,), (<span class="dv">14</span>,), (<span class="fl">8.3</span>,),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    (<span class="fl">5.6</span>,), (<span class="fl">7.2</span>,), (<span class="fl">10.6</span>,), (<span class="fl">13.6</span>,), (<span class="dv">20</span>,), (<span class="fl">21.8</span>,), (<span class="fl">24.1</span>,), (<span class="fl">28.4</span>,), (<span class="fl">25.1</span>,), (<span class="fl">19.4</span>,), (<span class="fl">13.1</span>,), (<span class="fl">8.5</span>,),</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    (<span class="fl">7.1</span>,), (<span class="fl">8.3</span>,), (<span class="fl">10.7</span>,), (<span class="fl">12.8</span>,), (<span class="fl">19.5</span>,), (<span class="fl">23.2</span>,), (<span class="fl">24.3</span>,), (<span class="fl">29.1</span>,), (<span class="fl">24.2</span>,), (<span class="fl">17.5</span>,), (<span class="dv">14</span>,), (<span class="fl">7.7</span>,)</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co"># アイスクリーム月別支出額。https://www.icecream.or.jp/biz/data/expenditures.html</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> np.array((</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="dv">464</span>, <span class="dv">397</span>, <span class="dv">493</span>, <span class="dv">617</span>, <span class="dv">890</span>, <span class="dv">883</span>, <span class="dv">1_292</span>, <span class="dv">1_387</span>, <span class="dv">843</span>, <span class="dv">621</span>, <span class="dv">459</span>, <span class="dv">562</span>,</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    <span class="dv">489</span>, <span class="dv">382</span>, <span class="dv">472</span>, <span class="dv">624</span>, <span class="dv">915</span>, <span class="dv">914</span>, <span class="dv">1_394</span>, <span class="dv">1_370</span>, <span class="dv">826</span>, <span class="dv">599</span>, <span class="dv">489</span>, <span class="dv">573</span>,</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    <span class="dv">507</span>, <span class="dv">416</span>, <span class="dv">607</span>, <span class="dv">746</span>, <span class="dv">894</span>, <span class="dv">1_021</span>, <span class="dv">1_506</span>, <span class="dv">1_443</span>, <span class="dv">861</span>, <span class="dv">640</span>, <span class="dv">492</span>, <span class="dv">537</span>,</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="dv">494</span>, <span class="dv">423</span>, <span class="dv">542</span>, <span class="dv">667</span>, <span class="dv">1_000</span>, <span class="dv">991</span>, <span class="dv">1_236</span>, <span class="dv">1_513</span>, <span class="dv">996</span>, <span class="dv">724</span>, <span class="dv">531</span>, <span class="dv">584</span>,</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="dv">510</span>, <span class="dv">482</span>, <span class="dv">610</span>, <span class="dv">689</span>, <span class="dv">1_040</span>, <span class="dv">1_123</span>, <span class="dv">1_155</span>, <span class="dv">1_658</span>, <span class="dv">1_025</span>, <span class="dv">649</span>, <span class="dv">573</span>, <span class="dv">599</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_dataset():</span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> xs, ys</span></code></pre></div>
+<p>学習した結果を可視化して確認するための、matplotlibを使用してグラフを描画するモジュールがこちら。</p>
+<div class="sourceCode" id="cb4"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> check(dataset, model):</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 実データを取得します。</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    xs, ys <span class="op">=</span> dataset</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 実データを青色の散布図で描画します。</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    plot.plot(xs, ys, <span class="st">&#39;bo&#39;</span>)</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 予測データを取得します。</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    pred_xs <span class="op">=</span> np.linspace(np.<span class="bu">min</span>(xs), np.<span class="bu">max</span>(xs), <span class="dv">1000</span>).reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    pred_ys <span class="op">=</span> model.predict(pred_xs)</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 予測データを赤色の線グラフで描画します。</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    plot.plot(pred_xs, pred_ys, <span class="st">&#39;r-&#39;</span>)</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 描画結果を表示します。</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    plot.show()</span></code></pre></div>
+<p>最後。最も重要な線形回帰で機械学習する部分のコードは、こんな感じ。</p>
+<div class="sourceCode" id="cb5"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> checker <span class="im">import</span> check</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_dataset</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> get_dataset()</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを作成して、機械学習します</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> LinearRegression()</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>model.fit(<span class="op">*</span>dataset)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 図を作成して精度をチェックします</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>check(dataset, model)</span></code></pre></div>
+<p>……西暦から令和への変換とほとんど同じですな。実は、機械学習する部分は、ライブラリを使用するなら、我々プログラマーには最も簡単な部分なんです。</p>
+<p>では、試してみましょう。プログラムを実行してみると、以下のグラフが表示されるはずです。</p>
+<p><img src="アイスクリーム月別支出金額の線形回帰での予測結果" /></p>
+<p>線形回帰なのでアイスクリーム月別支出金額を<code>a * 東京の月平均気温 + b</code>で計算していますから、予測結果は直線になるわけ。で、西暦から令和への変換とは違って実データにバラツキがあるので、できるだけデータの中央を通るようなパラメーターに調整されたというわけ。</p>
+<p>ここでちょっと考えてみてください。もし、貴方の実家がアイスクリームに特化した駄菓子屋で、年老いた両親から仕入れの無駄を排除したいと相談されたら（アイスクリームには賞味期限がないので無駄があっても大丈夫な気もしますけど）、貴方のプログラマー力をどう使いますか？　いろいろ考えて複雑なアルゴリズムを組み立てる……のは、面倒くさいですよね？　「アルゴリズムを考えるのが面倒だから、とりあえず機械学習をやってみよう」という考え方が、なんだか良さそうな気がしてきませんか？　プログラミングはとても簡単なので、すぐに試せますし、失敗してもダメージ少ないですしね。</p>
+<p>あとね、上の線形回帰のプログラムの結果を見て、真夏の気温が高い書き入れ時に仕入れ量が少なくて損が出ちゃうじゃんと思った方も、ご安心ください。機械学習には様々な手法があるので、別の手法を試してみればよいんですよ。</p>
+<p>今回は、決定木という手法を使用してみます。決定木というのは、<code>if/else</code>を使う手法で、コードにするとこんな感じ。</p>
+<div class="sourceCode" id="cb6"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> x <span class="op">&lt;=</span> a1:</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">&lt;=</span> a2:</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> b1</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> b2</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">&lt;=</span> a3:</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> b3</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> b4</span></code></pre></div>
+<p>この<code>a1</code>～<code>a3</code>と<code>b1</code>～<code>b4</code>を、データをもとにしてイイ感じに調整するわけですね。で、その決定木を使用して機械学習するコードは、こんな感じ。</p>
+<div class="sourceCode" id="cb7"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> checker <span class="im">import</span> check</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_dataset</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.tree <span class="im">import</span> DecisionTreeRegressor, export_text</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>dataset <span class="op">=</span> get_dataset()</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを作成して、機械学習します</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> DecisionTreeRegressor(max_depth<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>model.fit(<span class="op">*</span>dataset)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 図を作成して精度をチェックします</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>check(dataset, model)</span></code></pre></div>
+<p>……間違い探しみたいな感じになっちゃってごめんなさい。このコードは線形回帰の時とほとんど同じで、違いは、<code>LinearRegression()</code>を<code>DecisionTree(max_depath=3)</code>に変更しただけです。</p>
+<p>各手法のインターフェースは統一されているので、手法変更時のコード修正は本当に少しで済みます。ある手法でダメだったら、5秒くらいかけて少しコードを書き換えて、別の手法を試せばよい。ほら、機械学習って、簡単でしょ？</p>
+<p>さて、このプログラムの実行結果はこんな感じになります。</p>
+<p><img src="アイスクリーム月別支出金額の決定木での予測結果" /></p>
+<p>線形回帰より精度が向上していて素晴らしい！　予測の線がカクカクになっていますけど、これ、<code>if/else</code>で定数をリターンしているのだから、我々プログラマーには自明の結果ですよね。</p>
+<h1
+id="機械学習で出来ることはいろいろある">機械学習で出来ることは、いろいろある</h1>
+<p>でも、世の中って数値で表せることだけじゃなくね？　そうお考えになった方、ご安心ください。機械学習は数値以外を予測することもできるんです。ここまででやってきたように数値を予測する機械学習を回帰（regression）と呼ぶのですけど、それ以外にも、クラス分類（classification）とクラスタリング（clustering）ができます。これらを、具体的にやってみましょう。</p>
+<h2 id="データ収集">データ収集</h2>
+<p>お題は、私の趣味であるバイク（健康的になっちゃうbicycleじゃなくて、頭が悪い人が乗るmotorcycleの方）にします。</p>
+<p>まずはデータ集めから。新しいバイクを買うお金なんかないのに見るのをやめられない<a
+href="https://www.bikebros.co.jp/catalog/">BikeBrosのWebサイト</a>からデータを取得します。でも、手でデータをコピー＆ペーストするのは大変ですから、プログラムを組んでデータを集めましょう。</p>
+<div class="sourceCode" id="cb8"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> csv</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> requests</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bs4 <span class="im">import</span> BeautifulSoup</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> concat, first</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> starmap</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> time <span class="im">import</span> sleep</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> urllib.parse <span class="im">import</span> urljoin</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_soup(url):</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>    html <span class="op">=</span> requests.get(url)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>    html.encoding <span class="op">=</span> <span class="st">&#39;UTF8&#39;</span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> BeautifulSoup(html.text, <span class="st">&#39;html.parser&#39;</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_row_urls(category_url):</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    sleep(<span class="dv">10</span>)  <span class="co"># サイトに迷惑をかけないよう、スリープして10秒待ちます。</span></span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> li <span class="kw">in</span> get_soup(category_url).select(<span class="st">&#39;div.bikeList li&#39;</span>):</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> li.select(<span class="st">&#39;div.currentModel&#39;</span>):  <span class="co"># 現行車のみとします</span></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>            <span class="cf">yield</span> urljoin(category_url, li.select_one(<span class="st">&#39;a&#39;</span>).attrs[<span class="st">&#39;href&#39;</span>])</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_name(soup):</span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> soup.select_one(<span class="st">&#39;p.bikeNmae&#39;</span>).get_text().strip()</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_price(soup):</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>    span <span class="op">=</span> soup.select_one(<span class="st">&#39;div.makerPriceRange span.priceRange&#39;</span>)</span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> span:</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    price_string <span class="op">=</span> span.get_text().strip()</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="st">&#39;万&#39;</span> <span class="kw">not</span> <span class="kw">in</span> price_string <span class="kw">or</span> <span class="st">&#39;円&#39;</span> <span class="kw">not</span> <span class="kw">in</span> price_string:</span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>    price_1_string <span class="op">=</span> price_string.split(<span class="st">&#39;万&#39;</span>)[<span class="dv">0</span>]</span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    price_2_string <span class="op">=</span> price_string.split(<span class="st">&#39;万&#39;</span>)[<span class="dv">1</span>].split(<span class="st">&#39;円&#39;</span>)[<span class="dv">0</span>]</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (<span class="bu">int</span>(price_1_string) <span class="op">*</span> <span class="dv">10_000</span> <span class="cf">if</span> price_1_string <span class="cf">else</span> <span class="dv">0</span>) <span class="op">+</span> (<span class="bu">int</span>(price_2_string) <span class="cf">if</span> price_2_string <span class="cf">else</span> <span class="dv">0</span>)</span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_spec_value(soup, th_text, convert_fn):</span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    tr <span class="op">=</span> first(<span class="bu">filter</span>(<span class="kw">lambda</span> tr: tr.select_one(<span class="st">&#39;th&#39;</span>).get_text().strip() <span class="op">==</span> th_text, soup.select(<span class="st">&#39;div#bike_model_info tr&#39;</span>)))</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> <span class="kw">not</span> tr:</span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">None</span></span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> convert_fn(tr.select_one(<span class="st">&#39;td&#39;</span>).get_text().strip())</span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_rows(category_url):</span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> row_url <span class="kw">in</span> get_row_urls(category_url):</span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>        sleep(<span class="dv">10</span>)  <span class="co"># サイトに迷惑をかけないよう、スリープして10秒待ちます。</span></span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a>        soup <span class="op">=</span> get_soup(row_url)</span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>        <span class="cf">yield</span> ((row_url, get_name(soup), get_price(soup)) <span class="op">+</span></span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a>               <span class="bu">tuple</span>(starmap(<span class="kw">lambda</span> caption, convert_fn: get_spec_value(soup, caption, convert_fn),</span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>                             ((<span class="st">&#39;全長 (mm)&#39;</span>, <span class="bu">float</span>),</span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a>                              (<span class="st">&#39;全幅 (mm)&#39;</span>, <span class="bu">float</span>),</span>
+<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a>                              (<span class="st">&#39;全高 (mm)&#39;</span>, <span class="bu">float</span>),</span>
+<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a>                              (<span class="st">&#39;ホイールベース (mm)&#39;</span>, <span class="bu">float</span>),</span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a>                              (<span class="st">&#39;シート高 (mm)&#39;</span>, <span class="bu">float</span>),</span>
+<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a>                              (<span class="st">&#39;車両重量 (kg)&#39;</span>, <span class="bu">float</span>),</span>
+<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a>                              (<span class="st">&#39;気筒数&#39;</span>, <span class="bu">int</span>),</span>
+<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a>                              (<span class="st">&#39;シリンダ配列&#39;</span>, <span class="bu">str</span>),</span>
+<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a>                              (<span class="st">&#39;排気量 (cc)&#39;</span>, <span class="bu">float</span>),</span>
+<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a>                              (<span class="st">&#39;カム・バルブ駆動方式&#39;</span>, <span class="bu">str</span>),</span>
+<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a>                              (<span class="st">&#39;気筒あたりバルブ数&#39;</span>, <span class="bu">int</span>),</span>
+<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a>                              (<span class="st">&#39;最高出力（kW）&#39;</span>, <span class="bu">float</span>),</span>
+<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a>                              (<span class="st">&#39;最高出力回転数（rpm）&#39;</span>, <span class="bu">float</span>),</span>
+<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a>                              (<span class="st">&#39;最大トルク（N・m）&#39;</span>, <span class="bu">float</span>),</span>
+<span id="cb8-77"><a href="#cb8-77" aria-hidden="true" tabindex="-1"></a>                              (<span class="st">&#39;最大トルク回転数（rpm）&#39;</span>, <span class="bu">float</span>)))))</span>
+<span id="cb8-78"><a href="#cb8-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-79"><a href="#cb8-79" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-80"><a href="#cb8-80" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> main():</span>
+<span id="cb8-81"><a href="#cb8-81" aria-hidden="true" tabindex="-1"></a>    <span class="co"># スクレイピングしてデータを取得します。</span></span>
+<span id="cb8-82"><a href="#cb8-82" aria-hidden="true" tabindex="-1"></a>    rows <span class="op">=</span> concat(<span class="bu">map</span>(<span class="kw">lambda</span> row: (<span class="dv">0</span>,) <span class="op">+</span> row, get_rows(<span class="st">&#39;https://www.bikebros.co.jp/catalog/A01/&#39;</span>)),  <span class="co"># スポーツ＆ツアラー</span></span>
+<span id="cb8-83"><a href="#cb8-83" aria-hidden="true" tabindex="-1"></a>                  <span class="bu">map</span>(<span class="kw">lambda</span> row: (<span class="dv">1</span>,) <span class="op">+</span> row, get_rows(<span class="st">&#39;https://www.bikebros.co.jp/catalog/B01/&#39;</span>)),  <span class="co"># ネイキッド＆ストリート</span></span>
+<span id="cb8-84"><a href="#cb8-84" aria-hidden="true" tabindex="-1"></a>                  <span class="bu">map</span>(<span class="kw">lambda</span> row: (<span class="dv">2</span>,) <span class="op">+</span> row, get_rows(<span class="st">&#39;https://www.bikebros.co.jp/catalog/C01/&#39;</span>)),  <span class="co"># オフロード＆モタード</span></span>
+<span id="cb8-85"><a href="#cb8-85" aria-hidden="true" tabindex="-1"></a>                  <span class="bu">map</span>(<span class="kw">lambda</span> row: (<span class="dv">3</span>,) <span class="op">+</span> row, get_rows(<span class="st">&#39;https://www.bikebros.co.jp/catalog/D01/&#39;</span>)),  <span class="co"># アメリカン＆クルーザー</span></span>
+<span id="cb8-86"><a href="#cb8-86" aria-hidden="true" tabindex="-1"></a>                  <span class="bu">map</span>(<span class="kw">lambda</span> row: (<span class="dv">4</span>,) <span class="op">+</span> row, get_rows(<span class="st">&#39;https://www.bikebros.co.jp/catalog/E01/&#39;</span>)),  <span class="co"># ビッグスクーター</span></span>
+<span id="cb8-87"><a href="#cb8-87" aria-hidden="true" tabindex="-1"></a>                  <span class="bu">map</span>(<span class="kw">lambda</span> row: (<span class="dv">5</span>,) <span class="op">+</span> row, get_rows(<span class="st">&#39;https://www.bikebros.co.jp/catalog/F01/&#39;</span>)),  <span class="co"># 原付・スクーター</span></span>
+<span id="cb8-88"><a href="#cb8-88" aria-hidden="true" tabindex="-1"></a>                  <span class="bu">map</span>(<span class="kw">lambda</span> row: (<span class="dv">6</span>,) <span class="op">+</span> row, get_rows(<span class="st">&#39;https://www.bikebros.co.jp/catalog/G01/&#39;</span>)))  <span class="co"># ビジネスバイク・ミニバイク</span></span>
+<span id="cb8-89"><a href="#cb8-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-90"><a href="#cb8-90" aria-hidden="true" tabindex="-1"></a>    <span class="co"># CSVとして出力します。</span></span>
+<span id="cb8-91"><a href="#cb8-91" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(<span class="st">&#39;bike-bros-catalog.csv&#39;</span>, <span class="st">&#39;w&#39;</span>, newline<span class="op">=</span><span class="st">&quot;&quot;</span>, encoding<span class="op">=</span><span class="st">&quot;UTF-8&quot;</span>) <span class="im">as</span> f:</span>
+<span id="cb8-92"><a href="#cb8-92" aria-hidden="true" tabindex="-1"></a>        writer <span class="op">=</span> csv.writer(f, quoting<span class="op">=</span>csv.QUOTE_NONNUMERIC)</span>
+<span id="cb8-93"><a href="#cb8-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-94"><a href="#cb8-94" aria-hidden="true" tabindex="-1"></a>        writer.writerow((<span class="st">&#39;ジャンル&#39;</span>,</span>
+<span id="cb8-95"><a href="#cb8-95" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;URL&#39;</span>,</span>
+<span id="cb8-96"><a href="#cb8-96" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;車名&#39;</span>,</span>
+<span id="cb8-97"><a href="#cb8-97" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;価格&#39;</span>,</span>
+<span id="cb8-98"><a href="#cb8-98" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;全長 (mm)&#39;</span>,</span>
+<span id="cb8-99"><a href="#cb8-99" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;全幅 (mm)&#39;</span>,</span>
+<span id="cb8-100"><a href="#cb8-100" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;全高 (mm)&#39;</span>,</span>
+<span id="cb8-101"><a href="#cb8-101" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;ホイールベース (mm)&#39;</span>,</span>
+<span id="cb8-102"><a href="#cb8-102" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;シート高 (mm)&#39;</span>,</span>
+<span id="cb8-103"><a href="#cb8-103" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;車両重量 (kg)&#39;</span>,</span>
+<span id="cb8-104"><a href="#cb8-104" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;気筒数&#39;</span>,</span>
+<span id="cb8-105"><a href="#cb8-105" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;シリンダ配列&#39;</span>,</span>
+<span id="cb8-106"><a href="#cb8-106" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;排気量 (cc)&#39;</span>,</span>
+<span id="cb8-107"><a href="#cb8-107" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;カム・バルブ駆動方式&#39;</span>,</span>
+<span id="cb8-108"><a href="#cb8-108" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;気筒あたりバルブ数&#39;</span>,</span>
+<span id="cb8-109"><a href="#cb8-109" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;最高出力（kW）&#39;</span>,</span>
+<span id="cb8-110"><a href="#cb8-110" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;最高出力回転数（rpm）&#39;</span>,</span>
+<span id="cb8-111"><a href="#cb8-111" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;最大トルク（N・m）&#39;</span>,</span>
+<span id="cb8-112"><a href="#cb8-112" aria-hidden="true" tabindex="-1"></a>                         <span class="st">&#39;最大トルク回転数（rpm）&#39;</span>))</span>
+<span id="cb8-113"><a href="#cb8-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-114"><a href="#cb8-114" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> row <span class="kw">in</span> rows:</span>
+<span id="cb8-115"><a href="#cb8-115" aria-hidden="true" tabindex="-1"></a>            writer.writerow(row)</span>
+<span id="cb8-116"><a href="#cb8-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-117"><a href="#cb8-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-118"><a href="#cb8-118" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">&#39;__main__&#39;</span>:</span>
+<span id="cb8-119"><a href="#cb8-119" aria-hidden="true" tabindex="-1"></a>    main()</span></code></pre></div>
+<p>このようにプログラムを使用してWebサイトからデータを取得することを、Webスクレイピングと呼びます。我々プログラマーの本領を発揮して、サクッと作っちゃいましょう。本稿の主題ではないので説明は割愛しますけど、Webスクレイピング時には<a
+href="https://www.crummy.com/software/BeautifulSoup/">BeautifulSoup</a>がとても便利でお勧めです。あと、Python単体だとイマイチな関数型プログラミング機能を提供してくれる<a
+href="https://github.com/Suor/funcy">funcy</a>も素敵なのでぜひ使ってみてください。</p>
+<p>で、注意点なのですけど、Webスクレイピングってサイトに負荷がかかる上にグレーな行為なので、できるだけ迷惑がかからないように、たとえば上のコードのように長めの<code>sleep()</code>を入れるようにしてください。このプログラムでスクレイピングした結果はCSVファイルとして保存してありますから、私が快適に<a
+href="https://www.bikebros.co.jp/">Bike
+BrosのWebサイト</a>を閲覧できるよう、このプログラムを無駄に実行しないこともお願いします。あと、新しいバイクを買うときには必ず<a
+href="https://www.bikebros.co.jp/">Bike
+BrosのWebサイト</a>でチェックするのはもちろん、毎日<a
+href="https://www.bikebros.co.jp/">Bike
+BrosのWebサイト</a>を巡回して時々広告をクリックしてたまには広告先で買い物をするように！</p>
+<h2 id="データ読み込み">データ読み込み</h2>
+<p>いろいろ加工が必要となるので、データの読み込みもプログラムを組んでやるのがお勧めです。UTF-8でエンコードされたCSVファイルをダブル・クリックしたら文字化けしちゃうようなExcelで編集するってのは、プログラムを組む能力ある貴方にはふさわしくありません。</p>
+<p>で、表形式のデータを読み込むときは、<a
+href="https://pandas.pydata.org/">pandas</a>を使うととても簡単です。この後に実施する回帰の場合のデータ読み込み処理なら、こんな感じ。</p>
+<div class="sourceCode" id="cb9"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_dataset(seed<span class="op">=</span><span class="dv">0</span>):</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(seed)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># CSVを読み込みます。</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>    data_frame <span class="op">=</span> pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;bike-bros-catalog.csv&#39;</span>))</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 不要なデータを削除します。</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>    data_frame <span class="op">=</span> data_frame.dropna()                         <span class="co"># NaN（Not a Number）値がある行を削除します。</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>    data_frame <span class="op">=</span> data_frame.drop_duplicates(subset<span class="op">=</span>[<span class="st">&#39;URL&#39;</span>])  <span class="co"># 重複した行を削除します。</span></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 列を選択します。</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    xs <span class="op">=</span> pd.get_dummies(data_frame[[<span class="st">&#39;全長 (mm)&#39;</span>,</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;全幅 (mm)&#39;</span>,</span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;全高 (mm)&#39;</span>,</span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;ホイールベース (mm)&#39;</span>,</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;シート高 (mm)&#39;</span>,</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;車両重量 (kg)&#39;</span>,</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;気筒数&#39;</span>,</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;シリンダ配列&#39;</span>,</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;排気量 (cc)&#39;</span>,</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;カム・バルブ駆動方式&#39;</span>,</span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;気筒あたりバルブ数&#39;</span>,</span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;最高出力（kW）&#39;</span>,</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;最高出力回転数（rpm）&#39;</span>,</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;最大トルク（N・m）&#39;</span>,</span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;最大トルク回転数（rpm）&#39;</span>]],</span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a>                        columns<span class="op">=</span>[<span class="st">&#39;シリンダ配列&#39;</span>, <span class="st">&#39;カム・バルブ駆動方式&#39;</span>]).values</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a>    ys <span class="op">=</span> data_frame[<span class="st">&#39;価格&#39;</span>].values</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    ns <span class="op">=</span> data_frame[<span class="st">&#39;車名&#39;</span>].values</span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 訓練データのインデックスと検証データのインデックスを取得します。</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a>    indices <span class="op">=</span> rng.permutation(np.arange(<span class="bu">len</span>(xs)))</span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    train_indices <span class="op">=</span> indices[<span class="dv">50</span>:]</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    valid_indices <span class="op">=</span> indices[:<span class="dv">50</span>]</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a>    <span class="co"># データセットをリターンします。</span></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (xs[train_indices], ys[train_indices]), (xs[valid_indices], ys[valid_indices]), (ns[train_indices], ns[valid_indices])</span></code></pre></div>
+<p>Webスクレイピング時にデータがない場合は<code>None</code>を出力するようにしましたので、今回のデータでは値がNaN（Not
+a
+Number）になっている場所があります。だから<code>dropna()</code>でNaNを含む行を削除しました。あと、同じバイクが異なるカテゴリーで登録されていることもあるので、<code>drop_duplicates()</code>で重複を排除しています。</p>
+<p>列を選択する際に<code>get_dummies()</code>している点にも注目してください。シリンダ配列とカム・バルブ駆動方式には「V型」とか「単気筒」とか「DOHC」とか「OHV」とかの文字列が入っています。で、文字列のままだと機械学習をやれないので、なんとかして数値に変換しなければなりません。でも、「V型」は<code>1</code>で「単気筒」は<code>2</code>とかの数値にすると、「V型」を2倍すると「単気筒」になるという意味不明な関係ができて困っちゃう。だから今回は、「V型かどうか」と「単気筒かどうか」という複数の列を作成して、その中の該当する列を1に、そうでない列を0にするという、ワン・ホット・エンコーディング（one
+hot
+encoding）という手法を使いました。それを簡単に実現してくれるのが、pandasの<code>get_dummies()</code>なんですな。pandas便利！　あと、NumPyもね。</p>
+<h2
+id="訓練データ検証データテストデータ">訓練データ、検証データ、テスト・データ</h2>
+<p>先ほどのデータ読み込みのコードをよく見てみると、後半で訓練データセットと検証データセットに分割しています（インデックスの配列でデータを取得できるのは、NumPyのファンシー・インデックスという機能です）。で、これはなんでかというと、機械学習には過学習（over
+fit）の危険性があるためです。</p>
+<p>前に、機械学習はデータに合うようにパラメーターを調整すると述べましたは。これ、教科書を使わないで、ひたすら問題集を解くだけで勉強しているとイメージしてください。コンピューターは問題を解くための理論を学んでいるわけじゃなくて、データがこんな感じだったらこんな解答というパターンを学んでいるだけ。こんなんでも、学習に使用したのとは別の問題集だって似たような問題が出てくるだろうから解けるんじゃねってのが、機械学習の考え方なんです。</p>
+<p>でも、特定の問題集で学びすぎてしまうと、問題集の3ページ目の右上の問題の答えは2.718281828459みたいな、無意味なパターンも学んじゃうんです。そうなると、他の問題集を解かせた場合でも3ページ目の右上なら問題を読まないで2.7とか答えるようになっちゃう。汎用的な予測能力ではなくて、その問題集（データ）でしか通用しない解き方を学習してしまうわけですね。このような状態を、過学習と呼びます。</p>
+<p>過学習を避ける方法はいろいろあって本稿の後の方で述べるのですけど、まずは、過学習していないかを確認する手段が必要です。過学習していないことを確認するにはどうすればよいかというと、学習に使用したのとは別の問題集を解けるか試せばよいわけで、この別データを検証データと呼びます。ちなみに、機械学習で作成した予測モデルの精度は、この検証データで測定します。そりゃそうですよね、学習に使用した問題集しか解けないのでは、何の役にも立ちませんから。</p>
+<p>実は、検証データとは別にテスト・データってのもあります。機械学習の手法には、機械学習で調整されるパラメーター以外にも、どのようにパラメーター調整をするのかを指定するパラメーターもあって、これをハイパー・パラメーターと呼びます。アイスクリーム予測でやった<code>DecisionTreeRegressor(max_depth=3)</code>の<code>max_depth</code>は、そのハイパー・パラメーターの一つ。このハイパー・パラメーターをチューニングすることで予測の精度を向上できたりするのですけど、精度の測定を前述した検証データでやった場合、検証データにとってだけ最適なハイパー・パラメーターになってしまう危険性があります。そこで、ハイパー・パラメーターが検証データに特化して「いない」か確認するためのデータとして、テスト・データを使用するというわけ。ここでは手抜きでハイパー・パラメーター・チューニングをやりませんから、テスト・データは作成しませんけど……。</p>
+<h2 id="回帰">回帰</h2>
+<p>準備が整ったので、おさらいとして、もう一度回帰をやりましょう。バイクの仕様から、値段を予測させてみます。世の中には割高な商品と割安の商品があるわけで、これを「なんとなく高いなー」みたいなふわっとしたのではなく、機械学習で予測した値段と比較して高いか安いかで判断できるようになるわけで、これでバイク選びがはかどること請け合いです。</p>
+<p>コードは、こんな感じ。</p>
+<div class="sourceCode" id="cb10"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_dataset</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestRegressor</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 乱数のシード。</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>RANDOM_SEED <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>train_dataset, valid_dataset, names_collection <span class="op">=</span> get_dataset(RANDOM_SEED)</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを作成して、機械学習します。</span></span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> RandomForestRegressor(random_state<span class="op">=</span>RANDOM_SEED)  <span class="co"># とりあえず、ハイパー・パラメーターはデフォルト値。</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>model.fit(<span class="op">*</span>train_dataset)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 検証データセットを使用して、モデルの精度を表示します。</span></span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.score(<span class="op">*</span>valid_dataset))</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 検証データセットを使用して……</span></span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>xs, ys <span class="op">=</span> valid_dataset</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>_, names <span class="op">=</span> names_collection</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 実際に予測もさせてみます。</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, y, pred_y <span class="kw">in</span> <span class="bu">zip</span>(names, ys, model.predict(xs)):</span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&#39;</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">:</span><span class="ch">\t</span><span class="sc">{</span>y<span class="sc">:,</span><span class="fl">.2</span><span class="er">f</span><span class="sc">}</span><span class="ch">\t</span><span class="sc">{</span>pred_y<span class="sc">:,</span><span class="fl">.2</span><span class="er">f</span><span class="sc">}</span><span class="ch">\t</span><span class="sc">{</span>y <span class="op">/</span> pred_y<span class="sc">:.2f}</span><span class="ss">&#39;</span>)</span></code></pre></div>
+<p>……また同じコードかよと思われた方、実は、今回はランダム・フォレスト（random
+forest）という別の機械学習の手法を使用している点が異なっています。ランダム・フォレストというのは決定木を森のように何本も作成して予測する手法で、回帰の場合は各決定木の出力の平均が予測結果となります。</p>
+<p>あと、<code>score()</code>メソッドを使用して、検証データセットでの予測精度も調べました。<code>score()</code>の戻り値は、正解と予測値の差の2乗（2乗すれば、プラスに間違えてもマイナスに間違えても正の数になりますし、あと、大きく間違えた場合により大きな値になって便利）を、正解と予測値の平均の差の2乗で割って、1から引いたものです。うまく予測できているほど1に近くなる（予測が外れまくるとマイナスの値になることもある）値で、今回はが0.538498919239462が出力されました。<code>RANDOM_SEED</code>の値（乱数のシード値）を変えて検証データセットに分割されるデータを変更すると値が上下しますけど、0.8を超えるようなとても高い場合が多いみたい。予測した結果を見ても、なんとなく妥当っぽい。</p>
+<p>うん、そこそこ予測できているんじゃないかな？</p>
+<h2 id="クラス分類">クラス分類</h2>
+<p>クラス（class）とは、「種類」を意味します（学校のクラスや階級ではない）。このコンピューターは「ラップトップPC」、そのコンピューターは「デスクトップPC」という場合の、「ラップトップPC」や「デスクトップPC」がクラスで、その特徴は、連続量で表現できないことです。このコンピューターの種類は1.23とか言われてもなんだか分からないでしょ？　で、クラスが何なのかを予測するのが、クラス分類です。</p>
+<p>お題は、バイクのジャンルとします。仕様から、どのジャンルのバイクなのかを予測させてみましょう。Webスクレイピングは終了していますので、作業はデータの読み込みから。こんなコードになりました。</p>
+<div class="sourceCode" id="cb11"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練データのインデックスと検証データのインデックスを取得します。</span></span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_train_indices_and_valid_indices(ys, valid_size, rng):</span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a>    size_per_y <span class="op">=</span> <span class="bu">min</span>(<span class="bu">map</span>(<span class="kw">lambda</span> y: <span class="bu">len</span>(ys[ys <span class="op">==</span> y]), <span class="bu">range</span>(<span class="bu">max</span>(ys) <span class="op">+</span> <span class="dv">1</span>)))</span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>    genre_indices_collection <span class="op">=</span> <span class="bu">map</span>(<span class="kw">lambda</span> y: rng.choice(np.arange(<span class="bu">len</span>(ys))[ys <span class="op">==</span> y], size<span class="op">=</span>size_per_y, replace<span class="op">=</span><span class="va">False</span>), <span class="bu">range</span>(<span class="bu">max</span>(ys) <span class="op">+</span> <span class="dv">1</span>))</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>    train_indices_collection, valid_indices_collection <span class="op">=</span> <span class="bu">zip</span>(<span class="op">*</span><span class="bu">map</span>(<span class="kw">lambda</span> indices: (indices[valid_size:], indices[:valid_size]), genre_indices_collection))</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.concatenate(train_indices_collection), np.concatenate(valid_indices_collection)</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_dataset(seed<span class="op">=</span><span class="dv">0</span>):</span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>    rng <span class="op">=</span> np.random.default_rng(seed)</span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># CSVを読み込みます。</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>    data_frame <span class="op">=</span> pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;bike-bros-catalog.csv&#39;</span>))</span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 不要なデータを削除します。</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>    data_frame <span class="op">=</span> data_frame.dropna()                                      <span class="co"># NaN（Not a Number）値がある行を削除します。</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>    data_frame <span class="op">=</span> data_frame.drop_duplicates(subset<span class="op">=</span>[<span class="st">&#39;URL&#39;</span>], keep<span class="op">=</span><span class="st">&#39;last&#39;</span>)  <span class="co"># 重複した行を削除します。先の行（メジャーなジャンルの行）は数が多いので、最後の行を残しました。</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 列を選択します。</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a>    xs <span class="op">=</span> pd.get_dummies(data_frame[[<span class="st">&#39;価格&#39;</span>,</span>
+<span id="cb11-27"><a href="#cb11-27" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;全長 (mm)&#39;</span>,</span>
+<span id="cb11-28"><a href="#cb11-28" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;全幅 (mm)&#39;</span>,</span>
+<span id="cb11-29"><a href="#cb11-29" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;全高 (mm)&#39;</span>,</span>
+<span id="cb11-30"><a href="#cb11-30" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;ホイールベース (mm)&#39;</span>,</span>
+<span id="cb11-31"><a href="#cb11-31" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;シート高 (mm)&#39;</span>,</span>
+<span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;車両重量 (kg)&#39;</span>,</span>
+<span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;気筒数&#39;</span>,</span>
+<span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;シリンダ配列&#39;</span>,</span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;排気量 (cc)&#39;</span>,</span>
+<span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;カム・バルブ駆動方式&#39;</span>,</span>
+<span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;気筒あたりバルブ数&#39;</span>,</span>
+<span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;最高出力（kW）&#39;</span>,</span>
+<span id="cb11-39"><a href="#cb11-39" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;最高出力回転数（rpm）&#39;</span>,</span>
+<span id="cb11-40"><a href="#cb11-40" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;最大トルク（N・m）&#39;</span>,</span>
+<span id="cb11-41"><a href="#cb11-41" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;最大トルク回転数（rpm）&#39;</span>]],</span>
+<span id="cb11-42"><a href="#cb11-42" aria-hidden="true" tabindex="-1"></a>                        columns<span class="op">=</span>[<span class="st">&#39;シリンダ配列&#39;</span>, <span class="st">&#39;カム・バルブ駆動方式&#39;</span>]).values</span>
+<span id="cb11-43"><a href="#cb11-43" aria-hidden="true" tabindex="-1"></a>    ys <span class="op">=</span> data_frame[<span class="st">&#39;ジャンル&#39;</span>].values</span>
+<span id="cb11-44"><a href="#cb11-44" aria-hidden="true" tabindex="-1"></a>    ns <span class="op">=</span> data_frame[<span class="st">&#39;車名&#39;</span>].values</span>
+<span id="cb11-45"><a href="#cb11-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-46"><a href="#cb11-46" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 訓練データのインデックスと検証データのインデックスを取得します。</span></span>
+<span id="cb11-47"><a href="#cb11-47" aria-hidden="true" tabindex="-1"></a>    train_indices, valid_indices <span class="op">=</span> get_train_indices_and_valid_indices(ys, <span class="dv">4</span>, rng)</span>
+<span id="cb11-48"><a href="#cb11-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-49"><a href="#cb11-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># データセットをリターンします。</span></span>
+<span id="cb11-50"><a href="#cb11-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> (xs[train_indices], ys[train_indices]), (xs[valid_indices], ys[valid_indices]), (ns[train_indices], ns[valid_indices])</span></code></pre></div>
+<p>ジャンル毎のデータ数を揃えるのが大変でした……。NumPyとfuncyのおかげで、そこそこきれいにかけたので嬉しい（学習時にクラス毎の重みをパラメーターで指定するなら、数を揃えなくてもよいのですけど……）。</p>
+<p>で、例によって例のごとく、機械学習する部分のコードはほとんど同じです。</p>
+<div class="sourceCode" id="cb12"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_dataset</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> RandomForestClassifier</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 乱数のシード。</span></span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>RANDOM_SEED <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a>train_dataset, valid_dataset, names_collection <span class="op">=</span> get_dataset(RANDOM_SEED)</span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを作成して、機械学習します。</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> RandomForestClassifier(random_state<span class="op">=</span>RANDOM_SEED)  <span class="co"># とりあえず、ハイパー・パラメーターはデフォルト値。</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a>model.fit(<span class="op">*</span>train_dataset)</span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練データセットを使用して、モデルの精度を表示します。あまり意味はないですけど……。</span></span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.score(<span class="op">*</span>train_dataset))</span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 検証データセットを使用して、モデルの精度を表示します。</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(model.score(<span class="op">*</span>valid_dataset))</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 検証データセットを使用して……</span></span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>xs, ys <span class="op">=</span> valid_dataset</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>_, names <span class="op">=</span> names_collection</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 実際に予測もさせてみます。</span></span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> name, y, pred_y, pred_y_proba <span class="kw">in</span> <span class="bu">zip</span>(names, ys, model.predict(xs), model.predict_proba(xs)):</span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&#39;</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">:</span><span class="ch">\t</span><span class="sc">{</span>y<span class="sc">}</span><span class="ch">\t</span><span class="sc">{</span>pred_y<span class="sc">}</span><span class="ch">\t</span><span class="sc">{</span>pred_y_proba<span class="sc">}</span><span class="ss">&#39;</span>)</span></code></pre></div>
+<p>回帰の時の<code>RandomForestRegressor</code>が、クラス分類では<code>RandomForestClassifier</code>に変わっていて、でも、学習する部分のコードはまったく同じ。ただし、<code>RandomForectClassifier</code>では予測のメソッドが<code>predict()</code>以外に<code>predict_proba()</code>があるところがちょっと違う。</p>
+<p>この<code>predict_proba()</code>だと、クラス毎の確率が出力されます。今回使用したランダム・フォレストは決定木を何本も作成して予測する方法で、クラス分類の場合は多数決でクラスを決定します。ということはですよ、100対0の圧倒的な差で「クラスA」と予測する場合と、51対49の僅差で「クラスA」と予測する場合があり得るわけです。これを、確率という形で表現してくれます。</p>
+<p>クラス分類して確率付きでクラスを予測させる方式は便利です。たとえば、過去の株価の推移から今後の株価を予測するシステムを作ると考えてみてください。株価をバシっと予測してくれる回帰が良さそうに感じますけど、でも、株価って、過去の株価の推移だけから決まったりはしないですよね？　同じ株価の推移の後でも、株価が上がったり下がったりします。で、過去50回は100円上がって、過去50回は100円下がったような場合に回帰の予測結果がどうなるかというと、できるだけ正解との誤差を減らそうとするので、たぶん、±0が出力されちゃうんですよ……。</p>
+<p>で、これがクラス分類だと「50%の確率で上がる、50%の確率で下がる」みたいな予測結果になるので、投資予算が少ない場合は役に立つと思いませんか？　まぁ、膨大な額を何回も投資できるなら、統計と同じ結果になるので回帰でも大丈夫な気がしますけど……。</p>
+<p>閑話休題。このプログラムを実行した結果の精度を見てみましょう。精度は驚愕の0.9642857142857143になりました！　<code>RANDOM_SEED</code>の値を変えて検証データの内容を変えると上下するのですけど、おおむねとても高い精度になります。</p>
+<p>うん、精度が高くて便利そう。オートバイのジャンルってのは、それほど難しくない気がするけどね……。</p>
+<h2 id="クラスタリング">クラスタリング</h2>
+<p>クラスタリング（clustering）は、回帰やクラス分類とは違って、正解データを用意しなくても実施できる手法です。なにをしてくれるかというと、近いデータをグルーピングしてくれます。人を分類して、私をアニメ・クラスタとかキモヲタ・クラスタに入れてくれちゃう無慈悲なアレですね。</p>
+<p>クラスタリングはいろいろ活用方法があるみたいで、たとえば顧客をグループに分けて、それぞれの顧客グループの特徴を考えて、顧客グループの特長を考えた施策を考えるといったビジネス面で有効らしいです。私はプログラムを組むだけでビジネスやったことがないので、よく分からないですけど……。</p>
+<p>とはいえ、プログラムは組めます。まずはデータの読み込みから。</p>
+<div class="sourceCode" id="cb13"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_dataset():</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># CSVを読み込みます。</span></span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    data_frame <span class="op">=</span> pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;bike-bros-catalog.csv&#39;</span>))</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 不要なデータを削除します。</span></span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>    data_frame <span class="op">=</span> data_frame.dropna()                         <span class="co"># NaN（Not a Number）値がある行を削除します。</span></span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>    data_frame <span class="op">=</span> data_frame.drop_duplicates(subset<span class="op">=</span>[<span class="st">&#39;URL&#39;</span>])  <span class="co"># 重複した行を削除します。</span></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 列を選択します。</span></span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a>    xs <span class="op">=</span> pd.get_dummies(data_frame[[<span class="st">&#39;価格&#39;</span>,</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;全長 (mm)&#39;</span>,</span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;全幅 (mm)&#39;</span>,</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;全高 (mm)&#39;</span>,</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;ホイールベース (mm)&#39;</span>,</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;シート高 (mm)&#39;</span>,</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;車両重量 (kg)&#39;</span>,</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;気筒数&#39;</span>,</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;シリンダ配列&#39;</span>,</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;排気量 (cc)&#39;</span>,</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;カム・バルブ駆動方式&#39;</span>,</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;気筒あたりバルブ数&#39;</span>,</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;最高出力（kW）&#39;</span>,</span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;最高出力回転数（rpm）&#39;</span>,</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;最大トルク（N・m）&#39;</span>,</span>
+<span id="cb13-30"><a href="#cb13-30" aria-hidden="true" tabindex="-1"></a>                                    <span class="st">&#39;最大トルク回転数（rpm）&#39;</span>]],</span>
+<span id="cb13-31"><a href="#cb13-31" aria-hidden="true" tabindex="-1"></a>                        columns<span class="op">=</span>[<span class="st">&#39;シリンダ配列&#39;</span>, <span class="st">&#39;カム・バルブ駆動方式&#39;</span>]).values</span>
+<span id="cb13-32"><a href="#cb13-32" aria-hidden="true" tabindex="-1"></a>    ns <span class="op">=</span> data_frame[<span class="st">&#39;車名&#39;</span>].values</span>
+<span id="cb13-33"><a href="#cb13-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-34"><a href="#cb13-34" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 0～1の値に正規化します。</span></span>
+<span id="cb13-35"><a href="#cb13-35" aria-hidden="true" tabindex="-1"></a>    xs_max <span class="op">=</span> np.<span class="bu">max</span>(xs, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb13-36"><a href="#cb13-36" aria-hidden="true" tabindex="-1"></a>    xs_min <span class="op">=</span> np.<span class="bu">min</span>(xs, axis<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb13-37"><a href="#cb13-37" aria-hidden="true" tabindex="-1"></a>    xs <span class="op">=</span> (xs <span class="op">-</span> xs_min) <span class="op">/</span> (xs_max <span class="op">-</span> xs_min)</span>
+<span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># データセットをリターンします。</span></span>
+<span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> xs, ns</span></code></pre></div>
+<p>正解データが不要なので、これまでとは違って<code>ys</code>を作成しません。その代わりに、データを正規化しています。正規化をした理由は、この後に使用するK-meansってのがデータの距離を使って似ているか判断する手法だから。金額が100万円違うのと排気量が100cc違うのが並んでいると、金額の差の大きさに目を奪われてK-meansはほぼ金額だけでクラスタリングしちゃう。これじゃあ困るので、どの列の値も0～1の間になるようにしているわけ。</p>
+<p>あと、データを分類することが目的で、これからやってくる新しいデータにも通用する分類方式を編み出すわけじゃないので、訓練データと検証データに分けることもしません。</p>
+<p>で、機械学習する部分のコードはこちら。</p>
+<div class="sourceCode" id="cb14"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_dataset</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 乱数のシード。</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>RANDOM_SEED <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a><span class="co"># クラスタの数</span></span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>CLUSTER_SIZE <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>xs, names <span class="op">=</span> get_dataset()</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを作成して、機械学習します。</span></span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> KMeans(n_clusters<span class="op">=</span>CLUSTER_SIZE, random_state<span class="op">=</span>RANDOM_SEED)</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> model.fit_predict(xs)</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a><span class="co"># クラスタを表示させてみます。</span></span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(CLUSTER_SIZE):</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name <span class="kw">in</span> <span class="bu">sorted</span>(names[ys <span class="op">==</span> i]):</span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&#39;</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">&#39;</span>)</span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span></code></pre></div>
+<p><code>KMeans</code>を使用していることと、<code>fit()</code>ではなくて<code>fit_pred()</code>で、その引数に正解データが含まれていない点が違うところ。<code>fit()</code>は、<code>xs</code>の各行がどのクラスタに所属するのかの配列を返します。</p>
+<p><code>KMeans</code>にはK-meansというクラスタリングの手法が実装されていて、これは、データ間の距離を使用してグループを作成します。平面での距離は<code>sqrt(x ** 2 + y ** 2)</code>で計算できるわけですけど、これ、3次元でも<code>sqrt(x ** 2 + y ** 2 + z ** 2)</code>でほぼ同じ。そして、4次元以上でも同様に計算できるらしい。ということは、複数の数値が入った配列と同じ数の数値が入った配列を、多次元空間上の座標だと考えて距離を計算することができるわけ。K-meansでは、この距離が近いものをグルーピングしていきます。</p>
+<p>で、<code>fit_pred()</code>の出力を使用してクラスタにどんなデータが含まれているのかを確認して、いろいろ考えて、考えた結果をビジネスに役立てたりしていきます。私はプログラマーでビジネス・パーソンじゃないので、具体木にどうやるかは分からないので詳しい話はごめんなさい省略……。</p>
+<p>ともあれ、クラスタリングもとても簡単です。データがあるならとりあえずクラスタリングして、グループ分けしてみるのも面白そうです。</p>
 </article>
 </body>
 </html>
