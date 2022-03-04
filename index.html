@@ -567,11 +567,11 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb12-1"><a h
 <p>クラス分類して確率付きでクラスを予測させる方式は便利です。たとえば、過去の株価の推移から今後の株価を予測するシステムを作ると考えてみてください。株価をバシっと予測してくれる回帰が良さそうに感じますけど、でも、株価って、過去の株価の推移だけから決まったりはしないですよね？　同じ株価の推移の後でも、株価が上がったり下がったりします。で、過去50回は100円上がって、過去50回は100円下がったような場合に回帰の予測結果がどうなるかというと、できるだけ正解との誤差を減らそうとするので、たぶん、±0が出力されちゃうんですよ……。</p>
 <p>で、これがクラス分類だと「50%の確率で上がる、50%の確率で下がる」みたいな予測結果になるので、投資予算が少ない場合は役に立つと思いませんか？　まぁ、膨大な額を何回も投資できるなら、統計と同じ結果になるので回帰でも大丈夫な気がしますけど……。</p>
 <p>閑話休題。このプログラムを実行した結果の精度を見てみましょう。精度は驚愕の0.9642857142857143になりました！　<code>RANDOM_SEED</code>の値を変えて検証データの内容を変えると上下するのですけど、おおむねとても高い精度になります。</p>
-<p>うん、精度が高くて便利そう。オートバイのジャンルってのは、それほど難しくない気がするけどね……。</p>
+<p>うん、精度が高くて便利そう。オートバイのジャンルってのは、それほど難しくない気もするけどね……。</p>
 <h2 id="クラスタリング">クラスタリング</h2>
-<p>クラスタリング（clustering）は、回帰やクラス分類とは違って、正解データを用意しなくても実施できる手法です。なにをしてくれるかというと、近いデータをグルーピングしてくれます。人を分類して、私をアニメ・クラスタとかキモヲタ・クラスタに入れてくれちゃう無慈悲なアレですね。</p>
-<p>クラスタリングはいろいろ活用方法があるみたいで、たとえば顧客をグループに分けて、それぞれの顧客グループの特徴を考えて、顧客グループの特長を考えた施策を考えるといったビジネス面で有効らしいです。私はプログラムを組むだけでビジネスやったことがないので、よく分からないですけど……。</p>
-<p>とはいえ、プログラムは組めます。まずはデータの読み込みから。</p>
+<p>クラスタリング（clustering）は、回帰やクラス分類とは違って、正解データを用意しなくても実施できる手法です。なにをしてくれるかというと、近いデータをグルーピングしてくれます。人をグループ化して、私をアニメ・クラスタとかキモヲタ・クラスタに入れてくれちゃう無慈悲なアレですね。</p>
+<p>クラスタリングはいろいろ活用方法があるみたいで、たとえば顧客をグループに分けて、それぞれの顧客グループの特徴を考えて、顧客グループの特長を考えた施策を考えるといったビジネス面で役に立つらしいです。私はプログラマーでビジネスやったことがないので、よく分からないですけど……。</p>
+<p>でも、そんな私でもクラスタリングのプログラムは組めます。まずは、データの読み込みから。</p>
 <div class="sourceCode" id="cb13"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
@@ -613,7 +613,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb13-1"><a h
 <span id="cb13-38"><a href="#cb13-38" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb13-39"><a href="#cb13-39" aria-hidden="true" tabindex="-1"></a>    <span class="co"># データセットをリターンします。</span></span>
 <span id="cb13-40"><a href="#cb13-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> xs, ns</span></code></pre></div>
-<p>正解データが不要なので、これまでとは違って<code>ys</code>を作成しません。その代わりに、データを正規化しています。正規化をした理由は、この後に使用するK-meansってのがデータ間の距離を使って似ているか判断する手法だから。金額が100万円違うのと排気量が100cc違うのが並んでいると、金額の差の大きさに目を奪われてK-meansはほぼ金額だけでクラスタリングしちゃう。これじゃあ困るので、どの列の値も0～1の間になるようにしているわけ。</p>
+<p>正解データが不要なので、これまでとは違って<code>ys</code>を作成しません。その代わりに、データを正規化しています。正規化をした理由は、この後に使用するK-meansってのがデータ間の距離を使って似ているか判断する手法だからです。金額が100万円違うのと排気量が100cc違うのが並んでいると、金額の差の大きさに目を奪われてK-meansはほぼ金額だけでクラスタリングしちゃう。それじゃあ困るので、どの列の値も0～1の間になるようにしているわけ。</p>
 <p>あと、データを分類することが目的で、未知の新しいデータにも通用する分類方式を作るわけじゃないので、訓練データと検証データに分けることもしません。</p>
 <p>で、機械学習する部分のコードはこちら。</p>
 <div class="sourceCode" id="cb14"><pre
@@ -639,10 +639,76 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a h
 <span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> name <span class="kw">in</span> <span class="bu">sorted</span>(names[ys <span class="op">==</span> i]):</span>
 <span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a>        <span class="bu">print</span>(<span class="ss">f&#39;</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">&#39;</span>)</span>
 <span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>()</span></code></pre></div>
-<p><code>KMeans</code>を使用していることと、<code>fit()</code>ではなくて<code>fit_pred()</code>で、その引数に正解データが含まれていない点が違うところ。<code>fit()</code>は、<code>xs</code>の各行がどのクラスタに所属するのかの配列を返します。</p>
-<p><code>KMeans</code>にはK-meansというクラスタリングの手法が実装されていて、これは、データ間の距離を使用してグループを作成します。平面での距離は<code>sqrt(x ** 2 + y ** 2)</code>で計算できるわけですけど、これ、3次元でも<code>sqrt(x ** 2 + y ** 2 + z ** 2)</code>でほぼ同じ。そして、4次元以上でも同様に計算できるらしい。ということは、複数の数値が入った配列と同じ数の数値が入った配列を、多次元空間上の座標だと考えて距離を計算することができるわけ。K-meansでは、この距離が近いものをグルーピングしていきます。</p>
-<p>で、<code>fit_pred()</code>の出力を使用してクラスタにどんなデータが含まれているのかを確認して、いろいろ考えて、考えた結果をビジネスに役立てたりしていきます。私はプログラマーでビジネス・パーソンじゃないので、具体木にどうやるかは分からないので詳しい話はごめんなさい省略……。</p>
-<p>ともあれ、クラスタリングもとても簡単でした。手持ちのデータをクラスタリングして、グループ分けしてみたら面白そうです。</p>
+<p><code>KMeans</code>を使用していることと、<code>fit()</code>ではなくて<code>fit_pred()</code>で、その引数に正解データが含まれていない点が違うところ。<code>fit_pred()</code>は、機械学習して、<code>xs</code>の各行がどのクラスタに所属するのかの配列を返します。</p>
+<p>この<code>KMeans</code>にはK-meansというクラスタリングの手法が実装されていて、これは、データ間の距離を使用してグループを作成します。平面での距離は<code>sqrt(x ** 2 + y ** 2)</code>で計算できるわけですけど、これ、3次元でも<code>sqrt(x ** 2 + y ** 2 + z ** 2)</code>でほぼ同じ。そして、4次元以上でも同様に計算できるらしいんですよ。ということは、複数の数値が入った配列と同じ数の数値が入った配列を、多次元空間上の座標だと考えて距離を計算することができるわけ。K-meansでは、この距離が近いものをグルーピングしていきます。</p>
+<p>で、<code>fit_pred()</code>の出力を使用してクラスタにどんなデータが含まれているのかを確認して、いろいろ考えて、考えた結果をビジネスに役立てたりしていきます。私はプログラマーでビジネス・パーソンじゃないので、具体的にどうやるかは分からないので詳しい話はごめんなさい省略で。</p>
+<p>ともあれ、クラスタリングもとても簡単でした。手持ちのデータをクラスタリングでグループ分けしてみたら面白そう。</p>
+<h1 id="機械学習の手法の選択">機械学習の手法の選択</h1>
+<p>本稿では、これまで線形回帰、決定木、ランダム・フォレスト、K-meansといういくつかの手法を使用してきました。実は機械学習にはこれ以外にもたくさんの手法があって、それを使い分けなければならない……のは大変すぎるので、私が手法選択に使用しているルールを疑似コードで示しましょう。</p>
+<div class="sourceCode" id="cb15"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (テーブル・データではない <span class="kw">and</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    大量のデータを用意できる <span class="kw">and</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    (そこそこ高性能なGPUを使える <span class="kw">or</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>     潤沢なクラウド予算がある)):</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> 深層学習</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> 勾配ブースティング</span></code></pre></div>
+<p>……ごめんなさい。実は私は普段は線形回帰とかやってません。なんでかというと、私は統計の人じゃなくて機械学習の人だからです。</p>
+<h2 id="統計と機械学習">統計と機械学習</h2>
+<p>統計と機械学習って同じ道具を使うことも多くて似ているのですけど、目的が異なります。統計は「説明」を目的とし、機械学習は「予測」を目的とします。気温とアイスクリームの売り上げには関係があるのか、関係があるのであればどのような関係なのかを考えるのが統計で、どんな関係なのかは重視しないで予測の精度を高めることにひたすら注力するのが機械学習なんです。</p>
+<p>統計をしたいのであれば、データの関係を明らかにしたいですから、モデルはできるだけ単純な方が良い。シンプルなモデルの方が関係が分かりやすいですもんね。だから、データに合致する範囲で、できるだけシンプルなモデルを構築します。だから、まずは線形回帰で関係があるかを調べようとなります。</p>
+<p>機械学習では予測精度をできるだけ高めたいので、複雑なモデルであっても、モデルの中身がブラックボックスでデータ間の関係が理解不能であってもお構いなし。だから、できるだけ高い予測精度を期待できるモデルを選びます。よって、線形回帰みたいな精度が低そうなモデルは選択肢に上がらないわけ。</p>
+<p>で、私は機械学習の人なので、前に書いたように、現在の技術で最高の精度を誇る深層学習（deep
+learning）と勾配ブースティング（gradient
+boosting）しか使わないんですな。</p>
+<h2 id="深層学習の弱点">深層学習の弱点</h2>
+<p>いやいや精度ならば深層学習一択という反論が聞こえてきそうですけど、深層学習って弱点も多いと思うんですよ。</p>
+<p>深層学習は脳の構造を模した手法とかよく言われますけど、今どきの深層学習モデルは脳のどこかを模しているわけではありません。独自に進化して、脳とはあまり関係ないものになっているんじゃないかと。</p>
+<p>ぶっちゃけて言えば、私は深層学習とは行列演算を大量に積み重ねたもので、その行列の各要素をパラメーターとする、異常に大量のパラメーターを使える機械学習の手法と認識しています。で、パラメーターが大量にあったら調整が大変に思えるのですけど、それは逆誤差伝播法（backprobagation）という適用可能な範囲は狭いけど効率が良い調整方式で対応しちゃう。あと、大量のパラメーターを使って計算するのは時間がかかりそうに思えるけど、それは行列の特性をイイ感じに活用した並列処理で対応しちゃう。</p>
+<p>このように弱点が見えない深層学習ですけど、深層学習と言われて思い浮かべる以下の図のモデルは全結合（dense）と呼ばれる層を重ねたもので、実は、そんなに精度が高くありません。</p>
+<p><img src="" /></p>
+<h3 id="すべては畳み込みから">すべては畳み込みから</h3>
+<p>その深層学習の精度が大きく向上したのは、畳み込み（convolution）という手法が発明されてから。で、この畳み込みってのは、画像処理でいうところのフィルタリングそのものなんです。</p>
+<p>画像においては、あるピクセルだけじゃなくて、そのピクセルの上下左右やそのさらに外側のピクセルとの関係が重要ですよね？　白い中に黒いピクセルが縦に並んでるから縦線と認識できるわけで。このような周りとの関係を汎用的な手法で抽出するのがフィルタリングです。</p>
+<p>フィルタリング処理の具定例を示しましょう。こんな感じ。</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="bu">filter</span>(image, kernel):</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> np.zeros((np.shape(image)[<span class="dv">0</span>] <span class="op">-</span> <span class="dv">2</span>, np.shape(image)[<span class="dv">1</span>] <span class="op">-</span> <span class="dv">2</span>))</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(np.shape(result)[<span class="dv">0</span>]):</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(np.shape(result)[<span class="dv">1</span>]):</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 画像の該当部分とカーネルの内積を求めて新たな画像を作成します。</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>            result[y, x] <span class="op">=</span> np.dot(image[y: y <span class="op">+</span> <span class="dv">3</span>, x: x <span class="op">+</span> <span class="dv">3</span>].flatten(), kernel.flatten())</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    result[result <span class="op">&lt;</span>   <span class="dv">0</span>] <span class="op">=</span>   <span class="dv">0</span>  <span class="co"># noqa: E222</span></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    result[result <span class="op">&gt;</span> <span class="dv">255</span>] <span class="op">=</span> <span class="dv">255</span></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> cv2.cvtColor(cv2.imread(<span class="st">&#39;4.2.07.tiff&#39;</span>), cv2.COLOR_RGB2GRAY)</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>plot.imshow(image)</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>plot.show()</span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>plot.imshow(<span class="bu">filter</span>(image, np.array([[<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>], [<span class="dv">2</span>, <span class="op">-</span><span class="dv">8</span>, <span class="dv">2</span>], [<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>]])))</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div>
+<p>ある点の周囲の画像と行列（コード中の<code>kernel</code>）をベクトルに変換（<code>flatten()</code>）して内積（<code>np.dot()</code>）して、新たな画像を作るわけですね。</p>
+<p>で、本稿は文系のための文書ですから、内積について補足しましょう。でも数式は嫌なので、具体例でやります。題材は、転職で。転職先を、給料と仕事の楽しさで表現してみます。</p>
+<p><img src="" /></p>
+<p>で、あれもこれも欲しいというのは許されないでしょうから、転職先の評価軸は、距離が1のベクトルで表現するとしましょう。上の図の、左下から円周上のどこかに向かうベクトルが、転職先の評価軸となるわけですね。</p>
+<p>で、「高い給料をもらえるなら非合法な仕事でもオッケー」とか「仕事が楽しければ霞を食べて生きていける」という特殊な場合はそれぞれX軸とY軸の値を見るだけで良いのですけど、普通は、給料6割で仕事の楽しさ4割とかで評価したいですよね？　そんな時は、内積が役に立ちます。</p>
+<p><img src="" /></p>
+<p>上の図のように、内積は、あるベクトルの視点で、他のベクトルがどの程度の量になるのかを表現しています。この評価軸のベクトル上での、各転職先の大きさはどのくらいなのかがこれで一目瞭然で転職がはかどっちゃうこと請け合い。しかも、内積ってのは2次元の画像だけじゃなくて、3次元でも4次元でも、1,024次元とかでも成り立つんですよ。だから、先ほどのコードでの<code>kernel</code>のような、9次元のベクトルでも使えるんです。</p>
+<p>でね、先ほどのプログラムの<code>kernel</code>の値は、輪郭の場合に大きな値になるような行列になっています。輪郭抽出なんて機械学習に関係なさそうと思ったかもしれませんけど、もし、こんな感じに丸くなっているとか、こんな感じに尖っているとか、こんな感じに交差しているとかを表現するベクトルを作れば、しかもそれが大量にあるのであれば、たとえば文字認識とかが高い精度でできると思いませんか？</p>
+<p>深層学習は機械学習なので、どのような<code>kernel</code>を使うと文字認識に有効なのかとか、犬と猫を区別するにはどのような<code>kernel</code>があればできるのかとかはコンピューターが調整してくれます。手で行列を作る必要はなくて、だからとても楽ちん。しかも精度が高い！</p>
+<p>と、これが畳み込みで、この畳み込みのおかげで深層学習での画像認識の精度は大幅に向上したんですよ。</p>
+<h3 id="今はアテンションで">今は、アテンションで</h3>
 </article>
 </body>
 </html>
