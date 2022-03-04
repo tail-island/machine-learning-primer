@@ -48,7 +48,3 @@ def get_dataset(seed=0):
 
     # データセットをリターンします。
     return (xs[train_indices], ys[train_indices]), (xs[valid_indices], ys[valid_indices]), (ns[train_indices], ns[valid_indices])
-
-
-if __name__ == '__main__':
-    print(get_dataset(0))

@@ -40,10 +40,3 @@ def get_dataset(seed=0):
 
     # データセットをリターンします。
     return (xs[train_indices], ys[train_indices]), (xs[valid_indices], ys[valid_indices]), (ns[train_indices], ns[valid_indices])
-
-
-if __name__ == '__main__':
-    (train_xs, train_ys), (valid_xs, valid_ys), (train_ns, valid_ns) = get_dataset(0)
-
-    for x, y, n in zip(valid_xs, valid_ys, valid_ns):
-        print(n, x, y)
