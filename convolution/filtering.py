@@ -8,7 +8,8 @@ def filter(image, kernel):
 
     for y in range(np.shape(result)[0]):
         for x in range(np.shape(result)[1]):
-            result[y, x] = np.dot(image[y: y + 3, x: x + 3].flatten(), kernel.flatten())
+            # 画像の該当部分とカーネルのベクトルの内積を求めて新たな画像を作成します。
+            result[y, x] = np.inner(image[y: y + 3, x: x + 3].flatten(), kernel.flatten())
 
     result[result <   0] =   0  # noqa: E222
     result[result > 255] = 255
