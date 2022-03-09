@@ -74,7 +74,9 @@ params = {
 cv_result = lgb.cv(params, lgb.Dataset(train_xs, label=train_ys), return_cvbooster=True)
 model = cv_result['cvbooster']
 
-print(pd.DataFrame({'feature': model.feature_name()[0], 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
+for booster in model.boosters:
+    print(pd.DataFrame({'feature': booster.feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
+
 print(f'Accuracy = {accuracy_score(valid_ys, np.mean(model.predict(valid_xs), axis=0) >= 0.5)}')
 
 plot.plot(cv_result['binary_logloss-mean'])

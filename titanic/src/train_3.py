@@ -59,5 +59,7 @@ tuner = lgb.LightGBMTunerCV(params, lgb.Dataset(xs, label=ys), return_cvbooster=
 cv_result = tuner.run()
 model = tuner.get_best_booster()
 
-print(pd.DataFrame({'feature': model.feature_name()[0], 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
+for booster in model.boosters:
+    print(pd.DataFrame({'feature': booster.feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
+
 print(tuner.best_params)
