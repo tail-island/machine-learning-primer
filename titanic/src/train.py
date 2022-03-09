@@ -20,8 +20,8 @@ def add_features(data_frame):
                                  ((0, ('Mr.',)),
                                   (1, ('Mrs.', 'Mme.', 'Ms.')),
                                   (2, ('Miss.',)),
-                                  (3, ('Master.', 'Dr.', 'Rev.', 'Don.', 'Major.')),
-                                  (4, ('Col.', 'Capt.'))),
+                                  (3, ('Master.', 'Dr.', 'Rev.', 'Don.')),
+                                  (4, ('Col.', 'Major.', 'Capt.'))),
                                  pd.Series(repeat(np.nan, len(data_frame['Name'])), dtype='object'))
 
     data_frame['FamilySize'] = data_frame['SibSp'] + data_frame['Parch']
@@ -61,13 +61,13 @@ params = {
     'objective': 'binary',
     'metric': 'binary_logloss',
     'feature_pre_filter': False,
-    'lambda_l1': 2.934375313846815,
-    'lambda_l2': 4.6970115561476975e-08,
-    'num_leaves': 2,
+    'lambda_l1': 0.965743343947273,
+    'lambda_l2': 5.173526349445134e-05,
+    'num_leaves': 5,
     'feature_fraction': 0.4,
     'bagging_fraction': 1.0,
     'bagging_freq': 0,
-    'min_child_samples': 20,
+    'min_child_samples': 50,
     'learning_rage': 0.01
 }
 

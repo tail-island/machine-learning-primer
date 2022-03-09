@@ -34,8 +34,8 @@ def add_features(data_frame):
                                  ((0, ('Mr.',)),
                                   (1, ('Mrs.', 'Mme.', 'Ms.')),
                                   (2, ('Miss.',)),
-                                  (3, ('Master.', 'Dr.', 'Rev.', 'Don.', 'Major.')),
-                                  (4, ('Col.', 'Capt.'))),
+                                  (3, ('Master.', 'Dr.', 'Rev.', 'Don.')),
+                                  (4, ('Col.', 'Major.', 'Capt.'))),
                                  pd.Series(repeat(np.nan, len(data_frame['Name'])), dtype='object'))
 
     data_frame['FamilySize'] = data_frame['SibSp'] + data_frame['Parch']
