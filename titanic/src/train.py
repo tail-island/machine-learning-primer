@@ -34,7 +34,8 @@ def get_categorical_features(data_frame):
 
 def get_xs(data_frame, categorical_features):
     for feature, mapping in categorical_features.items():
-        data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')
+        # data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。
+        data_frame[feature] = data_frame[feature].map({**mapping, **{np.nan: -1}}).astype('category')
 
     return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Title', 'FamilySize']]
 
@@ -45,7 +46,7 @@ def get_ys(data_frame):
 
 def save_model(model, name):
     for i, booster in enumerate(model.boosters):
-        booster.save_model(f'{name}-{i}.txt')
+        booster.save_model(path.join('..', 'input', 'titanic-model', f'{name}-{i}.txt'))
 
 
 data_frame = add_features(pd.read_csv(path.join('..', 'input', 'titanic', 'train.csv')))
@@ -74,7 +75,7 @@ model = cv_result['cvbooster']
 
 save_model(model, 'model')
 
-with open('categorical_features.pickle', mode='wb') as f:
+with open(path.join('..', 'input', 'titanic-model', 'categorical-features.pickle'), mode='wb') as f:
     pickle.dump(categorical_features, f)
 
 plot.plot(cv_result['binary_logloss-mean'])

@@ -34,7 +34,8 @@ def get_categorical_features(data_frame):
 
 def get_xs(data_frame, categorical_features):
     for feature, mapping in categorical_features.items():
-        data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')
+        # data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。
+        data_frame[feature] = data_frame[feature].map({**mapping, **{np.nan: -1}}).astype('category')
 
     return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Title', 'FamilySize']]
 
@@ -42,18 +43,18 @@ def get_xs(data_frame, categorical_features):
 def load_model(name):
     result = lgb.CVBooster()
 
-    for file in sorted(glob(f'{name}-*.txt')):
+    for file in sorted(glob(path.join('..', 'input', 'titanic-model', f'{name}-*.txt'))):
         result.boosters.append(lgb.Booster(model_file=file))
 
     return result
 
 
 data_frame = add_features(pd.read_csv(path.join('..', 'input', 'titanic', 'test.csv')))
-with open('categorical_features.pickle', mode='rb') as f:
+with open(path.join('..', 'input', 'titanic-model', 'categorical-features.pickle'), mode='rb') as f:
     categorical_features = pickle.load(f)
 
 xs = get_xs(data_frame, categorical_features)
 model = load_model('model')
 
-answer = pd.DataFrame({'PassengerId': data_frame['PassengerId'], 'Survived': (np.mean(model.predict(xs), axis=0) >= 0.5).astype(np.int32)})
-answer.to_csv('answer.csv', index=False)
+submission = pd.DataFrame({'PassengerId': data_frame['PassengerId'], 'Survived': (np.mean(model.predict(xs), axis=0) >= 0.5).astype(np.int32)})
+submission.to_csv('submission.csv', index=False)

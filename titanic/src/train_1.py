@@ -14,7 +14,8 @@ def get_categorical_features(data_frame):
 
 def get_xs(data_frame, categorical_features):
     for feature, mapping in categorical_features.items():
-        data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')
+        # data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。
+        data_frame[feature] = data_frame[feature].map({**mapping, **{np.nan: -1}}).astype('category')
 
     return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']]
 
