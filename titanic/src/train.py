@@ -18,10 +18,11 @@ def add_features(data_frame):
 
     data_frame['Title'] = reduce(lambda title_series, params: add_title(title_series, data_frame['Name'], *params),
                                  ((0, ('Mr.',)),
-                                  (1, ('Mrs.', 'Mme.', 'Ms.')),
-                                  (2, ('Miss.',)),
-                                  (3, ('Master.', 'Dr.', 'Rev.', 'Don.')),
-                                  (4, ('Col.', 'Major.', 'Capt.'))),
+                                  (1, ('Master.',)),
+                                  (2, ('Mrs.', 'Mme.', 'Ms.')),
+                                  (3, ('Miss.',)),
+                                  (4, ('Dr.', 'Rev.', 'Don.')),
+                                  (5, ('Col.', 'Major.', 'Capt.'))),
                                  pd.Series(repeat(np.nan, len(data_frame['Name'])), dtype='object'))
 
     data_frame['FamilySize'] = data_frame['SibSp'] + data_frame['Parch']
@@ -62,13 +63,13 @@ params = {
     'metric': 'binary_logloss',
     'force_col_wise': True,
     'feature_pre_filter': False,
-    'lambda_l1': 0.965743343947273,
-    'lambda_l2': 5.173526349445134e-05,
+    'lambda_l1': 3.7584116683195825,
+    'lambda_l2': 1.4648199628787754e-06,
     'num_leaves': 5,
     'feature_fraction': 0.4,
-    'bagging_fraction': 1.0,
-    'bagging_freq': 0,
-    'min_child_samples': 50,
+    'bagging_fraction': 0.7616580256435892,
+    'bagging_freq': 4,
+    'min_child_samples': 25,
     'learning_rate': 0.01
 }
 

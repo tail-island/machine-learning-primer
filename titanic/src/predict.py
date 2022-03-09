@@ -17,10 +17,11 @@ def add_features(data_frame):
 
     data_frame['Title'] = reduce(lambda title_series, params: add_title(title_series, data_frame['Name'], *params),
                                  ((0, ('Mr.',)),
-                                  (1, ('Mrs.', 'Mme.', 'Ms.')),
-                                  (2, ('Miss.',)),
-                                  (3, ('Master.', 'Dr.', 'Rev.', 'Don.')),
-                                  (4, ('Col.', 'Major.', 'Capt.'))),
+                                  (1, ('Master.',)),
+                                  (2, ('Mrs.', 'Mme.', 'Ms.')),
+                                  (3, ('Miss.',)),
+                                  (4, ('Dr.', 'Rev.', 'Don.')),
+                                  (5, ('Col.', 'Major.', 'Capt.'))),
                                  pd.Series(repeat(np.nan, len(data_frame['Name'])), dtype='object'))
 
     data_frame['FamilySize'] = data_frame['SibSp'] + data_frame['Parch']

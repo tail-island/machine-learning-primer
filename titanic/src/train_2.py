@@ -10,11 +10,11 @@ from sklearn.metrics import accuracy_score
 
 
 def add_features(data_frame):
-    # 肩書を追加します。データの内訳は、以下の通り。
+    # 肩書の内訳は、以下の通り。
     # Mr.        509
     # Miss.      180
     # Mrs.       125
-    # Master.     40
+    # Master.     40  少年もしくは青年への敬称らしい
     # Dr.         11
     # Col.        10
     # Rev.         6  聖職者への敬称らしい
@@ -32,10 +32,11 @@ def add_features(data_frame):
 
     data_frame['Title'] = reduce(lambda title_series, params: add_title(title_series, data_frame['Name'], *params),
                                  ((0, ('Mr.',)),
-                                  (1, ('Mrs.', 'Mme.', 'Ms.')),
-                                  (2, ('Miss.',)),
-                                  (3, ('Master.', 'Dr.', 'Rev.', 'Don.')),
-                                  (4, ('Col.', 'Major.', 'Capt.'))),
+                                  (1, ('Master.',)),
+                                  (2, ('Mrs.', 'Mme.', 'Ms.')),
+                                  (3, ('Miss.',)),
+                                  (4, ('Dr.', 'Rev.', 'Don.')),
+                                  (5, ('Col.', 'Major.', 'Capt.'))),
                                  pd.Series(repeat(np.nan, len(data_frame['Name'])), dtype='object'))
 
     data_frame['FamilySize'] = data_frame['SibSp'] + data_frame['Parch']

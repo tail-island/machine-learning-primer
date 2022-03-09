@@ -8,21 +8,6 @@ from funcy import count, repeat
 
 
 def add_features(data_frame):
-    # 肩書を追加します。データの内訳は、以下の通り。
-    # Mr.        509
-    # Miss.      180
-    # Mrs.       125
-    # Master.     40
-    # Dr.         11
-    # Col.        10
-    # Rev.         6  聖職者への敬称らしい
-    # Don.         2
-    # Major.       2
-    # Mme.         1
-    # Ms.          1
-    # Capt.        1
-    # NaN.         3
-
     def add_title(title_series, name_series, id, titles):
         title_series[reduce(lambda acc, series: acc + series, map(lambda title: name_series.str.contains(title), titles))] = id
 
@@ -30,10 +15,11 @@ def add_features(data_frame):
 
     data_frame['Title'] = reduce(lambda title_series, params: add_title(title_series, data_frame['Name'], *params),
                                  ((0, ('Mr.',)),
-                                  (1, ('Mrs.', 'Mme.', 'Ms.')),
-                                  (2, ('Miss.',)),
-                                  (3, ('Master.', 'Dr.', 'Rev.', 'Don.')),
-                                  (4, ('Col.', 'Major.', 'Capt.'))),
+                                  (1, ('Master.',)),
+                                  (2, ('Mrs.', 'Mme.', 'Ms.')),
+                                  (3, ('Miss.',)),
+                                  (4, ('Dr.', 'Rev.', 'Don.')),
+                                  (5, ('Col.', 'Major.', 'Capt.'))),
                                  pd.Series(repeat(np.nan, len(data_frame['Name'])), dtype='object'))
 
     data_frame['FamilySize'] = data_frame['SibSp'] + data_frame['Parch']
