@@ -60,6 +60,7 @@ ys = get_ys(data_frame)
 params = {
     'objective': 'binary',
     'metric': 'binary_logloss',
+    'force_col_wise': True,
     'feature_pre_filter': False,
     'lambda_l1': 0.965743343947273,
     'lambda_l2': 5.173526349445134e-05,
@@ -68,10 +69,10 @@ params = {
     'bagging_fraction': 1.0,
     'bagging_freq': 0,
     'min_child_samples': 50,
-    'learning_rage': 0.01
+    'learning_rate': 0.01
 }
 
-cv_result = lgb.cv(params, lgb.Dataset(xs, label=ys), num_boost_round=1000, return_cvbooster=True)
+cv_result = lgb.cv(params, lgb.Dataset(xs, label=ys), num_boost_round=10000, return_cvbooster=True)
 model = cv_result['cvbooster']
 
 os.makedirs('titanic-model', exist_ok=True)

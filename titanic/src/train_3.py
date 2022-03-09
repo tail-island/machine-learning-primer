@@ -65,7 +65,8 @@ ys = get_ys(data_frame)
 
 params = {
     'objective': 'binary',
-    'metric': 'binary_logloss'
+    'metric': 'binary_logloss',
+    'force_col_wise': True  # 警告を消すために付けました。
 }
 
 tuner = lgb.LightGBMTunerCV(params, lgb.Dataset(xs, label=ys), return_cvbooster=True, optuna_seed=0)

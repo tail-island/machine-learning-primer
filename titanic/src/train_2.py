@@ -73,7 +73,8 @@ valid_ys = ys[:200]
 
 params = {
     'objective': 'binary',
-    'metric': 'binary_logloss'
+    'metric': 'binary_logloss',
+    'force_col_wise': True  # 警告を消すために付けました。
 }
 
 cv_result = lgb.cv(params, lgb.Dataset(train_xs, label=train_ys), return_cvbooster=True)
