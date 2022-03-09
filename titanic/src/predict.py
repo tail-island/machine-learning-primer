@@ -40,18 +40,32 @@ def get_xs(data_frame, categorical_features):
     return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Title', 'FamilySize']]
 
 
+def is_kaggle_notebook():
+    return '_dh' in globals() and globals()['_dh'] == ['/kaggle/working']
+
+
 def load_model(name):
     result = lgb.CVBooster()
 
-    for file in sorted(glob(path.join('..', 'input', 'titanic-model', f'{name}-*.txt'))):
+    base_path = '.' if not is_kaggle_notebook() else path.join('..', 'input')
+
+    for file in sorted(glob(path.join(base_path, 'titanic-model', f'{name}-*.txt'))):
         result.boosters.append(lgb.Booster(model_file=file))
 
     return result
 
 
+def load_categorical_features():
+    base_path = '.' if not is_kaggle_notebook() else path.join('..', 'input')
+
+    with open(path.join(base_path, 'titanic-model', 'categorical-features.pickle'), mode='rb') as f:
+        return pickle.load(f)
+
+
 data_frame = add_features(pd.read_csv(path.join('..', 'input', 'titanic', 'test.csv')))
-with open(path.join('..', 'input', 'titanic-model', 'categorical-features.pickle'), mode='rb') as f:
-    categorical_features = pickle.load(f)
+data_frame['Fare'] = data_frame['Fare'].fillna(data_frame['Fare'].mean())  # train.csvにはないけど、test.csvのFareにはNaNがある。。。
+
+categorical_features = load_categorical_features()
 
 xs = get_xs(data_frame, categorical_features)
 model = load_model('model')

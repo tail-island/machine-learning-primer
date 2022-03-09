@@ -3,6 +3,7 @@ import matplotlib.pyplot as plot
 import numpy as np
 import pandas as pd
 import pickle
+import os
 import os.path as path
 
 from functools import reduce
@@ -46,7 +47,7 @@ def get_ys(data_frame):
 
 def save_model(model, name):
     for i, booster in enumerate(model.boosters):
-        booster.save_model(path.join('..', 'input', 'titanic-model', f'{name}-{i}.txt'))
+        booster.save_model(path.join('titanic-model', f'{name}-{i}.txt'))
 
 
 data_frame = add_features(pd.read_csv(path.join('..', 'input', 'titanic', 'train.csv')))
@@ -73,9 +74,11 @@ params = {
 cv_result = lgb.cv(params, lgb.Dataset(xs, label=ys), num_boost_round=1000, return_cvbooster=True)
 model = cv_result['cvbooster']
 
+os.makedirs('titanic-model', exist_ok=True)
+
 save_model(model, 'model')
 
-with open(path.join('..', 'input', 'titanic-model', 'categorical-features.pickle'), mode='wb') as f:
+with open(path.join('titanic-model', 'categorical-features.pickle'), mode='wb') as f:
     pickle.dump(categorical_features, f)
 
 plot.plot(cv_result['binary_logloss-mean'])
