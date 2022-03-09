@@ -63,13 +63,13 @@ def load_categorical_features():
         return pickle.load(f)
 
 
+model = load_model('model')
+categorical_features = load_categorical_features()
+
 data_frame = add_features(pd.read_csv(path.join('..', 'input', 'titanic', 'test.csv')))
 data_frame['Fare'] = data_frame['Fare'].fillna(data_frame['Fare'].mean())  # train.csvにはないけど、test.csvのFareにはNaNがある。。。
 
-categorical_features = load_categorical_features()
-
 xs = get_xs(data_frame, categorical_features)
-model = load_model('model')
 
 submission = pd.DataFrame({'PassengerId': data_frame['PassengerId'], 'Survived': (np.mean(model.predict(xs), axis=0) >= 0.5).astype(np.int32)})
 submission.to_csv('submission.csv', index=False)

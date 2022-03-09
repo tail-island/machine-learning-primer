@@ -51,6 +51,11 @@ def save_model(model, name):
         booster.save_model(path.join('titanic-model', f'{name}-{i}.txt'))
 
 
+def save_categorical_features(categorical_features):
+    with open(path.join('titanic-model', 'categorical-features.pickle'), mode='wb') as f:
+        pickle.dump(categorical_features, f)
+
+
 data_frame = add_features(pd.read_csv(path.join('..', 'input', 'titanic', 'train.csv')))
 categorical_features = get_categorical_features(data_frame)
 
@@ -79,9 +84,7 @@ model = cv_result['cvbooster']
 os.makedirs('titanic-model', exist_ok=True)
 
 save_model(model, 'model')
-
-with open(path.join('titanic-model', 'categorical-features.pickle'), mode='wb') as f:
-    pickle.dump(categorical_features, f)
+save_categorical_features(categorical_features)
 
 plot.plot(cv_result['binary_logloss-mean'])
 plot.show()
