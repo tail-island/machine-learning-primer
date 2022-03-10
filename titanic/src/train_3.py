@@ -14,15 +14,15 @@ def add_features(data_frame):
         return title_series
 
     data_frame['Title'] = reduce(lambda title_series, params: add_title(title_series, data_frame['Name'], *params),
-                                 ((0, ('Mr.',)),
+                                 ((0, ('Mr.', 'Dr.', 'Rev.', 'Don.', 'Col.', 'Major.', 'Capt.')),
                                   (1, ('Master.',)),
                                   (2, ('Mrs.', 'Mme.', 'Ms.')),
-                                  (3, ('Miss.',)),
-                                  (4, ('Dr.', 'Rev.', 'Don.')),
-                                  (5, ('Col.', 'Major.', 'Capt.'))),
+                                  (3, ('Miss.',))),
                                  pd.Series(repeat(np.nan, len(data_frame['Name'])), dtype='object'))
 
     data_frame['FamilySize'] = data_frame['SibSp'] + data_frame['Parch']
+
+    data_frame['FareUnitPrice'] = data_frame['Fare'] / data_frame['FamilySize']
 
     return data_frame
 
@@ -36,7 +36,7 @@ def get_xs(data_frame, categorical_features):
         # data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。
         data_frame[feature] = data_frame[feature].map({**mapping, **{np.nan: -1}}).astype('category')
 
-    return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Title', 'FamilySize']]
+    return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Title', 'FamilySize', 'FareUnitPrice']]
 
 
 def get_ys(data_frame):
