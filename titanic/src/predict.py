@@ -61,7 +61,7 @@ def load_model(name):
 
     base_path = '.' if not is_kaggle_notebook() else path.join('..', 'input')  # KaggleのnotebookのDatasetは../inputに展開されます。。。
 
-    for file in sorted(glob(path.join(base_path, 'titanic-model', f'{name}-*.txt'))):  # 交差検証法を使用しているので、複数のモデルが生成されます。
+    for file in sorted(glob(path.join(base_path, 'titanic-model', f'{name}-*.txt'))):  # 交差検証なので、複数のモデルが生成されます。
         result.boosters.append(lgb.Booster(model_file=file))
 
     return result

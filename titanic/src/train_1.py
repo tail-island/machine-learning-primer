@@ -52,7 +52,7 @@ params = {
     'force_col_wise': True  # 警告を消すために付けました。
 }
 
-# 交差検証法を使用して、機械学習します。
+# 交差検証で機械学習します。
 cv_result = lgb.cv(params, lgb.Dataset(train_xs, label=train_ys), return_cvbooster=True)
 model = cv_result['cvbooster']
 

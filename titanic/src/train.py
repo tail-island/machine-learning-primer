@@ -58,7 +58,7 @@ def get_ys(data_frame):
 
 # 機械学習モデルを保存します。
 def save_model(model, name):
-    for i, booster in enumerate(model.boosters):  # 交差検証法を使用しているので、複数のモデルが生成されます。
+    for i, booster in enumerate(model.boosters):  # 交差検証なので、複数のモデルが生成されます。
         booster.save_model(path.join('titanic-model', f'{name}-{i}.txt'))
 
 
@@ -92,7 +92,7 @@ params = {
     'learning_rate': 0.01
 }
 
-# 交差検証法を使用して、機械学習します。
+# 交差検証法で機械学習します。
 cv_result = lgb.cv(params, lgb.Dataset(xs, label=ys), num_boost_round=1000, return_cvbooster=True)
 model = cv_result['cvbooster']
 

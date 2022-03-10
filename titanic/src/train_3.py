@@ -68,7 +68,7 @@ params = {
     'force_col_wise': True  # 警告を消すために付けました。
 }
 
-# 交差検証法を使用して、ハイパー・パラメーター・チューニングをします。
+# 交差検証でハイパー・パラメーター・チューニングをします。
 tuner = lgb.LightGBMTunerCV(params, lgb.Dataset(xs, label=ys), return_cvbooster=True, optuna_seed=0)
 cv_result = tuner.run()
 model = tuner.get_best_booster()
