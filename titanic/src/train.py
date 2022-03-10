@@ -79,7 +79,6 @@ ys = get_ys(data_frame)
 # LightGBMのパラメーターを作成します。Optunaが作成したパラメーター（+ learning_rate）を使用します。
 params = {
     'objective': 'binary',
-    'metric': 'binary_logloss',
     'force_col_wise': True,
     'feature_pre_filter': False,
     'lambda_l1': 1.4361833756015463,

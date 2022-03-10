@@ -74,22 +74,21 @@ def get_ys(data_frame):
 data_frame = add_features(pd.read_csv(path.join('..', 'input', 'titanic', 'train.csv')))
 categorical_features = get_categorical_features(data_frame)
 
-# 予測用のデータを取得します。
+# データセットを取得します。
 xs = get_xs(data_frame, categorical_features)
 ys = get_ys(data_frame)
 
-# 訓練データを取得します。
+# 訓練データセットを取得します。
 train_xs = xs[200:]
 train_ys = ys[200:]
 
-# 検証データを取得します。test.csvを使ってKaggleに問い合わせる方式は、面倒な上に数をこなせないためです。
+# 検証データセットを取得します。test.csvを使ってKaggleに問い合わせる方式は、面倒な上に数をこなせないためです。
 valid_xs = xs[:200]
 valid_ys = ys[:200]
 
 # LightGBMのパラメーターを作成します。
 params = {
     'objective': 'binary',  # 2値分類。
-    'metric': 'binary_logloss',  # 2値分類の場合は、binary_loglossかauc。
     'force_col_wise': True  # 警告を消すために付けました。
 }
 

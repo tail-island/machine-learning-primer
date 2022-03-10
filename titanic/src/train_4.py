@@ -74,7 +74,6 @@ valid_ys = ys[:200]
 # LightGBMのパラメーターを作成します。Optunaが作成したパラメーターを使用します。
 params = {
     'objective': 'binary',
-    'metric': 'binary_logloss',
     'force_col_wise': True,
     'feature_pre_filter': False,
     'lambda_l1': 1.4361833756015463,

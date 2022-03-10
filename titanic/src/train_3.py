@@ -63,8 +63,7 @@ ys = get_ys(data_frame)
 
 # LightGBMのパラメーターを作成します。
 params = {
-    'objective': 'binary',
-    'metric': 'binary_logloss',
+    'objective': 'binary',  # 2値分類。
     'force_col_wise': True  # 警告を消すために付けました。
 }
 
