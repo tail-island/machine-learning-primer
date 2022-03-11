@@ -57,7 +57,7 @@ def get_ys(data_frame):
 data_frame = add_features(pd.read_csv(path.join('..', 'input', 'titanic', 'train.csv')))
 categorical_features = get_categorical_features(data_frame)
 
-# 予測用のデータを取得します。Optunaを信用しているので検証は不要と考え、検証データは作成しません。データ量が多い方が正確なハイパー・パラメーターになりますし。
+# データセットを取得します。Optunaを信用しているので検証は不要と考え、検証データは作成しません。データ量が多い方が正確なハイパー・パラメーターになりますし。
 xs = get_xs(data_frame, categorical_features)
 ys = get_ys(data_frame)
 
@@ -72,9 +72,8 @@ tuner = lgb.LightGBMTunerCV(params, lgb.Dataset(xs, label=ys), return_cvbooster=
 cv_result = tuner.run()
 model = tuner.get_best_booster()
 
-# 各特長量の重要性を出力します。
-for booster in model.boosters:
-    print(pd.DataFrame({'feature': booster.feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
+# 特長量の重要性を出力します。
+print(pd.DataFrame({'feature': model.boosters[0].feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
 
 # ハイパー・パラメーターを出力します。
 print(tuner.best_params)
