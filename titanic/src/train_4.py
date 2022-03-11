@@ -9,7 +9,7 @@ from funcy import count, repeat
 from sklearn.metrics import accuracy_score
 
 
-# 特長量を追加します。
+# 特徴量を追加します。
 def add_features(data_frame):
     # 肩書追加用の補助関数。
     def add_title(title_series, name_series, id, titles):
@@ -34,14 +34,14 @@ def add_features(data_frame):
     return data_frame
 
 
-# カテゴリ型の特長量を、どの数値に変換するかのdictを取得します。
+# カテゴリ型の特徴量を、どの数値に変換するかのdictを取得します。
 def get_categorical_features(data_frame):
     return dict(map(lambda feature: (feature, dict(zip(data_frame[feature].factorize()[1], count()))), ('Sex', 'Embarked', 'Title')))
 
 
 # データを取得します。
 def get_xs(data_frame, categorical_features):
-    # カテゴリ型の特長量を、数値に変換します。
+    # カテゴリ型の特徴量を、数値に変換します。
     for feature, mapping in categorical_features.items():
         # data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。
         data_frame[feature] = data_frame[feature].map({**mapping, **{np.nan: -1}}).astype('category')
@@ -89,7 +89,7 @@ params = {
 cv_result = lgb.cv(params, lgb.Dataset(train_xs, label=train_ys), return_cvbooster=True)
 model = cv_result['cvbooster']
 
-# 特長量の重要性を出力します。
+# 特徴量の重要性を出力します。
 print(pd.DataFrame({'feature': model.boosters[0].feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
 
 # 精度を出力します。

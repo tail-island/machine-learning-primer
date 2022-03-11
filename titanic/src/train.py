@@ -72,7 +72,7 @@ def save_categorical_features(categorical_features):
 data_frame = add_features(pd.read_csv(path.join('..', 'input', 'titanic', 'train.csv')))
 categorical_features = get_categorical_features(data_frame)
 
-# 予測用のデータを取得します。できるだけ精度を上げたいので、すべてのデータを使用して機械学習します。
+# データセットを取得します。できるだけ精度を上げたいので、すべてのデータを使用して機械学習します。
 xs = get_xs(data_frame, categorical_features)
 ys = get_ys(data_frame)
 
