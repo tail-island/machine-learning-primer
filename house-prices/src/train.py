@@ -27,7 +27,7 @@ model = cv_result['cvbooster']
 
 print(pd.DataFrame({'feature': model.boosters[0].feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False).head(n=20))
 
-# 精度を出力します。
+# スコアを出力します。
 print(f'Score = {np.sqrt(mean_squared_error(np.log(valid_ys), np.log(np.mean(model.predict(valid_xs), axis=0))))}')
 
 # 学習曲線を出力します。
