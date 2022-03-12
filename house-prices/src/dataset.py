@@ -160,13 +160,3 @@ def get_xs(data_frame, categorical_features):
 
 def get_ys(data_frame):
     return data_frame['SalePrice']
-
-
-if __name__ == '__main__':
-    data_frame = get_test_data_frame()
-    categorical_features = get_categorical_features(get_train_data_frame())
-
-    xs = get_xs(data_frame, categorical_features)
-
-    print(xs.info())
-    print(xs)
