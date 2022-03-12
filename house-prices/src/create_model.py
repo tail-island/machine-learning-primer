@@ -15,7 +15,7 @@ ys = get_ys(data_frame)
 
 params = load_params() | {'learning_rate': 0.01}
 
-cv_result = lgb.cv(params, lgb.Dataset(xs, label=ys), return_cvbooster=True, num_boost_round=1000)
+cv_result = lgb.cv(params, lgb.Dataset(xs, label=ys), return_cvbooster=True, num_boost_round=2000)
 model = cv_result['cvbooster']
 
 print(pd.DataFrame({'feature': model.boosters[0].feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False).head(n=20))

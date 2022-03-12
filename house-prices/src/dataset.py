@@ -1,4 +1,3 @@
-import numpy as np
 import pandas as pd
 import os.path as path
 
@@ -22,13 +21,13 @@ def convert_to_number(data_frame):
                                      repeat(('Fin', 'RFn', 'Unf'))),
                                  zip(('Fence',),
                                      repeat(('GdPrv', 'MnPrv', 'GdWo', 'MnWw')))):
-        data_frame[feature] = data_frame[feature].map(dict(zip(names, count(len(names), -1)))).fillna(0).astype('int')
+        data_frame[feature] = data_frame[feature].map(dict(zip(names, count(len(names) - 1, -1)))).fillna(-1).astype('int')
 
     return data_frame
 
 
 def add_features(data_frame):
-    data_frame['TotalSF'] = data_frame['TotalBsmtSF'] + data_frame['1stFlrSF'] + data_frame['2ndFlrSF']
+    data_frame['TotalSF'] = data_frame['TotalBsmtSF'] + data_frame['1stFlrSF'] + data_frame['2ndFlrSF']  # 3階建てはない？
     data_frame['SFPerRoom'] = data_frame['TotalSF'] / data_frame['TotRmsAbvGrd']
 
     return data_frame
