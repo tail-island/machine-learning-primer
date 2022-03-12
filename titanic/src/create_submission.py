@@ -43,8 +43,7 @@ def get_categorical_features(data_frame):
 def get_xs(data_frame, categorical_features):
     # カテゴリ型の特長量を、数値に変換します。
     for feature, mapping in categorical_features.items():
-        # data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。
-        data_frame[feature] = data_frame[feature].map({**mapping, **{np.nan: -1}}).astype('category')
+        data_frame[feature] = data_frame[feature].map(mapping).fillna(-1).astype('category')
 
     # 予測に使用するカラムだけを抽出します。NameとTicketは関係なさそうなので無視、Cabinは欠損地が多いので無視しました。
     return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Title', 'FamilySize', 'FareUnitPrice']]
@@ -56,12 +55,12 @@ def is_kaggle_notebook():
 
 
 # モデルをロードします。
-def load_model(name):
+def load_model():
     result = lgb.CVBooster()
 
     base_path = '.' if not is_kaggle_notebook() else path.join('..', 'input')  # KaggleのnotebookのDatasetは../inputに展開されます。。。
 
-    for file in sorted(glob(path.join(base_path, 'titanic-model', f'{name}-*.txt'))):  # 交差検証なので、複数のモデルが生成されます。
+    for file in sorted(glob(path.join(base_path, 'titanic-model', 'model-*.txt'))):  # 交差検証なので、複数のモデルが生成されます。
         result.boosters.append(lgb.Booster(model_file=file))
 
     return result
@@ -76,7 +75,7 @@ def load_categorical_features():
 
 
 # モデルをロードします。
-model = load_model('model')
+model = load_model()
 categorical_features = load_categorical_features()
 
 # データを読み込んで、前準備をします。

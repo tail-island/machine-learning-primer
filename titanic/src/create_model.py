@@ -44,8 +44,7 @@ def get_categorical_features(data_frame):
 def get_xs(data_frame, categorical_features):
     # カテゴリ型の特長量を、数値に変換します。
     for feature, mapping in categorical_features.items():
-        # data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。
-        data_frame[feature] = data_frame[feature].map({**mapping, **{np.nan: -1}}).astype('category')
+        data_frame[feature] = data_frame[feature].map(mapping).fillna(-1).astype('category')
 
     # 予測に使用するカラムだけを抽出します。NameとTicketは関係なさそうなので無視、Cabinは欠損地が多いので無視しました。
     return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Title', 'FamilySize', 'FareUnitPrice']]
@@ -57,9 +56,9 @@ def get_ys(data_frame):
 
 
 # 機械学習モデルを保存します。
-def save_model(model, name):
+def save_model(model):
     for i, booster in enumerate(model.boosters):  # 交差検証なので、複数のモデルが生成されます。
-        booster.save_model(path.join('titanic-model', f'{name}-{i}.txt'))
+        booster.save_model(path.join('titanic-model', f'model-{i}.txt'))
 
 
 # カテゴリ型の特長量を、どの数値に変換するかのdictを保存します。
@@ -99,7 +98,7 @@ model = cv_result['cvbooster']
 os.makedirs('titanic-model', exist_ok=True)
 
 # モデルを保存します。
-save_model(model, 'model')
+save_model(model)
 save_categorical_features(categorical_features)
 
 # 学習曲線を出力します。
