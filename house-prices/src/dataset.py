@@ -4,6 +4,7 @@ import os.path as path
 from funcy import concat, count, repeat
 
 
+# 大小関係がある文字列の特長量を数値に変換します。
 def convert_to_number(data_frame):
     for feature, names in concat(zip(('Utilities',),
                                      repeat(('AllPub', 'NoSewr', 'NoSeWa', 'ELO'))),
@@ -26,6 +27,7 @@ def convert_to_number(data_frame):
     return data_frame
 
 
+# 特徴量エンジニアリングで、特徴量を追加します。
 def add_features(data_frame):
     data_frame['TotalSF'] = data_frame['TotalBsmtSF'] + data_frame['1stFlrSF'] + data_frame['2ndFlrSF']  # 3階建てはない？
     data_frame['SFPerRoom'] = data_frame['TotalSF'] / data_frame['TotRmsAbvGrd']
@@ -33,14 +35,17 @@ def add_features(data_frame):
     return data_frame
 
 
+# 訓練用のDataFrameを読み込みます。
 def get_train_data_frame():
     return add_features(convert_to_number(pd.read_csv(path.join('..', 'input', 'house-prices-advanced-regression-techniques', 'train.csv'))))
 
 
+# テスト用のDataFrameを読み込みます。
 def get_test_data_frame():
     return add_features(convert_to_number(pd.read_csv(path.join('..', 'input', 'house-prices-advanced-regression-techniques', 'test.csv'))))
 
 
+# カテゴリーの特長量を変換します。
 def get_categorical_features(data_frame):
     return dict(map(lambda feature: (feature, dict(zip(data_frame[feature].factorize()[1], count()))),
                     ('MSZoning',
@@ -70,6 +75,7 @@ def get_categorical_features(data_frame):
                      'SaleCondition')))
 
 
+# 入力データを読み込みます。
 def get_xs(data_frame, categorical_features):
     for feature, mapping in categorical_features.items():
         data_frame[feature] = data_frame[feature].map(mapping).fillna(-1).astype('category')
@@ -157,5 +163,6 @@ def get_xs(data_frame, categorical_features):
                        'SFPerRoom']]
 
 
+# 正解データを読み込みます。
 def get_ys(data_frame):
     return data_frame['SalePrice']
