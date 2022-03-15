@@ -1018,8 +1018,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a h
 <span id="cb19-80"><a href="#cb19-80" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tuner.best_params)</span></code></pre></div>
 <p>一目見て分かるように、ほとんどコードは変わりません。<code>cv()</code>じゃなくて<code>train()</code>する場合であれば、<code>import lightgbm as lgb</code>を<code>import optuna.integration.lightgbm as lgb</code>に変えるだけという楽ちん仕様です。<code>cv()</code>の場合でも、上のコードを参考に<code>LightGBMTunerCV</code>を使うように修正するだけでオッケー。</p>
 <p>たったこれだけで、ハイパー・パラメーター・チューニングは終了です。このプログラムの実行にはちょっと時間がかかりますけど、手でハイパー・パラメーター・チューニングするより速いし、なにより楽ちんです。</p>
-<h2
-id="特徴量エンジニアリングとハイパーパラメーターチューニングの成果を確認する">特徴量エンジニアリングとハイパー・パラメーター・チューニングの成果を確認する</h2>
+<h2 id="成果を確認する">成果を確認する</h2>
 <p>これまでの成果を確認してみましょう。2つ前の特徴量エンジニアリングのコードに、Optunaが作成したパラメーターを埋め込みます。</p>
 <div class="sourceCode" id="cb20"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
@@ -1256,7 +1255,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a h
 <p>で、<code>learning_rate</code>を下げた分だけ学習が遅くなりますから、エポック数に相当する<code>num_boost_round</code>（<code>cv()</code>の引数です）の値を大きくしています。</p>
 <p>あとは、交差検証なので複数のモデルが作られるのでそれらを全部保存することと、カテゴリーの特徴量を数値化するための情報も帆損しなければなりません。それ以外は、少しでも精度を上げるために検証データを作らずにすべてのデータで学習しているくらいかな。</p>
 <p>あ、今回はKaggleのnotebookで実行しやすいようにモジュール化していませんけど、モジュール化すればもっとシンプルなコードにできます。実案件ではモジュール化してみてください。</p>
-<h2 id="予測モデルで予測する">予測モデルで予測する</h2>
+<h2 id="解答を作成する">解答を作成する</h2>
 <p>実際のシステムでは本番環境で動く部分に相当する、予測をするプログラムを作ります。保存された予測モデルをロードして、test.csvを使用して予測をしてKaggle提出量のCSVファイルを作成します。</p>
 <div class="sourceCode" id="cb23"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
@@ -1363,7 +1362,7 @@ alt="Titanicのスコアのヒストグラム" /></p>
 <p>続いて、やはりKaggleのGetting Startedの<a
 href="https://www.kaggle.com/c/house-prices-advanced-regression-techniques">House
 Prices</a>をやってみましょう。今度は回帰分析です。あと、Titanicではやらなかったモジュール化でやります。KaggleのNotebookで動かすのは少し大変かもしれませんけど気にしない方向で。</p>
-<h2 id="データセット">データセット</h2>
+<h2 id="データセットを取得する">データセットを取得する</h2>
 <p>データセットを取得するモジュールを作成します。</p>
 <div class="sourceCode" id="cb24"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -1539,7 +1538,7 @@ Startedにこんなに特徴量が多い問題があるのかというと、統�
 <p>で、日本人ならば5段階評価にするところを、なんでか欧米人は文字で表現する場合があるんですよね……。たとえば、Excellent、Good、Average、Typical、Fair、Poorとか。これを数値に変換する<code>convert_to_number</code>関数を作成しました。Funcyを使うと関数型プログラミングできるので楽ちんです（関数型プログラミングに慣れていないと読みづらいかもしれませんけど……）。で、データを見たところ最低点未満の場合にNaNになっているみたいだったので、NaNを最低値の-1で埋める処理もしています。</p>
 <p>あと、上のコードでは特長量エンジニアリングの結果の<code>TotalSF</code>（総床面積）と<code>SFPerRoom</code>（部屋単位の床面積）を追加されていますけど、これは作成後に特徴量エンジニアリングして精度を検証してを繰り返した際に作成したもので、このコードを最初に作成したときにはもちろんなかったことに注意してください。</p>
 <p>他は、特に工夫なしです。Titanicの時のコードを切り貼りして作成しました。</p>
-<h2 id="モデルの保存と読み込み">モデルの保存と読み込み</h2>
+<h2 id="モデルを保存して読み込む">モデルを保存して読み込む</h2>
 <p>今回はローカルで作業していますので、作業中に出来た成果物をストレージに保存したり読み込んだりできます。そこで、モデルの保存と読み込み用のモジュールも作成しました。</p>
 <div class="sourceCode" id="cb25"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
@@ -1627,7 +1626,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a h
 <span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを保存します。</span></span>
 <span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a>save_params(tuner.best_params)</span></code></pre></div>
 <p>今回は回帰なので、<code>objective</code>に<code>regression</code>を指定しています。LightGBMで機械学習するだけならこれだけでも大丈夫なのですけど、Optunaでエラーが出たので<code>metric</code>に<code>regression</code>の場合のデフォルト値である<code>l2</code>を指定しました。</p>
-<h2 id="精度を確認">精度を確認</h2>
+<h2
+id="特徴量エンジニアリングして精度を確認する">特徴量エンジニアリングして、精度を確認する</h2>
 <p>特徴量エンジニアリングは、特徴量を追加して精度を確認するという作業を繰り返さなければなりませんので、精度を確認するためのモジュールも作成します。</p>
 <div class="sourceCode" id="cb27"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
@@ -1672,9 +1672,9 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a h
 <span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 学習曲線を出力します。</span></span>
 <span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a>plot.plot(cv_result[<span class="st">&#39;l2-mean&#39;</span>])</span>
 <span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div>
-<p>特徴量エンジニアリングでデータセットのモジュールを修正したら、このモジュールを実行するわけですね。で、ずっと特徴量エンジニアリングしていると疲れちゃうので、そんな時にはハイパー・パラメーター・チューニングのモジュールを実行してOptunaが新しいハイパー・パラメーターを作成してくれるまで休憩する感じです。</p>
-<h2 id="モデル作成">モデル作成</h2>
-<p>特徴量エンジニアリングが完了したら、モデルを作成します。</p>
+<p>特徴量エンジニアリングでデータセットのモジュールを修正したら、このモジュールを実行して成果を確認するわけですね。で、ずっと特徴量エンジニアリングしていると疲れちゃうので、そんな時にはハイパー・パラメーター・チューニングのモジュールを実行してOptunaが新しいハイパー・パラメーターを作成してくれるまで休憩する感じで作業しました。</p>
+<h2 id="予測モデルを作成する-1">予測モデルを作成する</h2>
+<p>特徴量エンジニアリングが完了したら、予測モデルを作成します。</p>
 <div class="sourceCode" id="cb28"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
@@ -1710,8 +1710,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a h
 <span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを保存します。</span></span>
 <span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>save_model(model)</span>
 <span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>save_categorical_features(categorical_features)</span></code></pre></div>
-<p>今回はモジュール化をしましたので、Titanicの時と比べてコードは単純です。説明する場所がない……。</p>
-<h2 id="解答作成">解答作成</h2>
+<p>今回はモジュール化をしましたので、Titanicの時と比べてコードは単純です。説明する場所がなくて困っちゃう。</p>
+<h2 id="解答を作成する-1">解答を作成する</h2>
 <p>保存したモデルを使用して、解答を作成します。</p>
 <div class="sourceCode" id="cb29"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -1732,7 +1732,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a h
 <span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 提出量のCSVを作成します。</span></span>
 <span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>submission <span class="op">=</span> pd.DataFrame({<span class="st">&#39;Id&#39;</span>: data_frame[<span class="st">&#39;Id&#39;</span>], <span class="st">&#39;SalePrice&#39;</span>: np.mean(model.predict(xs), axis<span class="op">=</span><span class="dv">0</span>)})</span>
 <span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>submission.to_csv(<span class="st">&#39;submission.csv&#39;</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
-<p>これですべての作業が完了しましたから、Kaggleに提出してみます。スコアは0.12238で329位でした。</p>
+<p>これですべての作業が完了しましたから、Kaggleに提出してみましょう。スコアは、0.12238で329位でした。</p>
 <p><img src="./image/score-histgram-house-prices.png"
 alt="House Pricesのスコアのヒストグラム" /></p>
 <p>うん、そこそこ上位ですね（House
