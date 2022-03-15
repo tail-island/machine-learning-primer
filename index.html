@@ -1533,7 +1533,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a h
 <span id="cb24-166"><a href="#cb24-166" aria-hidden="true" tabindex="-1"></a><span class="co"># 正解データを読み込みます。</span></span>
 <span id="cb24-167"><a href="#cb24-167" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
 <span id="cb24-168"><a href="#cb24-168" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;SalePrice&#39;</span>]</span></code></pre></div>
-<p>House Pricesは特徴量の数が多くて大変でした……。なんでGetting
+<p>House
+Pricesは特徴量の数が多くて大変でした……。なんで初心者向けのGetting
 Startedにこんなに特徴量が多い問題があるのかというと、統計的な数値演算で予測する場合向けに、予測に役立つ特徴量を取捨選択する手法を学ぶためだと思うんですよ。でも、我々は勾配ブースティングで決定木なので、取捨選択は機械学習が勝手にやってくれます。というわけで、全部の特徴量を使用してやりました。</p>
 <p>で、日本人ならば5段階評価にするところを、なんでか欧米人は文字で表現する場合があるんですよね……。たとえば、Excellent、Good、Average、Typical、Fair、Poorとか。これを数値に変換する<code>convert_to_number</code>関数を作成しました。Funcyを使うと関数型プログラミングできるので楽ちんです（関数型プログラミングに慣れていないと読みづらいかもしれませんけど……）。で、データを見たところ最低点未満の場合にNaNになっているみたいだったので、NaNを最低値の-1で埋める処理もしています。</p>
 <p>あと、上のコードでは特長量エンジニアリングの結果の<code>TotalSF</code>（総床面積）と<code>SFPerRoom</code>（部屋単位の床面積）を追加されていますけど、これは作成後に特徴量エンジニアリングして精度を検証してを繰り返した際に作成したもので、このコードを最初に作成したときにはもちろんなかったことに注意してください。</p>
