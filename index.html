@@ -1122,7 +1122,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a h
 <span id="cb20-99"><a href="#cb20-99" aria-hidden="true" tabindex="-1"></a><span class="co"># 学習曲線を出力します。</span></span>
 <span id="cb20-100"><a href="#cb20-100" aria-hidden="true" tabindex="-1"></a>plot.plot(cv_result[<span class="st">&#39;binary_logloss-mean&#39;</span>])</span>
 <span id="cb20-101"><a href="#cb20-101" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div>
-<p>精度は、0.81→0.82になりました。　まぁ精度は誤差の気もしますけど、学習曲線がとてもきれいになっていてとても嬉しい！</p>
+<p>精度は、0.81→0.82になりました。まぁ精度は誤差の気もしますけど、学習曲線がとてもきれいになったのがとにかく嬉しい！</p>
 <p><img src="./image/learning-curve-titanic-4.png" alt="学習曲線" /></p>
 <p>過学習を防ぐ方法は、よりシンプルな機械学習モデルを作るか、データ量を増やすかになります（パラメーターを正則化するというのもありますけど）。で、Optunaが絶妙なシンプル具合になるハイパー・パラメーターを作成してくれたので、過学習しない学習曲線になったというわけです。</p>
 <p>さて、ここまで話がとんとん拍子に進んだように書いてきましたけど、実際は、こんなにうまくは進みません。特徴量エンジニアリングで精度が上がっても、ハイパー・パラメーター・チューニングで特徴量の扱われ方が変わって効果が微妙になったりね。なので実際は、とりあえず特徴量エンジニアリング→Optunaでハイパー・パラメーター・チューニング→チューニングされたハイパー・パラメーターを使用してひたすら特徴量エンジニアリング（ときどきはハイパー・パラメーター・チューニングもやり直す）という感じになります。</p>
