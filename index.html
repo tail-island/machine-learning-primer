@@ -643,17 +643,14 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb14-1"><a h
 <p>この<code>KMeans</code>にはK-meansというクラスタリングの手法が実装されていて、これは、データ間の距離を使用してグループを作成します。平面での距離は<code>sqrt(x ** 2 + y ** 2)</code>で計算できるわけですけど、これ、3次元でも<code>sqrt(x ** 2 + y ** 2 + z ** 2)</code>でほぼ同じ。そして、4次元以上でも同様に計算できるらしいんですよ。ということは、複数の数値が入った配列と同じ数の数値が入った配列を、多次元空間上の座標だと考えて距離を計算することができるわけ。K-meansでは、この距離が近いものをグルーピングしていきます。</p>
 <p>で、<code>fit_pred()</code>の出力を使用してクラスタにどんなデータが含まれているのかを確認して、いろいろ考えて、考えた結果をビジネスに役立てたりしていきます。私はプログラマーでビジネス・パーソンじゃないので、具体的にどうやるかは分からないので詳しい話はごめんなさい省略で。</p>
 <p>ともあれ、クラスタリングもとても簡単でした。手持ちのデータをクラスタリングでグループ分けしてみたら面白そう。</p>
-<h1 id="機械学習の手法の選択">機械学習の手法の選択</h1>
+<h1 id="機械学習の手法選択">機械学習の手法選択</h1>
 <p>本稿では、これまで線形回帰、決定木、ランダム・フォレスト、K-meansといういくつかの手法を使用してきました。実は機械学習にはこれ以外にもたくさんの手法があって、それを使い分けなければならない……のは大変すぎるので、私が手法選択に使用しているルールを疑似コードで示しましょう。</p>
 <div class="sourceCode" id="cb15"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (テーブル・データではない <span class="kw">and</span></span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    大量のデータを用意できる <span class="kw">and</span></span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    (そこそこ高性能なGPUを使える <span class="kw">or</span></span>
-<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>     潤沢なクラウド予算がある)):</span>
-<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> 深層学習</span>
-<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
-<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> 勾配ブースティング</span></code></pre></div>
-<p>……ごめんなさい。実は私は普段は線形回帰とかやってません。なんでかというと、私は統計の人じゃなくて機械学習の人だからです。</p>
+class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> 大量のデータを用意できる <span class="kw">and</span> (そこそこ高性能なGPUを使える <span class="kw">or</span> 潤沢なクラウド予算がある) <span class="kw">and</span> テーブル・データではない:</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> 深層学習</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> 勾配ブースティング</span></code></pre></div>
+<p>……ごめんなさい。実は私は普段は線形回帰とか全くやってません。なんでかというと、私は統計の人じゃなくて機械学習の人だから。</p>
 <h2 id="統計と機械学習">統計と機械学習</h2>
 <p>統計と機械学習って同じ道具を使うことも多くて似ているのですけど、目的が異なります。統計は「説明」を目的とし、機械学習は「予測」を目的とします。気温とアイスクリームの売り上げには関係があるのか、関係があるのであればどのような関係なのかを考えるのが統計で、どんな関係なのかは重視しないで予測の精度を高めることにひたすら注力するのが機械学習なんです。</p>
 <p>統計をしたいのであれば、データの関係を明らかにしたいですから、モデルはできるだけ単純な方が良い。シンプルなモデルの方が関係が分かりやすいですもんね。だから、データに合致する範囲で、できるだけシンプルなモデルを構築します。だから、まずは線形回帰で関係があるかを調べようとなります。</p>
@@ -662,53 +659,1153 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb15-1"><a h
 learning）と勾配ブースティング（gradient
 boosting）しか使わないんですな。</p>
 <h2 id="深層学習の弱点">深層学習の弱点</h2>
-<p>いやいや精度ならば深層学習一択という反論が聞こえてきそうですけど、深層学習って弱点も多いと思うんですよ。</p>
-<p>深層学習は脳の構造を模した手法とかよく言われますけど、今どきの深層学習モデルは脳のどこかを模しているわけではありません。独自に進化して、脳とはあまり関係ないものになっているんじゃないかと。</p>
+<p>いや精度第一ならば深層学習一択だろうという反論が聞こえてきそうですけど、深層学習って弱点も多いと思うんですよ。</p>
+<p>その深層学習は、脳の構造を模した手法とかよく言われますけど、今どきの深層学習モデルは脳のどこかを模しているわけではありません。独自に進化した結果、脳とはあまり関係なくなっています。</p>
 <p>ぶっちゃけて言えば、私は深層学習とは行列演算を大量に積み重ねたもので、その行列の各要素をパラメーターとする、異常に大量のパラメーターを使える機械学習の手法と認識しています。で、パラメーターが大量にあったら調整が大変に思えるのですけど、それは逆誤差伝播法（backprobagation）という適用可能な範囲は狭いけど効率が良い調整方式で対応しちゃう。あと、大量のパラメーターを使って計算するのは時間がかかりそうに思えるけど、それは行列の特性をイイ感じに活用した並列処理で対応しちゃう。</p>
+<p>ただね、いくら逆誤差伝播法が効率が良くても、深層学習の良さを出そうとしてパラメーターを大量に使用したなら、やっぱりパラメーターの調整は大変になります。この大変さは、「大量のデータが必要」という形になって我々を苦しめます。</p>
+<p>あと、行列の特性をイイ感じに活用した並列処理で高速化といっても、たとえば8コアのCPUだとハイパー・スレッディングを使用しても16並列でしか処理できません。膨大な数の並列処理が可能なGPU（Graphicd
+Processing Unit）やTPU（Tensor Processing
+Unit）が必要となります。そこそこ高性能なGPUを買うか、GPUやTPUを使用可能なクラウドを借りるかしなければならないわけで、とにかくお金がかかります。</p>
+<p>あと、深層学習ってのは、テーブル・データに弱いです。実は本稿の深層学習のところで述べるTransformerベースならそこそこいけるのですけど、少なくとも、他の機械学習の手法と比べて面倒が多い。画像処理や自然言語処理のような、深層学習以外では精度が出ないような場合以外、いわゆるテーブル・データ（表形式のデータ）の場合は深層学習以外の手法を試した方が良いんじゃないかな。</p>
+<p>まとめると、大量のデータが必要で、GPUやTPUが必要（ローカルでもクラウドでもよい）で、テーブル・データではいろいろ面倒な癖に明確なアドバンテージがないんです（最後のテーブル・データ云々という弱点は、近い将来になくなるかもしれませんけど……）。</p>
+<h2 id="機械学習の手法選択-1">機械学習の手法選択</h2>
+<p>というわけで、大量のデータを用意できないとか、GPUを持っていないしクラウド予算もないとか、テーブル・データであるとかの場合は、私は勾配ブースティングで機械学習することにしているというわけ。</p>
+<h1 id="lightgbmで勾配ブースティング">LightGBMで勾配ブースティング</h1>
+<p>というわけで、まずは勾配ブースティング（gradient
+boosting）しましょう。使用するライブラリは、LightGBMです。</p>
+<h2 id="勾配ブースティングとは">勾配ブースティングとは？</h2>
+<p>勾配ブースティングは、複数の決定木を使用して予測する機械学習の手法です。……って前にやったランダム・フォレストと同じじゃんと思ったかもしれませんけど、学習のさせ方がランダム・フォレストとは一味違うんです。</p>
+<h3 id="バギングとブースティング">バギングとブースティング</h3>
+<p>複数の予測器を使う方式はアンサンブル（Ensemble）と呼ぶのですけど、このアンサンブルの代表的な手法に、バギング（bagging）とブースティング（boosting）という2つの手法があります。</p>
+<p>そもそもね、まったく同じ思考をする人が3人集まっても同じ答えが3つ返ってくるだけですから、3人いても文殊の知恵は手に入りません。アンサンブルて予測の精度を上げるには、バラツキが必要なんですよ。ではどのようにバラツキを出すのかというと、今やっているのは機械学習なので、データセットを変えることでバラツキがでます。</p>
+<p>バギングでは、データセット全体からのサンプリング抽出で複数の異なるデータセットを作成します。サンプリングだからデータセットは異なるはずで、だから学習結果も異なるのでアンサンブルで予測精度が上がるはずという考え方なわけですな。</p>
+<p>でも、サンプリング結果って、そんなに違わないですよね？　日本全体からサンプリングで1万人集めた場合、たぶん男女比は日本全体とほぼ同じ。年齢構成だってそう。だから、あるサンプリング結果で学習してもうまく予測できないような問題は、たぶんあまり違わない他のサンプリング結果で学習してもうまく予測できない。</p>
+<p>だからサンプリング処理に介入しちゃおうというのがブースティング（boosting）。サンプリングしたデータセットで学習してとりあえず1つの予測器を作成し、その予測器でデータセット全体を予測して、正解したデータは少なめに、不正解だったデータは多めに選択されるように重みづけしてもう一度サンプリングします。その結果は1番目の予測器が苦手とする問題が多く含まれるわけで、だからそのデータセットで作成した2番目の予測器は1番目の予測器が苦手とする予測をうまくこなせるはず。これを繰り返していけば、最終的には、トータルで見れば弱点がない複数の予測器になるというわけ。</p>
+<p>こう考えると、ブースティングの精度の高さにうなづけるでしょ？　ただ、予測を間違える方が正しいような外れ値に引っ張られてしまったり、過学習してしまったりする危険性があります。でも精度が高いのでやめられないんですな。</p>
+<h3 id="で勾配とは">で、勾配とは？</h3>
+<p>……えっと、勾配（gradient）は勾配降下法の意味で、調整していくときの方法みたいです。なんかね、偏微分で勾配を求めてってやるらしいんですけど、私レベルでは欠片も理解できてない。</p>
+<p>でも大丈夫！　これまでだっていろいろな機械学習の手法でパラメーター調整のためにいろいろ数学の手法が使われていただろうけど、それらをやるのは機械学習ライブラリの役目でプログラマーの私の役割じゃなかったですもんね。勾配降下法でやるんだーというふわっとした理解で大丈夫じゃないかな。</p>
+<h3 id="勾配ブースティングとは-1">勾配ブースティングとは？</h3>
+<p>というわけで、勾配ブースティングは決定木をアンサンブルして予測する手法で、アンサンブル方法はバギングではなくてブースティングなので精度が高くて、あと、勾配降下法を使うので学習の効率が良い（と思う）な手法で、とにかくお勧めです。</p>
+<h2 id="lightgbmとは">LightGBMとは？</h2>
+<p>LightGBMは、マイクロソフト社が開発したオープン・ソースの勾配ブースティングのライブラリです。</p>
+<p>勾配ブースティングのライブラリはXGBoostとLightGBMが有名なのですけど、本稿ではLightGBMを使用します。今はあまり差がないみたいですけど、昔はLightGBMの方が圧倒的に速かったので大人気になって、そのまま今も利用者が多くて寄らば大樹の陰なのでLightGBMお勧めです。</p>
+<h1 id="お題はkaggleから">お題は、Kaggleから</h1>
+<p>使用する道具が決まったのでこれからLightGBMで機械学習していくわけですけど、毎回お題を用意するのは大変すぎて私が死んじゃう。あと、本稿の内容は機械学習の基本だけなので、読後に機械学習を実践してテクニックを学んでいく必要があるのだけど、高度なテクニックを紹介していくのも私では無理。なので、お題の提供と最強テクニックの提供を<a
+href="https://www.kaggle.com/">Kaggle</a>に丸投げしちゃいましょう。</p>
+<p>Kaggle（カグルと読みます）は、機械学習のコンペのサイトです。企業や政府が課題と賞金を出して、Kaggler（カグラーと読みます。Kaggleの参加者の意味です）が競争形式でその課題を解いていきます。</p>
+<p>競争なんてやりたくない、私はひっそり機械学習を学んでアルゴリズム作成で楽をしたいだけなんだ……という方にもKaggleは役に立ちます（実は、私は怖くてKaggleのコンペはやっていません）。Kaggleには練習用のコンペが用意されていますし、Codeに他の参加者が実際に動くコードで解説を投稿してくれますし、今競技中で戦っている最中なのに面白いことを思いついたKagglerがDiscussionにそのアイデアを書いてくれちゃいます。実践環境を提供してくれる上に、異常に能力が高い方々のアドバイスが盛りだくさんなのですから、機械学習の勉強が捗りまくります。</p>
+<p>……Kaggleは全部英語だけどな。でも大丈夫、英語ダメダメな私だけど、Chrome翻訳と<a
+href="https://www.deepl.com/ja/translator">DeepL</a>が私を助けてくれるはず！</p>
+<h1 id="勾配ブースティングで2値分類">勾配ブースティングで2値分類</h1>
+<p>というわけで、Kaggleからお題をもらってLightGBMで勾配ブースティングでクラス分類（2値分類ですが）をやりましょう。お題はKaggleが最初の挑戦としてお勧めしている<a
+href="https://www.kaggle.com/c/titanic">Titanic</a>にします。Titanicは、Kaggleのページの左側の\[Competitions\]をクリックして、[Getting
+Started]をクリックするとリスト表示される中に入っています。</p>
+<p>というわけで、Titanicを開いてデータをダウンロードして、本稿のソース・コードのtitanic/input/titanicに保存してください。データはtrain.csvとtest.csvに分かれていて、train.csvを使って機械学習して、test.csvを使って予測した結果で精度を競うわけですな。</p>
+<h2 id="まずは予測可能なのか調べる">まずは、予測可能なのか調べる</h2>
+<p>さて、今回はKaggleなので他の参加者のスコアを見れば予測が可能でそこそこの精度が出ることは一目瞭然なのですけど、実際の案件ではそもそも予測が可能なのか分からないことが稀によくあります。</p>
+<p>予測ができない理由としては、予測する内容とは無関係なデータしかない場合と、そもそも予測対象のランダム性が高すぎて予測が不可能な場合等があります。特に結果のランダム性が高い場合は辛くて、たとえば過去10回のサイコロの出目がこんな場合に次に出る目を予測するなんてのは、絶対に無理でしょ？</p>
+<p>で、いろいろデータを解析していけば予測が可能か分かるのでしょうけど、私はプログラマーなのでとりあえずプログラムを組んで調べています。こんな感じ。</p>
+<div class="sourceCode" id="cb16"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> count</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a><span class="co"># カテゴリ型の特徴量を、どの数値に変換するかのdictを取得します。</span></span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_categorical_features(data_frame):</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(<span class="bu">map</span>(<span class="kw">lambda</span> feature: (feature, <span class="bu">dict</span>(<span class="bu">zip</span>(data_frame[feature].factorize()[<span class="dv">1</span>], count()))), (<span class="st">&#39;Sex&#39;</span>, <span class="st">&#39;Embarked&#39;</span>)))  <span class="co"># factorize()で数値に変換することもできるのですけど、その方式は、実際に予測するときに使えない。。。</span></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame, categorical_features):</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># カテゴリ型の特徴量を、数値に変換します。</span></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> feature, mapping <span class="kw">in</span> categorical_features.items():</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>        <span class="co"># data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype(&#39;category&#39;)  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。</span></span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>        data_frame[feature] <span class="op">=</span> data_frame[feature].<span class="bu">map</span>({<span class="op">**</span>mapping, <span class="op">**</span>{np.nan: <span class="op">-</span><span class="dv">1</span>}}).astype(<span class="st">&#39;category&#39;</span>)  <span class="co"># astype(&#39;category&#39;)しておけば、LightGBMがカテゴリ型として扱ってくれて便利です。</span></span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 予測に使用するカラムだけを抽出します。NameとTicketは関係なさそうなので無視、Cabinは欠損地が多いので無視しました。</span></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[[<span class="st">&#39;Pclass&#39;</span>, <span class="st">&#39;Sex&#39;</span>, <span class="st">&#39;Age&#39;</span>, <span class="st">&#39;SibSp&#39;</span>, <span class="st">&#39;Parch&#39;</span>, <span class="st">&#39;Fare&#39;</span>, <span class="st">&#39;Embarked&#39;</span>]]</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 正解を取得します。</span></span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;Survived&#39;</span>]</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a><span class="co"># データを読み込んで、前準備をします。</span></span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;titanic&#39;</span>, <span class="st">&#39;train.csv&#39;</span>))</span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>categorical_features <span class="op">=</span> get_categorical_features(data_frame)</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame, categorical_features)</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-40"><a href="#cb16-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練データセットを取得します。</span></span>
+<span id="cb16-41"><a href="#cb16-41" aria-hidden="true" tabindex="-1"></a>train_xs <span class="op">=</span> xs[<span class="dv">200</span>:]</span>
+<span id="cb16-42"><a href="#cb16-42" aria-hidden="true" tabindex="-1"></a>train_ys <span class="op">=</span> ys[<span class="dv">200</span>:]</span>
+<span id="cb16-43"><a href="#cb16-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-44"><a href="#cb16-44" aria-hidden="true" tabindex="-1"></a><span class="co"># 検証データセットを取得します。test.csvを使ってKaggleに問い合わせる方式は、面倒な上に数をこなせないためです。</span></span>
+<span id="cb16-45"><a href="#cb16-45" aria-hidden="true" tabindex="-1"></a>valid_xs <span class="op">=</span> xs[:<span class="dv">200</span>]</span>
+<span id="cb16-46"><a href="#cb16-46" aria-hidden="true" tabindex="-1"></a>valid_ys <span class="op">=</span> ys[:<span class="dv">200</span>]</span>
+<span id="cb16-47"><a href="#cb16-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-48"><a href="#cb16-48" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを作成します。</span></span>
+<span id="cb16-49"><a href="#cb16-49" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
+<span id="cb16-50"><a href="#cb16-50" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;objective&#39;</span>: <span class="st">&#39;binary&#39;</span>,  <span class="co"># 2値分類。</span></span>
+<span id="cb16-51"><a href="#cb16-51" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;force_col_wise&#39;</span>: <span class="va">True</span>  <span class="co"># 警告を消すために付けました。</span></span>
+<span id="cb16-52"><a href="#cb16-52" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-53"><a href="#cb16-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-54"><a href="#cb16-54" aria-hidden="true" tabindex="-1"></a><span class="co"># 交差検証で機械学習します。</span></span>
+<span id="cb16-55"><a href="#cb16-55" aria-hidden="true" tabindex="-1"></a>cv_result <span class="op">=</span> lgb.cv(params, lgb.Dataset(train_xs, label<span class="op">=</span>train_ys), return_cvbooster<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-56"><a href="#cb16-56" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> cv_result[<span class="st">&#39;cvbooster&#39;</span>]</span>
+<span id="cb16-57"><a href="#cb16-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-58"><a href="#cb16-58" aria-hidden="true" tabindex="-1"></a><span class="co"># 各特徴量の重要性を出力します。</span></span>
+<span id="cb16-59"><a href="#cb16-59" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> booster <span class="kw">in</span> model.boosters:</span>
+<span id="cb16-60"><a href="#cb16-60" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(pd.DataFrame({<span class="st">&#39;feature&#39;</span>: booster.feature_name(), <span class="st">&#39;importance&#39;</span>: np.mean(model.feature_importance(), axis<span class="op">=</span><span class="dv">0</span>)}).sort_values(<span class="st">&#39;importance&#39;</span>, ascending<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb16-61"><a href="#cb16-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-62"><a href="#cb16-62" aria-hidden="true" tabindex="-1"></a><span class="co"># 精度を出力します。</span></span>
+<span id="cb16-63"><a href="#cb16-63" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&#39;Accuracy = </span><span class="sc">{</span>accuracy_score(valid_ys, np.mean(model.predict(valid_xs), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">&gt;=</span> <span class="fl">0.5</span>)<span class="sc">}</span><span class="ss">&#39;</span>)</span>
+<span id="cb16-64"><a href="#cb16-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-65"><a href="#cb16-65" aria-hidden="true" tabindex="-1"></a><span class="co"># 学習曲線を出力します。</span></span>
+<span id="cb16-66"><a href="#cb16-66" aria-hidden="true" tabindex="-1"></a>plot.plot(cv_result[<span class="st">&#39;binary_logloss-mean&#39;</span>])</span>
+<span id="cb16-67"><a href="#cb16-67" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div>
+<p>前にやったバイクのジャンル予測ではNaNが無くなるように工夫したりカテゴリー値をone
+hot
+encodingしたりといろいろ工夫しましたけど、LightGBMはどちらの作業もやらねくて大丈夫とても楽ちんです（できればNaNは埋めた方が良いけど）。ほら、とりあえずLightGBMって気持ちになるでしょ？</p>
+<p>残る前準備のカテゴリーの数値への変換は必要ですけど、pandasの<code>factorize()</code>と<code>map()</code>を使えば、上のコードの<code>get_categorical_features()</code>や<code>get_xs()</code>のように簡単に書けます。LightGBMがカテゴリーかどうか判断できるよう、カテゴリーのカラムでは<code>ascategory('category')</code>しておくのを忘れないようにしてください。</p>
+<p>データセットができたら、いつも通りに訓練データセットと検証データセット（後述する交差検証をしているので、テスト・データに近いけど）に分けて、機械学習していきます。</p>
+<p>LightGBMでは、どのように機械学習を進めるのかをdict型の変数で指定します。上のコードでの<code>params</code>がそれ。とりあえずは、<code>objective</code>で何をしたいのかを指定しておけばオッケーです。詳細はLightGBMのドキュメントの<a
+href="https://lightgbm.readthedocs.io/en/latest/Parameters.html">Parameters</a>に書いてありますので機械学習に慣れた頃に読んでみてください。今回は生き残ったかどうかの2値分類なので、`objective`に`binary`を指定しました。</p>
+<p>で、一般的にはLightGBMは<code>train()</code>メソッドで機械学習するのですけど、上のコードでは<code>cv()</code>メソッドで学習をしています。<code>cv()</code>はcross
+validationの略で、日本語で交差検証と呼びます。交差検証は過学習していないかを確認するための方法の一つで、これまでにやってきた訓練データと検証データを分割する（これをホールド・アウト法と呼びます）の仲間、データをいくつかに分割して、そのうちの一つを検証データにして残りを訓練データにするってのを、分割したデータすべてでやって精度を出し、結果を平均化して過学習していないか判断します。</p>
+<p><img src="" alt="交差検証" /></p>
+<p>過学習していないかの検証の方法は学習とは無関係に思えるかもしれませんけど、過学習したら学習を止めるという意味で使えるんです。ただ、検証データで精度が高かったからどんなデータでも高い精度を出せるかというとそうでもなくて、たまたま検証データの癖に合致したので精度が高かったという危険性があります。特に、今回のようにデータ数が少ない場合はその可能性が高い。そんなあやふやな数値に頼るのは危険ですから、交差検証しながら学習する<code>cv()</code>メソッドを使用するというわけ。</p>
+<p>あとは、のちの作業のために予測にどのカラムがどの程度使われたのかと精度を出力して、学習がどのように進んだのかを示す学習曲線を出力します。</p>
+<p><img src="" alt="学習曲線" /></p>
+<p>学習曲線で表示しているのは正解と予測の誤差の推移で、縦軸は<code>object</code>は<code>binary</code>の場合の<code>metric</code>のデフォルトである<code>binary_logloss</code>（交差検証しているのでその平均）です。これが小さいほど精度が高くなるというわけ。この図の横軸は何かというと、機械学習の用語でエポック（epoch）と呼ばれるもので、データセットを上から下まで全部使用すると1エポックになります。2エポック目では、同じデータセットをやっぱり上から下まで全部使用して学習します。まさに同じ問題集を繰り返し学習しているわけで、だからその問題集に特化した予測をするようになって、過学習して他の問題集の問題を解けなくなっていく可能性が高い。</p>
+<p>で、学習曲線を見てみると、20エポックのあたりから精度がだんだん悪くなっているので、まさに過学習していることが分かります。でも、エポック数を減らしてもう一度機械学習しなくても大丈夫です。LightGBMは、デフォルトだと最も精度が高かったパラメーターを使用して予測をするようになっているので、先のプログラムを実行すると表示される精度の0.795は、20回目あたりのパラメーターを使用した場合の値というわけですな。</p>
+<p>ともあれ、8割近く正解できているのであれば、うん、Titanicは予測可能な問題ですね。これで安心できたので、精度向上のための施策をやることにしましょう。</p>
+<h2
+id="特徴量エンジニアリングで精度を上げる">特徴量エンジニアリングで精度を上げる</h2>
+<p>前に、LightGBMは勾配ブースティングで、勾配ブースティングは決定木をバギングするものだと述べました。その決定木ってのは、たしか<code>if/else</code>で予測する仕組みでしたよね？　コードにすると、こんな感じでした。</p>
+<div class="sourceCode" id="cb17"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> x <span class="op">&lt;=</span> a1:</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">&lt;=</span> a2:</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> b1</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> b2</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a><span class="cf">else</span></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">&lt;=</span> a3:</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> b3</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span></span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> b4</span></code></pre></div>
+<p>このコードを眺めていると、たとえば、給料が少ないのでこっそり副業している場合に新しいバイクを買うか予測するような場合に効率が悪いことが分かります。データのカラムが給料と副業の収入に分かれていると、給料がいくら以上で、副業の収入がいくら以上だったら買えるみたいな多段の<code>if</code>にせざるを得なくて、しかも、給料10万円副業100万円や給料100万円副業10万円みたいな様々な組み合わせの<code>if</code>文を作らなければなりません。</p>
+<p>ではどうすればよいかというと、給料＋副業の収入を表現する総収入というカラムを追加してあげればよいわけ。Titanicのデータだと、SibSp（同乗した兄弟姉妹と配偶者の数）とParch（同乗した両親と子供の数）がまさにこのケースになります。同乗者がいないと助けてくれる人がいないので死にやすそうですし、同乗者が多いと行動が遅くなるのでやっぱり死にやすそう。だから同乗者の数を入力に追加してあげると精度が向上するんじゃないかな。</p>
+<p>このようにカラム（機械学習の人は特徴量（feature）と呼びます）を追加したり、取捨選択したりすることを特徴量エンジニアリングと呼びます。効率が悪かったり無関係だったりするデータから予測をするのは難しいので、機械学習の気持ちになって、できるだけ気持ちよく予測できるようにしてあげる作業です。</p>
+<p>で、一般には関係がありそうなデータをかき集めてくる作業になるのですけど、Kaggleだとデータが決められているので、既存の特徴量から新たな特徴量を作成する作業になります。</p>
+<p>他の特徴量も見ていきましょう。前回は使わなかったNameの活用を考えてみます。NameにはMr.とかMrs.とかの肩書が含まれていて、肩書から性別や年齢が推測できそうな気がします（Titanicの特徴量には性別や年齢もあるけど、年齢はNaNの場合があるしね）。男性よりも女性、大人よりも子供の方が優先して避難させてもらえそうな気がするので、肩書を追加しましょう。あとは、Fareってのはどうもチケットの合計金額っぽくて、チケットを複数枚買っている場合は高くなっているみたい。チケット料金が安い船室の人は避難が後回しになって死んじゃう可能性が高そうな気がしますから、Fareを家族数で割って単価を出しておきましょう。</p>
+<p>というわけで、特徴量エンジニアリングした結果はこんな感じ。</p>
+<div class="sourceCode" id="cb18"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> <span class="bu">reduce</span></span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> count, repeat</span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 特徴量を追加します。</span></span>
+<span id="cb18-13"><a href="#cb18-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add_features(data_frame):</span>
+<span id="cb18-14"><a href="#cb18-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># train.csvでの肩書の内訳は、以下の通り。</span></span>
+<span id="cb18-15"><a href="#cb18-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Mr.        509</span></span>
+<span id="cb18-16"><a href="#cb18-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Miss.      180</span></span>
+<span id="cb18-17"><a href="#cb18-17" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Mrs.       125</span></span>
+<span id="cb18-18"><a href="#cb18-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Master.     40  少年もしくは青年への敬称らしい</span></span>
+<span id="cb18-19"><a href="#cb18-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Dr.         11</span></span>
+<span id="cb18-20"><a href="#cb18-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Col.        10</span></span>
+<span id="cb18-21"><a href="#cb18-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Rev.         6  聖職者への敬称らしい</span></span>
+<span id="cb18-22"><a href="#cb18-22" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Don.         2</span></span>
+<span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Major.       2</span></span>
+<span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Mme.         1</span></span>
+<span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Ms.          1</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Capt.        1</span></span>
+<span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># NaN.         3</span></span>
+<span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 肩書追加用の補助関数。</span></span>
+<span id="cb18-30"><a href="#cb18-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add_title(title_series, name_series, <span class="bu">id</span>, titles):</span>
+<span id="cb18-31"><a href="#cb18-31" aria-hidden="true" tabindex="-1"></a>        title_series[<span class="bu">reduce</span>(<span class="kw">lambda</span> acc, series: acc <span class="op">+</span> series, <span class="bu">map</span>(<span class="kw">lambda</span> title: name_series.<span class="bu">str</span>.contains(title), titles))] <span class="op">=</span> <span class="bu">id</span></span>
+<span id="cb18-32"><a href="#cb18-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-33"><a href="#cb18-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> title_series</span>
+<span id="cb18-34"><a href="#cb18-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-35"><a href="#cb18-35" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 肩書を追加します。</span></span>
+<span id="cb18-36"><a href="#cb18-36" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;Title&#39;</span>] <span class="op">=</span> <span class="bu">reduce</span>(<span class="kw">lambda</span> title_series, params: add_title(title_series, data_frame[<span class="st">&#39;Name&#39;</span>], <span class="op">*</span>params),</span>
+<span id="cb18-37"><a href="#cb18-37" aria-hidden="true" tabindex="-1"></a>                                 ((<span class="dv">0</span>, (<span class="st">&#39;Mr.&#39;</span>, <span class="st">&#39;Dr.&#39;</span>, <span class="st">&#39;Rev.&#39;</span>, <span class="st">&#39;Don.&#39;</span>, <span class="st">&#39;Col.&#39;</span>, <span class="st">&#39;Major.&#39;</span>, <span class="st">&#39;Capt.&#39;</span>)),</span>
+<span id="cb18-38"><a href="#cb18-38" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">1</span>, (<span class="st">&#39;Master.&#39;</span>,)),</span>
+<span id="cb18-39"><a href="#cb18-39" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">2</span>, (<span class="st">&#39;Mrs.&#39;</span>, <span class="st">&#39;Mme.&#39;</span>, <span class="st">&#39;Ms.&#39;</span>)),</span>
+<span id="cb18-40"><a href="#cb18-40" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">3</span>, (<span class="st">&#39;Miss.&#39;</span>,))),</span>
+<span id="cb18-41"><a href="#cb18-41" aria-hidden="true" tabindex="-1"></a>                                 pd.Series(repeat(np.nan, <span class="bu">len</span>(data_frame[<span class="st">&#39;Name&#39;</span>])), dtype<span class="op">=</span><span class="st">&#39;object&#39;</span>))</span>
+<span id="cb18-42"><a href="#cb18-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-43"><a href="#cb18-43" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 家族の人数を追加します。</span></span>
+<span id="cb18-44"><a href="#cb18-44" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;FamilySize&#39;</span>] <span class="op">=</span> data_frame[<span class="st">&#39;SibSp&#39;</span>] <span class="op">+</span> data_frame[<span class="st">&#39;Parch&#39;</span>]</span>
+<span id="cb18-45"><a href="#cb18-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-46"><a href="#cb18-46" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 料金は合計みたいなので、単価を追加します。</span></span>
+<span id="cb18-47"><a href="#cb18-47" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;FareUnitPrice&#39;</span>] <span class="op">=</span> data_frame[<span class="st">&#39;Fare&#39;</span>] <span class="op">/</span> data_frame[<span class="st">&#39;FamilySize&#39;</span>]</span>
+<span id="cb18-48"><a href="#cb18-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-49"><a href="#cb18-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame</span>
+<span id="cb18-50"><a href="#cb18-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-51"><a href="#cb18-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-52"><a href="#cb18-52" aria-hidden="true" tabindex="-1"></a><span class="co"># カテゴリ型の特徴量を、どの数値に変換するかのdictを取得します。</span></span>
+<span id="cb18-53"><a href="#cb18-53" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_categorical_features(data_frame):</span>
+<span id="cb18-54"><a href="#cb18-54" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(<span class="bu">map</span>(<span class="kw">lambda</span> feature: (feature, <span class="bu">dict</span>(<span class="bu">zip</span>(data_frame[feature].factorize()[<span class="dv">1</span>], count()))), (<span class="st">&#39;Sex&#39;</span>, <span class="st">&#39;Embarked&#39;</span>, <span class="st">&#39;Title&#39;</span>)))</span>
+<span id="cb18-55"><a href="#cb18-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-56"><a href="#cb18-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-57"><a href="#cb18-57" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb18-58"><a href="#cb18-58" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame, categorical_features):</span>
+<span id="cb18-59"><a href="#cb18-59" aria-hidden="true" tabindex="-1"></a>    <span class="co"># カテゴリ型の特徴量を、数値に変換します。</span></span>
+<span id="cb18-60"><a href="#cb18-60" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> feature, mapping <span class="kw">in</span> categorical_features.items():</span>
+<span id="cb18-61"><a href="#cb18-61" aria-hidden="true" tabindex="-1"></a>        <span class="co"># data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype(&#39;category&#39;)  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。</span></span>
+<span id="cb18-62"><a href="#cb18-62" aria-hidden="true" tabindex="-1"></a>        data_frame[feature] <span class="op">=</span> data_frame[feature].<span class="bu">map</span>({<span class="op">**</span>mapping, <span class="op">**</span>{np.nan: <span class="op">-</span><span class="dv">1</span>}}).astype(<span class="st">&#39;category&#39;</span>)</span>
+<span id="cb18-63"><a href="#cb18-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-64"><a href="#cb18-64" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 予測に使用するカラムだけを抽出します。NameとTicketは関係なさそうなので無視、Cabinは欠損地が多いので無視しました。</span></span>
+<span id="cb18-65"><a href="#cb18-65" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[[<span class="st">&#39;Pclass&#39;</span>, <span class="st">&#39;Sex&#39;</span>, <span class="st">&#39;Age&#39;</span>, <span class="st">&#39;SibSp&#39;</span>, <span class="st">&#39;Parch&#39;</span>, <span class="st">&#39;Fare&#39;</span>, <span class="st">&#39;Embarked&#39;</span>, <span class="st">&#39;Title&#39;</span>, <span class="st">&#39;FamilySize&#39;</span>, <span class="st">&#39;FareUnitPrice&#39;</span>]]</span>
+<span id="cb18-66"><a href="#cb18-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-67"><a href="#cb18-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-68"><a href="#cb18-68" aria-hidden="true" tabindex="-1"></a><span class="co"># 正解を取得します。</span></span>
+<span id="cb18-69"><a href="#cb18-69" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
+<span id="cb18-70"><a href="#cb18-70" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;Survived&#39;</span>]</span>
+<span id="cb18-71"><a href="#cb18-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-72"><a href="#cb18-72" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-73"><a href="#cb18-73" aria-hidden="true" tabindex="-1"></a><span class="co"># データを読み込んで、前準備をします。</span></span>
+<span id="cb18-74"><a href="#cb18-74" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> add_features(pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;titanic&#39;</span>, <span class="st">&#39;train.csv&#39;</span>)))</span>
+<span id="cb18-75"><a href="#cb18-75" aria-hidden="true" tabindex="-1"></a>categorical_features <span class="op">=</span> get_categorical_features(data_frame)</span>
+<span id="cb18-76"><a href="#cb18-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-77"><a href="#cb18-77" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb18-78"><a href="#cb18-78" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame, categorical_features)</span>
+<span id="cb18-79"><a href="#cb18-79" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb18-80"><a href="#cb18-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-81"><a href="#cb18-81" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練データセットを取得します。</span></span>
+<span id="cb18-82"><a href="#cb18-82" aria-hidden="true" tabindex="-1"></a>train_xs <span class="op">=</span> xs[<span class="dv">200</span>:]</span>
+<span id="cb18-83"><a href="#cb18-83" aria-hidden="true" tabindex="-1"></a>train_ys <span class="op">=</span> ys[<span class="dv">200</span>:]</span>
+<span id="cb18-84"><a href="#cb18-84" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-85"><a href="#cb18-85" aria-hidden="true" tabindex="-1"></a><span class="co"># 検証データセットを取得します。test.csvを使ってKaggleに問い合わせる方式は、面倒な上に数をこなせないためです。</span></span>
+<span id="cb18-86"><a href="#cb18-86" aria-hidden="true" tabindex="-1"></a>valid_xs <span class="op">=</span> xs[:<span class="dv">200</span>]</span>
+<span id="cb18-87"><a href="#cb18-87" aria-hidden="true" tabindex="-1"></a>valid_ys <span class="op">=</span> ys[:<span class="dv">200</span>]</span>
+<span id="cb18-88"><a href="#cb18-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-89"><a href="#cb18-89" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを作成します。</span></span>
+<span id="cb18-90"><a href="#cb18-90" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
+<span id="cb18-91"><a href="#cb18-91" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;objective&#39;</span>: <span class="st">&#39;binary&#39;</span>,  <span class="co"># 2値分類。</span></span>
+<span id="cb18-92"><a href="#cb18-92" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;force_col_wise&#39;</span>: <span class="va">True</span>  <span class="co"># 警告を消すために付けました。</span></span>
+<span id="cb18-93"><a href="#cb18-93" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb18-94"><a href="#cb18-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-95"><a href="#cb18-95" aria-hidden="true" tabindex="-1"></a><span class="co"># 交差検証で機械学習します。</span></span>
+<span id="cb18-96"><a href="#cb18-96" aria-hidden="true" tabindex="-1"></a>cv_result <span class="op">=</span> lgb.cv(params, lgb.Dataset(train_xs, label<span class="op">=</span>train_ys), return_cvbooster<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb18-97"><a href="#cb18-97" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> cv_result[<span class="st">&#39;cvbooster&#39;</span>]</span>
+<span id="cb18-98"><a href="#cb18-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-99"><a href="#cb18-99" aria-hidden="true" tabindex="-1"></a><span class="co"># 各特徴量の重要性を出力します。</span></span>
+<span id="cb18-100"><a href="#cb18-100" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> booster <span class="kw">in</span> model.boosters:</span>
+<span id="cb18-101"><a href="#cb18-101" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(pd.DataFrame({<span class="st">&#39;feature&#39;</span>: booster.feature_name(), <span class="st">&#39;importance&#39;</span>: np.mean(model.feature_importance(), axis<span class="op">=</span><span class="dv">0</span>)}).sort_values(<span class="st">&#39;importance&#39;</span>, ascending<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb18-102"><a href="#cb18-102" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-103"><a href="#cb18-103" aria-hidden="true" tabindex="-1"></a><span class="co"># 精度を出力します。</span></span>
+<span id="cb18-104"><a href="#cb18-104" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&#39;Accuracy = </span><span class="sc">{</span>accuracy_score(valid_ys, np.mean(model.predict(valid_xs), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">&gt;=</span> <span class="fl">0.5</span>)<span class="sc">}</span><span class="ss">&#39;</span>)</span>
+<span id="cb18-105"><a href="#cb18-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-106"><a href="#cb18-106" aria-hidden="true" tabindex="-1"></a><span class="co"># 学習曲線を出力します。</span></span>
+<span id="cb18-107"><a href="#cb18-107" aria-hidden="true" tabindex="-1"></a>plot.plot(cv_result[<span class="st">&#39;binary_logloss-mean&#39;</span>])</span>
+<span id="cb18-108"><a href="#cb18-108" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div>
+<p>前のコードに、特徴量を追加する処理を追加しただけですね。精度が0.795→0.81に上がりましたので、特徴量エンジニアリングの効果を確認できました。</p>
+<h2
+id="統計の手法を使えば特徴量エンジニアリングは効率化できる">統計の手法を使えば特徴量エンジニアリングは効率化できる</h2>
+<p>先ほどの特徴量エンジニアリングなのですが、実は統計の手法を使うと効率よく作業できる（みたい）です。</p>
+<p>仮説を立てて仮説をプログラミングして精度を検証する、というのが前で述べたやり方なのですけど、仮説を立てる際にもプログラミングの前に仮説の妥当性を検証するにも、統計の手法が有効（っぽい）んです。</p>
+<p>でも私は文系で統計手法を知らないので、勢いだけで仮説を立てて速攻でプログラミングして、検証してみたら精度が上がらなくて木端微塵にされるってのを繰り返しています。皆様は私を反面教師に統計手法を勉強（pandasでの統計量の可視化手法のマスターでも可）するのが良いかと愚考します。</p>
+<p>私はこれからも「統計で調べるより短い時間で仮説をプログラミングすれば問題はないんだよ！」と言い張るるもりだけどな！</p>
+<h2
+id="optunaでハイパーパラメーターチューニング">Optunaでハイパー・パラメーター・チューニング</h2>
+<p>LightGBMのハイパー・パラメーターはドキュメントの<a
+href="https://lightgbm.readthedocs.io/en/latest/Parameters.html">Parameters</a>に書いてあって、チューニングのやり方は<a
+href="https://lightgbm.readthedocs.io/en/latest/Parameters-Tuning.html">Parameter
+Tuning</a>に書いてあるのですけど、読むのが面倒くさい……。</p>
+<p>でも精度向上のためにハイパー・パラメーター・チューニングをやりたい！　というわけで、ツールに頼りましょう。PFNが<a
+href="https://github.com/optuna/optuna">Optuna</a>というオープン・ソースのツールを提供してくださっていて、これを使えば全自動でハイパー・パラメーターをチューニングできるんです。</p>
+<p>Optunaを使うコードはこんな感じ。</p>
+<div class="sourceCode" id="cb19"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> optuna.integration.lightgbm <span class="im">as</span> lgb</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> <span class="bu">reduce</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> count, repeat</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 特徴量を追加します。</span></span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add_features(data_frame):</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 肩書追加用の補助関数。</span></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add_title(title_series, name_series, <span class="bu">id</span>, titles):</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>        title_series[<span class="bu">reduce</span>(<span class="kw">lambda</span> acc, series: acc <span class="op">+</span> series, <span class="bu">map</span>(<span class="kw">lambda</span> title: name_series.<span class="bu">str</span>.contains(title), titles))] <span class="op">=</span> <span class="bu">id</span></span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> title_series</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 肩書を追加します。</span></span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;Title&#39;</span>] <span class="op">=</span> <span class="bu">reduce</span>(<span class="kw">lambda</span> title_series, params: add_title(title_series, data_frame[<span class="st">&#39;Name&#39;</span>], <span class="op">*</span>params),</span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a>                                 ((<span class="dv">0</span>, (<span class="st">&#39;Mr.&#39;</span>, <span class="st">&#39;Dr.&#39;</span>, <span class="st">&#39;Rev.&#39;</span>, <span class="st">&#39;Don.&#39;</span>, <span class="st">&#39;Col.&#39;</span>, <span class="st">&#39;Major.&#39;</span>, <span class="st">&#39;Capt.&#39;</span>)),</span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">1</span>, (<span class="st">&#39;Master.&#39;</span>,)),</span>
+<span id="cb19-22"><a href="#cb19-22" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">2</span>, (<span class="st">&#39;Mrs.&#39;</span>, <span class="st">&#39;Mme.&#39;</span>, <span class="st">&#39;Ms.&#39;</span>)),</span>
+<span id="cb19-23"><a href="#cb19-23" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">3</span>, (<span class="st">&#39;Miss.&#39;</span>,))),</span>
+<span id="cb19-24"><a href="#cb19-24" aria-hidden="true" tabindex="-1"></a>                                 pd.Series(repeat(np.nan, <span class="bu">len</span>(data_frame[<span class="st">&#39;Name&#39;</span>])), dtype<span class="op">=</span><span class="st">&#39;object&#39;</span>))</span>
+<span id="cb19-25"><a href="#cb19-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-26"><a href="#cb19-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 家族の人数を追加します。</span></span>
+<span id="cb19-27"><a href="#cb19-27" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;FamilySize&#39;</span>] <span class="op">=</span> data_frame[<span class="st">&#39;SibSp&#39;</span>] <span class="op">+</span> data_frame[<span class="st">&#39;Parch&#39;</span>]</span>
+<span id="cb19-28"><a href="#cb19-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-29"><a href="#cb19-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 料金は合計みたいなので、単価を追加します。</span></span>
+<span id="cb19-30"><a href="#cb19-30" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;FareUnitPrice&#39;</span>] <span class="op">=</span> data_frame[<span class="st">&#39;Fare&#39;</span>] <span class="op">/</span> data_frame[<span class="st">&#39;FamilySize&#39;</span>]</span>
+<span id="cb19-31"><a href="#cb19-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-32"><a href="#cb19-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame</span>
+<span id="cb19-33"><a href="#cb19-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-34"><a href="#cb19-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-35"><a href="#cb19-35" aria-hidden="true" tabindex="-1"></a><span class="co"># カテゴリ型の特徴量を、どの数値に変換するかのdictを取得します。</span></span>
+<span id="cb19-36"><a href="#cb19-36" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_categorical_features(data_frame):</span>
+<span id="cb19-37"><a href="#cb19-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(<span class="bu">map</span>(<span class="kw">lambda</span> feature: (feature, <span class="bu">dict</span>(<span class="bu">zip</span>(data_frame[feature].factorize()[<span class="dv">1</span>], count()))), (<span class="st">&#39;Sex&#39;</span>, <span class="st">&#39;Embarked&#39;</span>, <span class="st">&#39;Title&#39;</span>)))</span>
+<span id="cb19-38"><a href="#cb19-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-39"><a href="#cb19-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-40"><a href="#cb19-40" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb19-41"><a href="#cb19-41" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame, categorical_features):</span>
+<span id="cb19-42"><a href="#cb19-42" aria-hidden="true" tabindex="-1"></a>    <span class="co"># カテゴリ型の特徴量を、数値に変換します。</span></span>
+<span id="cb19-43"><a href="#cb19-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> feature, mapping <span class="kw">in</span> categorical_features.items():</span>
+<span id="cb19-44"><a href="#cb19-44" aria-hidden="true" tabindex="-1"></a>        <span class="co"># data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype(&#39;category&#39;)  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。</span></span>
+<span id="cb19-45"><a href="#cb19-45" aria-hidden="true" tabindex="-1"></a>        data_frame[feature] <span class="op">=</span> data_frame[feature].<span class="bu">map</span>({<span class="op">**</span>mapping, <span class="op">**</span>{np.nan: <span class="op">-</span><span class="dv">1</span>}}).astype(<span class="st">&#39;category&#39;</span>)</span>
+<span id="cb19-46"><a href="#cb19-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-47"><a href="#cb19-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 予測に使用するカラムだけを抽出します。NameとTicketは関係なさそうなので無視、Cabinは欠損地が多いので無視しました。</span></span>
+<span id="cb19-48"><a href="#cb19-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[[<span class="st">&#39;Pclass&#39;</span>, <span class="st">&#39;Sex&#39;</span>, <span class="st">&#39;Age&#39;</span>, <span class="st">&#39;SibSp&#39;</span>, <span class="st">&#39;Parch&#39;</span>, <span class="st">&#39;Fare&#39;</span>, <span class="st">&#39;Embarked&#39;</span>, <span class="st">&#39;Title&#39;</span>, <span class="st">&#39;FamilySize&#39;</span>, <span class="st">&#39;FareUnitPrice&#39;</span>]]</span>
+<span id="cb19-49"><a href="#cb19-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-50"><a href="#cb19-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-51"><a href="#cb19-51" aria-hidden="true" tabindex="-1"></a><span class="co"># 正解を取得します。</span></span>
+<span id="cb19-52"><a href="#cb19-52" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
+<span id="cb19-53"><a href="#cb19-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;Survived&#39;</span>]</span>
+<span id="cb19-54"><a href="#cb19-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-55"><a href="#cb19-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-56"><a href="#cb19-56" aria-hidden="true" tabindex="-1"></a><span class="co"># データを読み込んで、前準備をします。</span></span>
+<span id="cb19-57"><a href="#cb19-57" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> add_features(pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;titanic&#39;</span>, <span class="st">&#39;train.csv&#39;</span>)))</span>
+<span id="cb19-58"><a href="#cb19-58" aria-hidden="true" tabindex="-1"></a>categorical_features <span class="op">=</span> get_categorical_features(data_frame)</span>
+<span id="cb19-59"><a href="#cb19-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-60"><a href="#cb19-60" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。Optunaを信用しているので検証は不要と考え、検証データは作成しません。データ量が多い方が正確なハイパー・パラメーターになりますし。</span></span>
+<span id="cb19-61"><a href="#cb19-61" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame, categorical_features)</span>
+<span id="cb19-62"><a href="#cb19-62" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb19-63"><a href="#cb19-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-64"><a href="#cb19-64" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを作成します。</span></span>
+<span id="cb19-65"><a href="#cb19-65" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
+<span id="cb19-66"><a href="#cb19-66" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;objective&#39;</span>: <span class="st">&#39;binary&#39;</span>,  <span class="co"># 2値分類。</span></span>
+<span id="cb19-67"><a href="#cb19-67" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;force_col_wise&#39;</span>: <span class="va">True</span>  <span class="co"># 警告を消すために付けました。</span></span>
+<span id="cb19-68"><a href="#cb19-68" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb19-69"><a href="#cb19-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-70"><a href="#cb19-70" aria-hidden="true" tabindex="-1"></a><span class="co"># 交差検証でハイパー・パラメーター・チューニングをします。</span></span>
+<span id="cb19-71"><a href="#cb19-71" aria-hidden="true" tabindex="-1"></a>tuner <span class="op">=</span> lgb.LightGBMTunerCV(params, lgb.Dataset(xs, label<span class="op">=</span>ys), return_cvbooster<span class="op">=</span><span class="va">True</span>, optuna_seed<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb19-72"><a href="#cb19-72" aria-hidden="true" tabindex="-1"></a>cv_result <span class="op">=</span> tuner.run()</span>
+<span id="cb19-73"><a href="#cb19-73" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tuner.get_best_booster()</span>
+<span id="cb19-74"><a href="#cb19-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-75"><a href="#cb19-75" aria-hidden="true" tabindex="-1"></a><span class="co"># 各特徴量の重要性を出力します。</span></span>
+<span id="cb19-76"><a href="#cb19-76" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> booster <span class="kw">in</span> model.boosters:</span>
+<span id="cb19-77"><a href="#cb19-77" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(pd.DataFrame({<span class="st">&#39;feature&#39;</span>: booster.feature_name(), <span class="st">&#39;importance&#39;</span>: np.mean(model.feature_importance(), axis<span class="op">=</span><span class="dv">0</span>)}).sort_values(<span class="st">&#39;importance&#39;</span>, ascending<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb19-78"><a href="#cb19-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-79"><a href="#cb19-79" aria-hidden="true" tabindex="-1"></a><span class="co"># ハイパー・パラメーターを出力します。</span></span>
+<span id="cb19-80"><a href="#cb19-80" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(tuner.best_params)</span></code></pre></div>
+<p>一目見て分かるように、ほとんどコードは変わりません。<code>cv()</code>じゃなくて<code>train()</code>する場合であれば、<code>import lightgbm as lgb</code>を<code>import optuna.integration.lightgbm as lgb</code>に変えるだけという楽ちん仕様です。<code>cv()</code>の場合でも、上のコードを参考に<code>LightGBMTunerCV</code>を使うように修正するだけでオッケー。</p>
+<p>たったこれだけで、ハイパー・パラメーター・チューニングは終了です。このプログラムの実行にはちょっと時間がかかりますけど、手でハイパー・パラメーター・チューニングするより速いし、なにより楽ちんです。</p>
+<h2
+id="特徴量エンジニアリングとハイパーパラメーターチューニングの成果を確認する">特徴量エンジニアリングとハイパー・パラメーター・チューニングの成果を確認する</h2>
+<p>これまでの成果を確認してみましょう。2つ前の特徴量エンジニアリングのコードに、Optunaが作成したパラメーターを埋め込みます。</p>
+<div class="sourceCode" id="cb20"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> <span class="bu">reduce</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> count, repeat</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> accuracy_score</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 特徴量を追加します。</span></span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add_features(data_frame):</span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 肩書追加用の補助関数。</span></span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add_title(title_series, name_series, <span class="bu">id</span>, titles):</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>        title_series[<span class="bu">reduce</span>(<span class="kw">lambda</span> acc, series: acc <span class="op">+</span> series, <span class="bu">map</span>(<span class="kw">lambda</span> title: name_series.<span class="bu">str</span>.contains(title), titles))] <span class="op">=</span> <span class="bu">id</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> title_series</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 肩書を追加します。</span></span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;Title&#39;</span>] <span class="op">=</span> <span class="bu">reduce</span>(<span class="kw">lambda</span> title_series, params: add_title(title_series, data_frame[<span class="st">&#39;Name&#39;</span>], <span class="op">*</span>params),</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>                                 ((<span class="dv">0</span>, (<span class="st">&#39;Mr.&#39;</span>, <span class="st">&#39;Dr.&#39;</span>, <span class="st">&#39;Rev.&#39;</span>, <span class="st">&#39;Don.&#39;</span>, <span class="st">&#39;Col.&#39;</span>, <span class="st">&#39;Major.&#39;</span>, <span class="st">&#39;Capt.&#39;</span>)),</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">1</span>, (<span class="st">&#39;Master.&#39;</span>,)),</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">2</span>, (<span class="st">&#39;Mrs.&#39;</span>, <span class="st">&#39;Mme.&#39;</span>, <span class="st">&#39;Ms.&#39;</span>)),</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">3</span>, (<span class="st">&#39;Miss.&#39;</span>,))),</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>                                 pd.Series(repeat(np.nan, <span class="bu">len</span>(data_frame[<span class="st">&#39;Name&#39;</span>])), dtype<span class="op">=</span><span class="st">&#39;object&#39;</span>))</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 家族の人数を追加します。</span></span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;FamilySize&#39;</span>] <span class="op">=</span> data_frame[<span class="st">&#39;SibSp&#39;</span>] <span class="op">+</span> data_frame[<span class="st">&#39;Parch&#39;</span>]</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 料金は合計みたいなので、単価を追加します。</span></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;FareUnitPrice&#39;</span>] <span class="op">=</span> data_frame[<span class="st">&#39;Fare&#39;</span>] <span class="op">/</span> data_frame[<span class="st">&#39;FamilySize&#39;</span>]</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a><span class="co"># カテゴリ型の特徴量を、どの数値に変換するかのdictを取得します。</span></span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_categorical_features(data_frame):</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(<span class="bu">map</span>(<span class="kw">lambda</span> feature: (feature, <span class="bu">dict</span>(<span class="bu">zip</span>(data_frame[feature].factorize()[<span class="dv">1</span>], count()))), (<span class="st">&#39;Sex&#39;</span>, <span class="st">&#39;Embarked&#39;</span>, <span class="st">&#39;Title&#39;</span>)))</span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame, categorical_features):</span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># カテゴリ型の特徴量を、数値に変換します。</span></span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> feature, mapping <span class="kw">in</span> categorical_features.items():</span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>        <span class="co"># data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype(&#39;category&#39;)  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。</span></span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>        data_frame[feature] <span class="op">=</span> data_frame[feature].<span class="bu">map</span>({<span class="op">**</span>mapping, <span class="op">**</span>{np.nan: <span class="op">-</span><span class="dv">1</span>}}).astype(<span class="st">&#39;category&#39;</span>)</span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 予測に使用するカラムだけを抽出します。NameとTicketは関係なさそうなので無視、Cabinは欠損地が多いので無視しました。</span></span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[[<span class="st">&#39;Pclass&#39;</span>, <span class="st">&#39;Sex&#39;</span>, <span class="st">&#39;Age&#39;</span>, <span class="st">&#39;SibSp&#39;</span>, <span class="st">&#39;Parch&#39;</span>, <span class="st">&#39;Fare&#39;</span>, <span class="st">&#39;Embarked&#39;</span>, <span class="st">&#39;Title&#39;</span>, <span class="st">&#39;FamilySize&#39;</span>, <span class="st">&#39;FareUnitPrice&#39;</span>]]</span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a><span class="co"># 正解を取得します。</span></span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;Survived&#39;</span>]</span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a><span class="co"># データを読み込んで、前準備をします。</span></span>
+<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> add_features(pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;titanic&#39;</span>, <span class="st">&#39;train.csv&#39;</span>)))</span>
+<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a>categorical_features <span class="op">=</span> get_categorical_features(data_frame)</span>
+<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame, categorical_features)</span>
+<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練データセットを取得します。</span></span>
+<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a>train_xs <span class="op">=</span> xs[<span class="dv">200</span>:]</span>
+<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a>train_ys <span class="op">=</span> ys[<span class="dv">200</span>:]</span>
+<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a><span class="co"># 検証データセットを取得します。test.csvを使ってKaggleに問い合わせる方式は、面倒な上に数をこなせないためです。</span></span>
+<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a>valid_xs <span class="op">=</span> xs[:<span class="dv">200</span>]</span>
+<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a>valid_ys <span class="op">=</span> ys[:<span class="dv">200</span>]</span>
+<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-74"><a href="#cb20-74" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを作成します。Optunaが作成したパラメーターを使用します。</span></span>
+<span id="cb20-75"><a href="#cb20-75" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
+<span id="cb20-76"><a href="#cb20-76" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;objective&#39;</span>: <span class="st">&#39;binary&#39;</span>,</span>
+<span id="cb20-77"><a href="#cb20-77" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;force_col_wise&#39;</span>: <span class="va">True</span>,</span>
+<span id="cb20-78"><a href="#cb20-78" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;feature_pre_filter&#39;</span>: <span class="va">False</span>,</span>
+<span id="cb20-79"><a href="#cb20-79" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;lambda_l1&#39;</span>: <span class="fl">1.4361833756015463</span>,</span>
+<span id="cb20-80"><a href="#cb20-80" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;lambda_l2&#39;</span>: <span class="fl">2.760985217750726e-07</span>,</span>
+<span id="cb20-81"><a href="#cb20-81" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;num_leaves&#39;</span>: <span class="dv">5</span>,</span>
+<span id="cb20-82"><a href="#cb20-82" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;feature_fraction&#39;</span>: <span class="fl">0.4</span>,</span>
+<span id="cb20-83"><a href="#cb20-83" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;bagging_fraction&#39;</span>: <span class="fl">1.0</span>,</span>
+<span id="cb20-84"><a href="#cb20-84" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;bagging_freq&#39;</span>: <span class="dv">0</span>,</span>
+<span id="cb20-85"><a href="#cb20-85" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;min_child_samples&#39;</span>: <span class="dv">20</span></span>
+<span id="cb20-86"><a href="#cb20-86" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-87"><a href="#cb20-87" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-88"><a href="#cb20-88" aria-hidden="true" tabindex="-1"></a><span class="co"># 交差検証で機械学習します。</span></span>
+<span id="cb20-89"><a href="#cb20-89" aria-hidden="true" tabindex="-1"></a>cv_result <span class="op">=</span> lgb.cv(params, lgb.Dataset(train_xs, label<span class="op">=</span>train_ys), return_cvbooster<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb20-90"><a href="#cb20-90" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> cv_result[<span class="st">&#39;cvbooster&#39;</span>]</span>
+<span id="cb20-91"><a href="#cb20-91" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-92"><a href="#cb20-92" aria-hidden="true" tabindex="-1"></a><span class="co"># 各特徴量の重要性を出力します。</span></span>
+<span id="cb20-93"><a href="#cb20-93" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> booster <span class="kw">in</span> model.boosters:</span>
+<span id="cb20-94"><a href="#cb20-94" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(pd.DataFrame({<span class="st">&#39;feature&#39;</span>: booster.feature_name(), <span class="st">&#39;importance&#39;</span>: np.mean(model.feature_importance(), axis<span class="op">=</span><span class="dv">0</span>)}).sort_values(<span class="st">&#39;importance&#39;</span>, ascending<span class="op">=</span><span class="va">False</span>))</span>
+<span id="cb20-95"><a href="#cb20-95" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-96"><a href="#cb20-96" aria-hidden="true" tabindex="-1"></a><span class="co"># 精度を出力します。</span></span>
+<span id="cb20-97"><a href="#cb20-97" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&#39;Accuracy = </span><span class="sc">{</span>accuracy_score(valid_ys, np.mean(model.predict(valid_xs), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">&gt;=</span> <span class="fl">0.5</span>)<span class="sc">}</span><span class="ss">&#39;</span>)</span>
+<span id="cb20-98"><a href="#cb20-98" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-99"><a href="#cb20-99" aria-hidden="true" tabindex="-1"></a><span class="co"># 学習曲線を出力します。</span></span>
+<span id="cb20-100"><a href="#cb20-100" aria-hidden="true" tabindex="-1"></a>plot.plot(cv_result[<span class="st">&#39;binary_logloss-mean&#39;</span>])</span>
+<span id="cb20-101"><a href="#cb20-101" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div>
+<p>精度は、0.81→0.82になりました。　まぁ精度は誤差の気もしますけど、学習曲線がとてもきれいになっていてとても嬉しい！</p>
+<p><img src="" alt="学習曲線" /></p>
+<p>過学習を防ぐ方法は、よりシンプルな機械学習モデルを作るか、データ量を増やすかになります（パラメーターを正則化するというのもありますけど）。で、Optunaが絶妙なシンプル具合になるハイパー・パラメーターを作成してくれたので、過学習しない学習曲線になったというわけです。</p>
+<p>さて、ここまで話がとんとん拍子に進んだように書いてきましたけど、実際は、こんなにうまくは進みません。特徴量エンジニアリングで精度が上がっても、ハイパー・パラメーター・チューニングで特徴量の扱われ方が変わって効果が微妙になったりね。なので実際は、とりあえず特徴量エンジニアリング→Optunaでハイパー・パラメーター・チューニング→チューニングされたハイパー・パラメーターを使用してひたすら特徴量エンジニアリング（ときどきはハイパー・パラメーター・チューニングもやり直す）という感じになります。</p>
+<p>で、そのひたすら繰り返す特徴量エンジニアリングで役に立つのが、特徴量の重要性です。プログラムを実行すると、以下のような情報が出力されていましたよね？</p>
+<pre><code>         feature  importance
+2            Age        90.0
+9  FareUnitPrice        64.8
+0         Pclass        61.0
+5           Fare        44.4
+6       Embarked        34.4
+8     FamilySize        32.8
+7          Title        25.4
+1            Sex        17.2
+4          Parch        13.4
+3          SibSp         7.4</code></pre>
+<p>これ、特徴量が決定木で使われた数です。おお、やっぱり若者と金持ちが優先で、だからおっさんで貧乏な私は後回しなんだと世の中が理解できるようになって、特徴量エンジニアリングが進むんじゃないかな。</p>
+<h2 id="予測モデルを作成する">予測モデルを作成する</h2>
+<p>さて、これでチューニングは概ね終了したので、結果をKaggleに提出して採点したい。Kaggleに提出するだけなら学習から予測まで一気通貫で実施するプログラムで良いのですけど、実際にシステムを開発するときはそんなわけにはいきません。本番環境で学習するなんて無駄ですもんね。学習は事前にやっておけばよいんです。</p>
+<p>だから、まずは、機械学習して予測モデルを作成するプログラムです。こんな感じ。</p>
+<div class="sourceCode" id="cb22"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os</span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> <span class="bu">reduce</span></span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> count, repeat</span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 特徴量を追加します。</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add_features(data_frame):</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 肩書追加用の補助関数。</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add_title(title_series, name_series, <span class="bu">id</span>, titles):</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a>        title_series[<span class="bu">reduce</span>(<span class="kw">lambda</span> acc, series: acc <span class="op">+</span> series, <span class="bu">map</span>(<span class="kw">lambda</span> title: name_series.<span class="bu">str</span>.contains(title), titles))] <span class="op">=</span> <span class="bu">id</span></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-19"><a href="#cb22-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> title_series</span>
+<span id="cb22-20"><a href="#cb22-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-21"><a href="#cb22-21" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 肩書を追加します。</span></span>
+<span id="cb22-22"><a href="#cb22-22" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;Title&#39;</span>] <span class="op">=</span> <span class="bu">reduce</span>(<span class="kw">lambda</span> title_series, params: add_title(title_series, data_frame[<span class="st">&#39;Name&#39;</span>], <span class="op">*</span>params),</span>
+<span id="cb22-23"><a href="#cb22-23" aria-hidden="true" tabindex="-1"></a>                                 ((<span class="dv">0</span>, (<span class="st">&#39;Mr.&#39;</span>, <span class="st">&#39;Dr.&#39;</span>, <span class="st">&#39;Rev.&#39;</span>, <span class="st">&#39;Don.&#39;</span>, <span class="st">&#39;Col.&#39;</span>, <span class="st">&#39;Major.&#39;</span>, <span class="st">&#39;Capt.&#39;</span>)),</span>
+<span id="cb22-24"><a href="#cb22-24" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">1</span>, (<span class="st">&#39;Master.&#39;</span>,)),</span>
+<span id="cb22-25"><a href="#cb22-25" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">2</span>, (<span class="st">&#39;Mrs.&#39;</span>, <span class="st">&#39;Mme.&#39;</span>, <span class="st">&#39;Ms.&#39;</span>)),</span>
+<span id="cb22-26"><a href="#cb22-26" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">3</span>, (<span class="st">&#39;Miss.&#39;</span>,))),</span>
+<span id="cb22-27"><a href="#cb22-27" aria-hidden="true" tabindex="-1"></a>                                 pd.Series(repeat(np.nan, <span class="bu">len</span>(data_frame[<span class="st">&#39;Name&#39;</span>])), dtype<span class="op">=</span><span class="st">&#39;object&#39;</span>))</span>
+<span id="cb22-28"><a href="#cb22-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-29"><a href="#cb22-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 家族の人数を追加します。</span></span>
+<span id="cb22-30"><a href="#cb22-30" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;FamilySize&#39;</span>] <span class="op">=</span> data_frame[<span class="st">&#39;SibSp&#39;</span>] <span class="op">+</span> data_frame[<span class="st">&#39;Parch&#39;</span>]</span>
+<span id="cb22-31"><a href="#cb22-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-32"><a href="#cb22-32" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 料金は合計みたいなので、単価を追加します。</span></span>
+<span id="cb22-33"><a href="#cb22-33" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;FareUnitPrice&#39;</span>] <span class="op">=</span> data_frame[<span class="st">&#39;Fare&#39;</span>] <span class="op">/</span> data_frame[<span class="st">&#39;FamilySize&#39;</span>]</span>
+<span id="cb22-34"><a href="#cb22-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-35"><a href="#cb22-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame</span>
+<span id="cb22-36"><a href="#cb22-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-37"><a href="#cb22-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-38"><a href="#cb22-38" aria-hidden="true" tabindex="-1"></a><span class="co"># カテゴリ型の特徴量を、どの数値に変換するかのdictを取得します。</span></span>
+<span id="cb22-39"><a href="#cb22-39" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_categorical_features(data_frame):</span>
+<span id="cb22-40"><a href="#cb22-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(<span class="bu">map</span>(<span class="kw">lambda</span> feature: (feature, <span class="bu">dict</span>(<span class="bu">zip</span>(data_frame[feature].factorize()[<span class="dv">1</span>], count()))), (<span class="st">&#39;Sex&#39;</span>, <span class="st">&#39;Embarked&#39;</span>, <span class="st">&#39;Title&#39;</span>)))</span>
+<span id="cb22-41"><a href="#cb22-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-42"><a href="#cb22-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-43"><a href="#cb22-43" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb22-44"><a href="#cb22-44" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame, categorical_features):</span>
+<span id="cb22-45"><a href="#cb22-45" aria-hidden="true" tabindex="-1"></a>    <span class="co"># カテゴリ型の特徴量を、数値に変換します。</span></span>
+<span id="cb22-46"><a href="#cb22-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> feature, mapping <span class="kw">in</span> categorical_features.items():</span>
+<span id="cb22-47"><a href="#cb22-47" aria-hidden="true" tabindex="-1"></a>        <span class="co"># data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype(&#39;category&#39;)  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。</span></span>
+<span id="cb22-48"><a href="#cb22-48" aria-hidden="true" tabindex="-1"></a>        data_frame[feature] <span class="op">=</span> data_frame[feature].<span class="bu">map</span>({<span class="op">**</span>mapping, <span class="op">**</span>{np.nan: <span class="op">-</span><span class="dv">1</span>}}).astype(<span class="st">&#39;category&#39;</span>)</span>
+<span id="cb22-49"><a href="#cb22-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-50"><a href="#cb22-50" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 予測に使用するカラムだけを抽出します。NameとTicketは関係なさそうなので無視、Cabinは欠損地が多いので無視しました。</span></span>
+<span id="cb22-51"><a href="#cb22-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[[<span class="st">&#39;Pclass&#39;</span>, <span class="st">&#39;Sex&#39;</span>, <span class="st">&#39;Age&#39;</span>, <span class="st">&#39;SibSp&#39;</span>, <span class="st">&#39;Parch&#39;</span>, <span class="st">&#39;Fare&#39;</span>, <span class="st">&#39;Embarked&#39;</span>, <span class="st">&#39;Title&#39;</span>, <span class="st">&#39;FamilySize&#39;</span>, <span class="st">&#39;FareUnitPrice&#39;</span>]]</span>
+<span id="cb22-52"><a href="#cb22-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-53"><a href="#cb22-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-54"><a href="#cb22-54" aria-hidden="true" tabindex="-1"></a><span class="co"># 正解を取得します。</span></span>
+<span id="cb22-55"><a href="#cb22-55" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
+<span id="cb22-56"><a href="#cb22-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;Survived&#39;</span>]</span>
+<span id="cb22-57"><a href="#cb22-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-58"><a href="#cb22-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-59"><a href="#cb22-59" aria-hidden="true" tabindex="-1"></a><span class="co"># 機械学習モデルを保存します。</span></span>
+<span id="cb22-60"><a href="#cb22-60" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_model(model, name):</span>
+<span id="cb22-61"><a href="#cb22-61" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, booster <span class="kw">in</span> <span class="bu">enumerate</span>(model.boosters):  <span class="co"># 交差検証なので、複数のモデルが生成されます。</span></span>
+<span id="cb22-62"><a href="#cb22-62" aria-hidden="true" tabindex="-1"></a>        booster.save_model(path.join(<span class="st">&#39;titanic-model&#39;</span>, <span class="ss">f&#39;</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">-</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">.txt&#39;</span>))</span>
+<span id="cb22-63"><a href="#cb22-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-64"><a href="#cb22-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-65"><a href="#cb22-65" aria-hidden="true" tabindex="-1"></a><span class="co"># カテゴリ型の特徴量を、どの数値に変換するかのdictを保存します。</span></span>
+<span id="cb22-66"><a href="#cb22-66" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_categorical_features(categorical_features):</span>
+<span id="cb22-67"><a href="#cb22-67" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path.join(<span class="st">&#39;titanic-model&#39;</span>, <span class="st">&#39;categorical-features.pickle&#39;</span>), mode<span class="op">=</span><span class="st">&#39;wb&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb22-68"><a href="#cb22-68" aria-hidden="true" tabindex="-1"></a>        pickle.dump(categorical_features, f)</span>
+<span id="cb22-69"><a href="#cb22-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-70"><a href="#cb22-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-71"><a href="#cb22-71" aria-hidden="true" tabindex="-1"></a><span class="co"># データを読み込んで、前準備をします。</span></span>
+<span id="cb22-72"><a href="#cb22-72" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> add_features(pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;titanic&#39;</span>, <span class="st">&#39;train.csv&#39;</span>)))</span>
+<span id="cb22-73"><a href="#cb22-73" aria-hidden="true" tabindex="-1"></a>categorical_features <span class="op">=</span> get_categorical_features(data_frame)</span>
+<span id="cb22-74"><a href="#cb22-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-75"><a href="#cb22-75" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。できるだけ精度を上げたいので、すべてのデータを使用して機械学習します。</span></span>
+<span id="cb22-76"><a href="#cb22-76" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame, categorical_features)</span>
+<span id="cb22-77"><a href="#cb22-77" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb22-78"><a href="#cb22-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-79"><a href="#cb22-79" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを作成します。Optunaが作成したパラメーター（+ learning_rate）を使用します。</span></span>
+<span id="cb22-80"><a href="#cb22-80" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
+<span id="cb22-81"><a href="#cb22-81" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;objective&#39;</span>: <span class="st">&#39;binary&#39;</span>,</span>
+<span id="cb22-82"><a href="#cb22-82" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;force_col_wise&#39;</span>: <span class="va">True</span>,</span>
+<span id="cb22-83"><a href="#cb22-83" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;feature_pre_filter&#39;</span>: <span class="va">False</span>,</span>
+<span id="cb22-84"><a href="#cb22-84" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;lambda_l1&#39;</span>: <span class="fl">1.4361833756015463</span>,</span>
+<span id="cb22-85"><a href="#cb22-85" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;lambda_l2&#39;</span>: <span class="fl">2.760985217750726e-07</span>,</span>
+<span id="cb22-86"><a href="#cb22-86" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;num_leaves&#39;</span>: <span class="dv">5</span>,</span>
+<span id="cb22-87"><a href="#cb22-87" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;feature_fraction&#39;</span>: <span class="fl">0.4</span>,</span>
+<span id="cb22-88"><a href="#cb22-88" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;bagging_fraction&#39;</span>: <span class="fl">1.0</span>,</span>
+<span id="cb22-89"><a href="#cb22-89" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;bagging_freq&#39;</span>: <span class="dv">0</span>,</span>
+<span id="cb22-90"><a href="#cb22-90" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;min_child_samples&#39;</span>: <span class="dv">20</span>,</span>
+<span id="cb22-91"><a href="#cb22-91" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;learning_rate&#39;</span>: <span class="fl">0.01</span></span>
+<span id="cb22-92"><a href="#cb22-92" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb22-93"><a href="#cb22-93" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-94"><a href="#cb22-94" aria-hidden="true" tabindex="-1"></a><span class="co"># 交差検証で機械学習します。</span></span>
+<span id="cb22-95"><a href="#cb22-95" aria-hidden="true" tabindex="-1"></a>cv_result <span class="op">=</span> lgb.cv(params, lgb.Dataset(xs, label<span class="op">=</span>ys), num_boost_round<span class="op">=</span><span class="dv">1000</span>, return_cvbooster<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb22-96"><a href="#cb22-96" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> cv_result[<span class="st">&#39;cvbooster&#39;</span>]</span>
+<span id="cb22-97"><a href="#cb22-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-98"><a href="#cb22-98" aria-hidden="true" tabindex="-1"></a><span class="co"># モデル保存用のディレクトリを作成します。</span></span>
+<span id="cb22-99"><a href="#cb22-99" aria-hidden="true" tabindex="-1"></a>os.makedirs(<span class="st">&#39;titanic-model&#39;</span>, exist_ok<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb22-100"><a href="#cb22-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-101"><a href="#cb22-101" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを保存します。</span></span>
+<span id="cb22-102"><a href="#cb22-102" aria-hidden="true" tabindex="-1"></a>save_model(model, <span class="st">&#39;model&#39;</span>)</span>
+<span id="cb22-103"><a href="#cb22-103" aria-hidden="true" tabindex="-1"></a>save_categorical_features(categorical_features)</span>
+<span id="cb22-104"><a href="#cb22-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-105"><a href="#cb22-105" aria-hidden="true" tabindex="-1"></a><span class="co"># 学習曲線を出力します。</span></span>
+<span id="cb22-106"><a href="#cb22-106" aria-hidden="true" tabindex="-1"></a>plot.plot(cv_result[<span class="st">&#39;binary_logloss-mean&#39;</span>])</span>
+<span id="cb22-107"><a href="#cb22-107" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div>
+<p>LightGBMのパラメーターに<code>learning_rate</code>を追加しているところに注意してください。勾配降下法では正解との誤差に基づいてパラメーターを調整していくのですけど、<code>learning_rate</code>を設定することで、大きく一気に調整したり小さく小刻みに調整したりできます。<code>learning_rate</code>が大きければ学習が早く終わりますけど調整が大雑把なので精度はそんなに高くない、小さい場合はその逆で時間はかかるけど精度が高くなります。</p>
+<p>特徴量エンジニアリングするときには早くサイクルを回したいので<code>learning_rate</code>を大きく（デフォルト値でも十分に大きい）、最終成果物を作るときには<code>learning_rate</code>を小さくします。今回は、デフォルト値の1/10に設定しました。</p>
+<p>で、<code>learning_rate</code>を下げた分だけ学習が遅くなりますから、エポック数に相当する<code>num_boost_round</code>（<code>cv()</code>の引数です）の値を大きくしています。</p>
+<p>あとは、交差検証なので複数のモデルが作られるのでそれらを全部保存することと、カテゴリーの特徴量を数値化するための情報も帆損しなければなりません。それ以外は、少しでも精度を上げるために検証データを作らずにすべてのデータで学習しているくらいかな。</p>
+<p>あ、今回はKaggleのnotebookで実行しやすいようにモジュール化していませんけど、モジュール化すればもっとシンプルなコードにできます。実案件ではモジュール化してみてください。</p>
+<h2 id="予測モデルで予測する">予測モデルで予測する</h2>
+<p>実際のシステムでは本番環境で動く部分に相当する、予測をするプログラムを作ります。保存された予測モデルをロードして、test.csvを使用して予測をしてKaggle提出量のCSVファイルを作成します。</p>
+<div class="sourceCode" id="cb23"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> <span class="bu">reduce</span></span>
+<span id="cb23-8"><a href="#cb23-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> count, repeat</span>
+<span id="cb23-9"><a href="#cb23-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> glob <span class="im">import</span> glob</span>
+<span id="cb23-10"><a href="#cb23-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-11"><a href="#cb23-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-12"><a href="#cb23-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 特徴量を追加します。</span></span>
+<span id="cb23-13"><a href="#cb23-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add_features(data_frame):</span>
+<span id="cb23-14"><a href="#cb23-14" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 肩書追加用の補助関数。</span></span>
+<span id="cb23-15"><a href="#cb23-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add_title(title_series, name_series, <span class="bu">id</span>, titles):</span>
+<span id="cb23-16"><a href="#cb23-16" aria-hidden="true" tabindex="-1"></a>        title_series[<span class="bu">reduce</span>(<span class="kw">lambda</span> acc, series: acc <span class="op">+</span> series, <span class="bu">map</span>(<span class="kw">lambda</span> title: name_series.<span class="bu">str</span>.contains(title), titles))] <span class="op">=</span> <span class="bu">id</span></span>
+<span id="cb23-17"><a href="#cb23-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-18"><a href="#cb23-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> title_series</span>
+<span id="cb23-19"><a href="#cb23-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-20"><a href="#cb23-20" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 肩書を追加します。</span></span>
+<span id="cb23-21"><a href="#cb23-21" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;Title&#39;</span>] <span class="op">=</span> <span class="bu">reduce</span>(<span class="kw">lambda</span> title_series, params: add_title(title_series, data_frame[<span class="st">&#39;Name&#39;</span>], <span class="op">*</span>params),</span>
+<span id="cb23-22"><a href="#cb23-22" aria-hidden="true" tabindex="-1"></a>                                 ((<span class="dv">0</span>, (<span class="st">&#39;Mr.&#39;</span>, <span class="st">&#39;Dr.&#39;</span>, <span class="st">&#39;Rev.&#39;</span>, <span class="st">&#39;Don.&#39;</span>, <span class="st">&#39;Col.&#39;</span>, <span class="st">&#39;Major.&#39;</span>, <span class="st">&#39;Capt.&#39;</span>)),</span>
+<span id="cb23-23"><a href="#cb23-23" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">1</span>, (<span class="st">&#39;Master.&#39;</span>,)),</span>
+<span id="cb23-24"><a href="#cb23-24" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">2</span>, (<span class="st">&#39;Mrs.&#39;</span>, <span class="st">&#39;Mme.&#39;</span>, <span class="st">&#39;Ms.&#39;</span>)),</span>
+<span id="cb23-25"><a href="#cb23-25" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">3</span>, (<span class="st">&#39;Miss.&#39;</span>,))),</span>
+<span id="cb23-26"><a href="#cb23-26" aria-hidden="true" tabindex="-1"></a>                                 pd.Series(repeat(np.nan, <span class="bu">len</span>(data_frame[<span class="st">&#39;Name&#39;</span>])), dtype<span class="op">=</span><span class="st">&#39;object&#39;</span>))</span>
+<span id="cb23-27"><a href="#cb23-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-28"><a href="#cb23-28" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 家族の人数を追加します。</span></span>
+<span id="cb23-29"><a href="#cb23-29" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;FamilySize&#39;</span>] <span class="op">=</span> data_frame[<span class="st">&#39;SibSp&#39;</span>] <span class="op">+</span> data_frame[<span class="st">&#39;Parch&#39;</span>]</span>
+<span id="cb23-30"><a href="#cb23-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-31"><a href="#cb23-31" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 料金は合計みたいなので、単価を追加します。</span></span>
+<span id="cb23-32"><a href="#cb23-32" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;FareUnitPrice&#39;</span>] <span class="op">=</span> data_frame[<span class="st">&#39;Fare&#39;</span>] <span class="op">/</span> data_frame[<span class="st">&#39;FamilySize&#39;</span>]</span>
+<span id="cb23-33"><a href="#cb23-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-34"><a href="#cb23-34" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame</span>
+<span id="cb23-35"><a href="#cb23-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-36"><a href="#cb23-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-37"><a href="#cb23-37" aria-hidden="true" tabindex="-1"></a><span class="co"># カテゴリ型の特徴量を、どの数値に変換するかのdictを取得します。</span></span>
+<span id="cb23-38"><a href="#cb23-38" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_categorical_features(data_frame):</span>
+<span id="cb23-39"><a href="#cb23-39" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(<span class="bu">map</span>(<span class="kw">lambda</span> feature: (feature, <span class="bu">dict</span>(<span class="bu">zip</span>(data_frame[feature].factorize()[<span class="dv">1</span>], count()))), (<span class="st">&#39;Sex&#39;</span>, <span class="st">&#39;Embarked&#39;</span>, <span class="st">&#39;Title&#39;</span>)))</span>
+<span id="cb23-40"><a href="#cb23-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-41"><a href="#cb23-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-42"><a href="#cb23-42" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb23-43"><a href="#cb23-43" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame, categorical_features):</span>
+<span id="cb23-44"><a href="#cb23-44" aria-hidden="true" tabindex="-1"></a>    <span class="co"># カテゴリ型の特徴量を、数値に変換します。</span></span>
+<span id="cb23-45"><a href="#cb23-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> feature, mapping <span class="kw">in</span> categorical_features.items():</span>
+<span id="cb23-46"><a href="#cb23-46" aria-hidden="true" tabindex="-1"></a>        <span class="co"># data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype(&#39;category&#39;)  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。</span></span>
+<span id="cb23-47"><a href="#cb23-47" aria-hidden="true" tabindex="-1"></a>        data_frame[feature] <span class="op">=</span> data_frame[feature].<span class="bu">map</span>({<span class="op">**</span>mapping, <span class="op">**</span>{np.nan: <span class="op">-</span><span class="dv">1</span>}}).astype(<span class="st">&#39;category&#39;</span>)</span>
+<span id="cb23-48"><a href="#cb23-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-49"><a href="#cb23-49" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 予測に使用するカラムだけを抽出します。NameとTicketは関係なさそうなので無視、Cabinは欠損地が多いので無視しました。</span></span>
+<span id="cb23-50"><a href="#cb23-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[[<span class="st">&#39;Pclass&#39;</span>, <span class="st">&#39;Sex&#39;</span>, <span class="st">&#39;Age&#39;</span>, <span class="st">&#39;SibSp&#39;</span>, <span class="st">&#39;Parch&#39;</span>, <span class="st">&#39;Fare&#39;</span>, <span class="st">&#39;Embarked&#39;</span>, <span class="st">&#39;Title&#39;</span>, <span class="st">&#39;FamilySize&#39;</span>, <span class="st">&#39;FareUnitPrice&#39;</span>]]</span>
+<span id="cb23-51"><a href="#cb23-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-52"><a href="#cb23-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-53"><a href="#cb23-53" aria-hidden="true" tabindex="-1"></a><span class="co"># Kaggleのnotebookなのかを判定します。</span></span>
+<span id="cb23-54"><a href="#cb23-54" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_kaggle_notebook():</span>
+<span id="cb23-55"><a href="#cb23-55" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">&#39;_dh&#39;</span> <span class="kw">in</span> <span class="bu">globals</span>() <span class="kw">and</span> <span class="bu">globals</span>()[<span class="st">&#39;_dh&#39;</span>] <span class="op">==</span> [<span class="st">&#39;/kaggle/working&#39;</span>]</span>
+<span id="cb23-56"><a href="#cb23-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-57"><a href="#cb23-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-58"><a href="#cb23-58" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルをロードします。</span></span>
+<span id="cb23-59"><a href="#cb23-59" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_model(name):</span>
+<span id="cb23-60"><a href="#cb23-60" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> lgb.CVBooster()</span>
+<span id="cb23-61"><a href="#cb23-61" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-62"><a href="#cb23-62" aria-hidden="true" tabindex="-1"></a>    base_path <span class="op">=</span> <span class="st">&#39;.&#39;</span> <span class="cf">if</span> <span class="kw">not</span> is_kaggle_notebook() <span class="cf">else</span> path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>)  <span class="co"># KaggleのnotebookのDatasetは../inputに展開されます。。。</span></span>
+<span id="cb23-63"><a href="#cb23-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-64"><a href="#cb23-64" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> <span class="bu">sorted</span>(glob(path.join(base_path, <span class="st">&#39;titanic-model&#39;</span>, <span class="ss">f&#39;</span><span class="sc">{</span>name<span class="sc">}</span><span class="ss">-*.txt&#39;</span>))):  <span class="co"># 交差検証なので、複数のモデルが生成されます。</span></span>
+<span id="cb23-65"><a href="#cb23-65" aria-hidden="true" tabindex="-1"></a>        result.boosters.append(lgb.Booster(model_file<span class="op">=</span><span class="bu">file</span>))</span>
+<span id="cb23-66"><a href="#cb23-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-67"><a href="#cb23-67" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span>
+<span id="cb23-68"><a href="#cb23-68" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-69"><a href="#cb23-69" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-70"><a href="#cb23-70" aria-hidden="true" tabindex="-1"></a><span class="co"># カテゴリ型の特徴量を、どの数値に変換するかのdictをロードします。</span></span>
+<span id="cb23-71"><a href="#cb23-71" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_categorical_features():</span>
+<span id="cb23-72"><a href="#cb23-72" aria-hidden="true" tabindex="-1"></a>    base_path <span class="op">=</span> <span class="st">&#39;.&#39;</span> <span class="cf">if</span> <span class="kw">not</span> is_kaggle_notebook() <span class="cf">else</span> path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>)  <span class="co"># KaggleのnotebookのDatasetは../inputに展開されます。。。</span></span>
+<span id="cb23-73"><a href="#cb23-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-74"><a href="#cb23-74" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path.join(base_path, <span class="st">&#39;titanic-model&#39;</span>, <span class="st">&#39;categorical-features.pickle&#39;</span>), mode<span class="op">=</span><span class="st">&#39;rb&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb23-75"><a href="#cb23-75" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> pickle.load(f)</span>
+<span id="cb23-76"><a href="#cb23-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-77"><a href="#cb23-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-78"><a href="#cb23-78" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルをロードします。</span></span>
+<span id="cb23-79"><a href="#cb23-79" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> load_model(<span class="st">&#39;model&#39;</span>)</span>
+<span id="cb23-80"><a href="#cb23-80" aria-hidden="true" tabindex="-1"></a>categorical_features <span class="op">=</span> load_categorical_features()</span>
+<span id="cb23-81"><a href="#cb23-81" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-82"><a href="#cb23-82" aria-hidden="true" tabindex="-1"></a><span class="co"># データを読み込んで、前準備をします。</span></span>
+<span id="cb23-83"><a href="#cb23-83" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> add_features(pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;titanic&#39;</span>, <span class="st">&#39;test.csv&#39;</span>)))</span>
+<span id="cb23-84"><a href="#cb23-84" aria-hidden="true" tabindex="-1"></a>data_frame[<span class="st">&#39;Fare&#39;</span>] <span class="op">=</span> data_frame[<span class="st">&#39;Fare&#39;</span>].fillna(data_frame[<span class="st">&#39;Fare&#39;</span>].mean())  <span class="co"># train.csvにはないけど、test.csvのFareにはNaNがある。。。</span></span>
+<span id="cb23-85"><a href="#cb23-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-86"><a href="#cb23-86" aria-hidden="true" tabindex="-1"></a><span class="co"># 予測用のデータを取得します。</span></span>
+<span id="cb23-87"><a href="#cb23-87" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame, categorical_features)</span>
+<span id="cb23-88"><a href="#cb23-88" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-89"><a href="#cb23-89" aria-hidden="true" tabindex="-1"></a><span class="co"># 予測して、結果をCSVとして保存します。</span></span>
+<span id="cb23-90"><a href="#cb23-90" aria-hidden="true" tabindex="-1"></a>submission <span class="op">=</span> pd.DataFrame({<span class="st">&#39;PassengerId&#39;</span>: data_frame[<span class="st">&#39;PassengerId&#39;</span>], <span class="st">&#39;Survived&#39;</span>: (np.mean(model.predict(xs), axis<span class="op">=</span><span class="dv">0</span>) <span class="op">&gt;=</span> <span class="fl">0.5</span>).astype(np.int32)})</span>
+<span id="cb23-91"><a href="#cb23-91" aria-hidden="true" tabindex="-1"></a>submission.to_csv(<span class="st">&#39;submission.csv&#39;</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
+<p>機械学習モデルの読み込みはLightGBMの<code>Booseter</code>のコンストラクタで<code>model_file</code>を指定すればオッケー。交差検証なので複数のモデルがあることだけ注意。あと、Kaggleのnotebookで実行する場合、追加したファイルは../inputに展開されるので、Kaggleのnotebookの場合用の分岐も入れています。残りの予測をする部分は、これまでと同じです。</p>
+<p>これでプログラミングがすべて完了したので、作成されたCSVファイルをKaggleに提出して、スコアを見てみると……0.77990で3,282位でした。スコアが0.8くらいの人のやり方を参考にすれば、もう少し精度を上げられるかもしれません。Leaderboardに並んでいるスコア1.0の連中は<a
+href="https://www.kaggle.com/maryragozina/notebook9849f51564?scriptVersionId=85357609">カンニングしている</a>ので、参考にしては駄目です。</p>
+<p>あとね、いくらスコアが高くても、たまたまtest.csvに合っていただけという可能性もあるんですよ……。Kaggleのコンペでは競技中はテスト・データの一部を使用したスコアでの順位しか表示されず、最終的な順位はテスト・データの残りでスコアで決定されます。テスト・データの一部に過剰にフィットしていただけだったので、競技中はスコアが高かったけど最終的には低かったなんて場合もあります。だから、スコアを上げるためだけにさらにハイパー・パラメーターを手でチューニングしたりするのは無意味だと思います。</p>
+<p>というかね、0.77990って、スコアの最頻値よりも良い、そこそこ自慢して良いスコアだと思うんですよ（精度なので、大きいほど良いです）。公式のチュートリアルのスコアが0.77751みたいですし、実際の案件だったらそれでビジネスが成り立つ精度であれば十分なわけですし。</p>
+<p><img src="./image/score-histgram-titanic.png"
+alt="Titanicのスコアのヒストグラム" /></p>
+<p>というわけで、LightGBMとOptunaを使って、あと少しだけ特長量エンジニアリングすれば、機械学習で簡単にそこそこの精度を出せることがわかりました。しかも、特長量エンジニアリングまで含めて、全てが慣れ親しんだプログラミング作業です。</p>
+<p>ほら、アルゴリズムを考えるのが面倒だからとりあえず機械学習してみるってのは、十分アリだと思いませんか？</p>
+<h1 id="勾配ブースティングで回帰">勾配ブースティングで回帰</h1>
+<p>続いて、やはりKaggleのGetting Startedの<a
+href="https://www.kaggle.com/c/house-prices-advanced-regression-techniques">House
+Prices</a>をやってみましょう。今度は回帰分析です。あと、Titanicではやらなかったモジュール化でやります。KaggleのNotebookで動かすのは少し大変かもしれませんけど気にしない方向で。</p>
+<h2 id="データセット">データセット</h2>
+<p>データセットを取得するモジュールを作成します。</p>
+<div class="sourceCode" id="cb24"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> concat, count, repeat</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 大小関係がある文字列の特長量を数値に変換します。</span></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> convert_to_number(data_frame):</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> feature, names <span class="kw">in</span> concat(<span class="bu">zip</span>((<span class="st">&#39;Utilities&#39;</span>,),</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>                                     repeat((<span class="st">&#39;AllPub&#39;</span>, <span class="st">&#39;NoSewr&#39;</span>, <span class="st">&#39;NoSeWa&#39;</span>, <span class="st">&#39;ELO&#39;</span>))),</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>                                 <span class="bu">zip</span>((<span class="st">&#39;LandSlope&#39;</span>,),</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>                                     repeat((<span class="st">&#39;Gtl&#39;</span>, <span class="st">&#39;Mod&#39;</span>, <span class="st">&#39;Sev&#39;</span>))),</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>                                 <span class="bu">zip</span>((<span class="st">&#39;ExterQual&#39;</span>, <span class="st">&#39;ExterCond&#39;</span>, <span class="st">&#39;BsmtQual&#39;</span>, <span class="st">&#39;BsmtCond&#39;</span>, <span class="st">&#39;HeatingQC&#39;</span>, <span class="st">&#39;KitchenQual&#39;</span>, <span class="st">&#39;FireplaceQu&#39;</span>, <span class="st">&#39;GarageQual&#39;</span>, <span class="st">&#39;GarageCond&#39;</span>, <span class="st">&#39;PoolQC&#39;</span>),</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>                                     repeat((<span class="st">&#39;Ex&#39;</span>, <span class="st">&#39;Gd&#39;</span>, <span class="st">&#39;Ta&#39;</span>, <span class="st">&#39;Fa&#39;</span>, <span class="st">&#39;Po&#39;</span>))),</span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>                                 <span class="bu">zip</span>((<span class="st">&#39;BsmtExposure&#39;</span>,),</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>                                     repeat((<span class="st">&#39;Gd&#39;</span>, <span class="st">&#39;Av&#39;</span>, <span class="st">&#39;Mn&#39;</span>, <span class="st">&#39;No&#39;</span>))),</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>                                 <span class="bu">zip</span>((<span class="st">&#39;BsmtFinType1&#39;</span>, <span class="st">&#39;BsmtFinType2&#39;</span>),</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a>                                     repeat((<span class="st">&#39;GLQ&#39;</span>, <span class="st">&#39;ALQ&#39;</span>, <span class="st">&#39;BLQ&#39;</span>, <span class="st">&#39;Rec&#39;</span>, <span class="st">&#39;LwQ&#39;</span>, <span class="st">&#39;Unf&#39;</span>))),</span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>                                 <span class="bu">zip</span>((<span class="st">&#39;Functional&#39;</span>,),</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>                                     repeat((<span class="st">&#39;Typ&#39;</span>, <span class="st">&#39;Min1&#39;</span>, <span class="st">&#39;Min2&#39;</span>, <span class="st">&#39;Mod&#39;</span>, <span class="st">&#39;Maj1&#39;</span>, <span class="st">&#39;Maj2&#39;</span>, <span class="st">&#39;Sev&#39;</span>, <span class="st">&#39;Sal&#39;</span>))),</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>                                 <span class="bu">zip</span>((<span class="st">&#39;GarageFinish&#39;</span>,),</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>                                     repeat((<span class="st">&#39;Fin&#39;</span>, <span class="st">&#39;RFn&#39;</span>, <span class="st">&#39;Unf&#39;</span>))),</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>                                 <span class="bu">zip</span>((<span class="st">&#39;Fence&#39;</span>,),</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>                                     repeat((<span class="st">&#39;GdPrv&#39;</span>, <span class="st">&#39;MnPrv&#39;</span>, <span class="st">&#39;GdWo&#39;</span>, <span class="st">&#39;MnWw&#39;</span>)))):</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>        data_frame[feature] <span class="op">=</span> data_frame[feature].<span class="bu">map</span>(<span class="bu">dict</span>(<span class="bu">zip</span>(names, count(<span class="bu">len</span>(names) <span class="op">-</span> <span class="dv">1</span>, <span class="op">-</span><span class="dv">1</span>)))).fillna(<span class="op">-</span><span class="dv">1</span>).astype(<span class="st">&#39;int&#39;</span>)</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame</span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 特徴量エンジニアリングで、特徴量を追加します。</span></span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add_features(data_frame):</span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;TotalSF&#39;</span>] <span class="op">=</span> data_frame[<span class="st">&#39;TotalBsmtSF&#39;</span>] <span class="op">+</span> data_frame[<span class="st">&#39;1stFlrSF&#39;</span>] <span class="op">+</span> data_frame[<span class="st">&#39;2ndFlrSF&#39;</span>]  <span class="co"># 3階建てはない？</span></span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;SFPerRoom&#39;</span>] <span class="op">=</span> data_frame[<span class="st">&#39;TotalSF&#39;</span>] <span class="op">/</span> data_frame[<span class="st">&#39;TotRmsAbvGrd&#39;</span>]</span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame</span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練用のDataFrameを読み込みます。</span></span>
+<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_train_data_frame():</span>
+<span id="cb24-40"><a href="#cb24-40" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> add_features(convert_to_number(pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;house-prices-advanced-regression-techniques&#39;</span>, <span class="st">&#39;train.csv&#39;</span>))))</span>
+<span id="cb24-41"><a href="#cb24-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-42"><a href="#cb24-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-43"><a href="#cb24-43" aria-hidden="true" tabindex="-1"></a><span class="co"># テスト用のDataFrameを読み込みます。</span></span>
+<span id="cb24-44"><a href="#cb24-44" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_test_data_frame():</span>
+<span id="cb24-45"><a href="#cb24-45" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> add_features(convert_to_number(pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;house-prices-advanced-regression-techniques&#39;</span>, <span class="st">&#39;test.csv&#39;</span>))))</span>
+<span id="cb24-46"><a href="#cb24-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-47"><a href="#cb24-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-48"><a href="#cb24-48" aria-hidden="true" tabindex="-1"></a><span class="co"># カテゴリーの特長量を変換します。</span></span>
+<span id="cb24-49"><a href="#cb24-49" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_categorical_features(data_frame):</span>
+<span id="cb24-50"><a href="#cb24-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(<span class="bu">map</span>(<span class="kw">lambda</span> feature: (feature, <span class="bu">dict</span>(<span class="bu">zip</span>(data_frame[feature].factorize()[<span class="dv">1</span>], count()))),</span>
+<span id="cb24-51"><a href="#cb24-51" aria-hidden="true" tabindex="-1"></a>                    (<span class="st">&#39;MSZoning&#39;</span>,</span>
+<span id="cb24-52"><a href="#cb24-52" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;Street&#39;</span>,</span>
+<span id="cb24-53"><a href="#cb24-53" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;Alley&#39;</span>,</span>
+<span id="cb24-54"><a href="#cb24-54" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;LotShape&#39;</span>,</span>
+<span id="cb24-55"><a href="#cb24-55" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;LandContour&#39;</span>,</span>
+<span id="cb24-56"><a href="#cb24-56" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;LotConfig&#39;</span>,</span>
+<span id="cb24-57"><a href="#cb24-57" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;Neighborhood&#39;</span>,</span>
+<span id="cb24-58"><a href="#cb24-58" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;Condition1&#39;</span>,</span>
+<span id="cb24-59"><a href="#cb24-59" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;Condition2&#39;</span>,</span>
+<span id="cb24-60"><a href="#cb24-60" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;BldgType&#39;</span>,</span>
+<span id="cb24-61"><a href="#cb24-61" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;HouseStyle&#39;</span>,</span>
+<span id="cb24-62"><a href="#cb24-62" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;RoofStyle&#39;</span>,</span>
+<span id="cb24-63"><a href="#cb24-63" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;RoofMatl&#39;</span>,</span>
+<span id="cb24-64"><a href="#cb24-64" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;Exterior1st&#39;</span>,</span>
+<span id="cb24-65"><a href="#cb24-65" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;Exterior2nd&#39;</span>,</span>
+<span id="cb24-66"><a href="#cb24-66" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;MasVnrType&#39;</span>,</span>
+<span id="cb24-67"><a href="#cb24-67" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;Foundation&#39;</span>,</span>
+<span id="cb24-68"><a href="#cb24-68" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;Heating&#39;</span>,</span>
+<span id="cb24-69"><a href="#cb24-69" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;CentralAir&#39;</span>,</span>
+<span id="cb24-70"><a href="#cb24-70" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;Electrical&#39;</span>,</span>
+<span id="cb24-71"><a href="#cb24-71" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;GarageType&#39;</span>,</span>
+<span id="cb24-72"><a href="#cb24-72" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;PavedDrive&#39;</span>,</span>
+<span id="cb24-73"><a href="#cb24-73" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;MiscFeature&#39;</span>,</span>
+<span id="cb24-74"><a href="#cb24-74" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;SaleType&#39;</span>,</span>
+<span id="cb24-75"><a href="#cb24-75" aria-hidden="true" tabindex="-1"></a>                     <span class="st">&#39;SaleCondition&#39;</span>)))</span>
+<span id="cb24-76"><a href="#cb24-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-77"><a href="#cb24-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-78"><a href="#cb24-78" aria-hidden="true" tabindex="-1"></a><span class="co"># 入力データを読み込みます。</span></span>
+<span id="cb24-79"><a href="#cb24-79" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame, categorical_features):</span>
+<span id="cb24-80"><a href="#cb24-80" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> feature, mapping <span class="kw">in</span> categorical_features.items():</span>
+<span id="cb24-81"><a href="#cb24-81" aria-hidden="true" tabindex="-1"></a>        data_frame[feature] <span class="op">=</span> data_frame[feature].<span class="bu">map</span>(mapping).fillna(<span class="op">-</span><span class="dv">1</span>).astype(<span class="st">&#39;category&#39;</span>)</span>
+<span id="cb24-82"><a href="#cb24-82" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-83"><a href="#cb24-83" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[[<span class="st">&#39;MSSubClass&#39;</span>,</span>
+<span id="cb24-84"><a href="#cb24-84" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;MSZoning&#39;</span>,</span>
+<span id="cb24-85"><a href="#cb24-85" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;LotFrontage&#39;</span>,</span>
+<span id="cb24-86"><a href="#cb24-86" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;LotArea&#39;</span>,</span>
+<span id="cb24-87"><a href="#cb24-87" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Street&#39;</span>,</span>
+<span id="cb24-88"><a href="#cb24-88" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Alley&#39;</span>,</span>
+<span id="cb24-89"><a href="#cb24-89" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;LotShape&#39;</span>,</span>
+<span id="cb24-90"><a href="#cb24-90" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;LandContour&#39;</span>,</span>
+<span id="cb24-91"><a href="#cb24-91" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Utilities&#39;</span>,</span>
+<span id="cb24-92"><a href="#cb24-92" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;LotConfig&#39;</span>,</span>
+<span id="cb24-93"><a href="#cb24-93" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;LandSlope&#39;</span>,</span>
+<span id="cb24-94"><a href="#cb24-94" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Neighborhood&#39;</span>,</span>
+<span id="cb24-95"><a href="#cb24-95" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Condition1&#39;</span>,</span>
+<span id="cb24-96"><a href="#cb24-96" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Condition2&#39;</span>,</span>
+<span id="cb24-97"><a href="#cb24-97" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;BldgType&#39;</span>,</span>
+<span id="cb24-98"><a href="#cb24-98" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;HouseStyle&#39;</span>,</span>
+<span id="cb24-99"><a href="#cb24-99" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;OverallQual&#39;</span>,</span>
+<span id="cb24-100"><a href="#cb24-100" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;OverallCond&#39;</span>,</span>
+<span id="cb24-101"><a href="#cb24-101" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;YearBuilt&#39;</span>,</span>
+<span id="cb24-102"><a href="#cb24-102" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;YearRemodAdd&#39;</span>,</span>
+<span id="cb24-103"><a href="#cb24-103" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;RoofStyle&#39;</span>,</span>
+<span id="cb24-104"><a href="#cb24-104" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;RoofMatl&#39;</span>,</span>
+<span id="cb24-105"><a href="#cb24-105" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Exterior1st&#39;</span>,</span>
+<span id="cb24-106"><a href="#cb24-106" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Exterior2nd&#39;</span>,</span>
+<span id="cb24-107"><a href="#cb24-107" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;MasVnrType&#39;</span>,</span>
+<span id="cb24-108"><a href="#cb24-108" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;MasVnrArea&#39;</span>,</span>
+<span id="cb24-109"><a href="#cb24-109" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;ExterQual&#39;</span>,</span>
+<span id="cb24-110"><a href="#cb24-110" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;ExterCond&#39;</span>,</span>
+<span id="cb24-111"><a href="#cb24-111" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Foundation&#39;</span>,</span>
+<span id="cb24-112"><a href="#cb24-112" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;BsmtQual&#39;</span>,</span>
+<span id="cb24-113"><a href="#cb24-113" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;BsmtCond&#39;</span>,</span>
+<span id="cb24-114"><a href="#cb24-114" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;BsmtExposure&#39;</span>,</span>
+<span id="cb24-115"><a href="#cb24-115" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;BsmtFinType1&#39;</span>,</span>
+<span id="cb24-116"><a href="#cb24-116" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;BsmtFinSF1&#39;</span>,</span>
+<span id="cb24-117"><a href="#cb24-117" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;BsmtFinType2&#39;</span>,</span>
+<span id="cb24-118"><a href="#cb24-118" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;BsmtFinSF2&#39;</span>,</span>
+<span id="cb24-119"><a href="#cb24-119" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;BsmtUnfSF&#39;</span>,</span>
+<span id="cb24-120"><a href="#cb24-120" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;TotalBsmtSF&#39;</span>,</span>
+<span id="cb24-121"><a href="#cb24-121" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Heating&#39;</span>,</span>
+<span id="cb24-122"><a href="#cb24-122" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;HeatingQC&#39;</span>,</span>
+<span id="cb24-123"><a href="#cb24-123" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;CentralAir&#39;</span>,</span>
+<span id="cb24-124"><a href="#cb24-124" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Electrical&#39;</span>,</span>
+<span id="cb24-125"><a href="#cb24-125" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;1stFlrSF&#39;</span>,</span>
+<span id="cb24-126"><a href="#cb24-126" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;2ndFlrSF&#39;</span>,</span>
+<span id="cb24-127"><a href="#cb24-127" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;LowQualFinSF&#39;</span>,</span>
+<span id="cb24-128"><a href="#cb24-128" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;GrLivArea&#39;</span>,</span>
+<span id="cb24-129"><a href="#cb24-129" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;BsmtFullBath&#39;</span>,</span>
+<span id="cb24-130"><a href="#cb24-130" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;BsmtHalfBath&#39;</span>,</span>
+<span id="cb24-131"><a href="#cb24-131" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;FullBath&#39;</span>,</span>
+<span id="cb24-132"><a href="#cb24-132" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;HalfBath&#39;</span>,</span>
+<span id="cb24-133"><a href="#cb24-133" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;BedroomAbvGr&#39;</span>,</span>
+<span id="cb24-134"><a href="#cb24-134" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;KitchenAbvGr&#39;</span>,</span>
+<span id="cb24-135"><a href="#cb24-135" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;KitchenQual&#39;</span>,</span>
+<span id="cb24-136"><a href="#cb24-136" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;TotRmsAbvGrd&#39;</span>,</span>
+<span id="cb24-137"><a href="#cb24-137" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Functional&#39;</span>,</span>
+<span id="cb24-138"><a href="#cb24-138" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Fireplaces&#39;</span>,</span>
+<span id="cb24-139"><a href="#cb24-139" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;FireplaceQu&#39;</span>,</span>
+<span id="cb24-140"><a href="#cb24-140" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;GarageType&#39;</span>,</span>
+<span id="cb24-141"><a href="#cb24-141" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;GarageYrBlt&#39;</span>,</span>
+<span id="cb24-142"><a href="#cb24-142" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;GarageFinish&#39;</span>,</span>
+<span id="cb24-143"><a href="#cb24-143" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;GarageCars&#39;</span>,</span>
+<span id="cb24-144"><a href="#cb24-144" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;GarageArea&#39;</span>,</span>
+<span id="cb24-145"><a href="#cb24-145" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;GarageQual&#39;</span>,</span>
+<span id="cb24-146"><a href="#cb24-146" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;GarageCond&#39;</span>,</span>
+<span id="cb24-147"><a href="#cb24-147" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;PavedDrive&#39;</span>,</span>
+<span id="cb24-148"><a href="#cb24-148" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;WoodDeckSF&#39;</span>,</span>
+<span id="cb24-149"><a href="#cb24-149" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;OpenPorchSF&#39;</span>,</span>
+<span id="cb24-150"><a href="#cb24-150" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;EnclosedPorch&#39;</span>,</span>
+<span id="cb24-151"><a href="#cb24-151" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;3SsnPorch&#39;</span>,</span>
+<span id="cb24-152"><a href="#cb24-152" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;ScreenPorch&#39;</span>,</span>
+<span id="cb24-153"><a href="#cb24-153" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;PoolArea&#39;</span>,</span>
+<span id="cb24-154"><a href="#cb24-154" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;PoolQC&#39;</span>,</span>
+<span id="cb24-155"><a href="#cb24-155" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;Fence&#39;</span>,</span>
+<span id="cb24-156"><a href="#cb24-156" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;MiscFeature&#39;</span>,</span>
+<span id="cb24-157"><a href="#cb24-157" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;MiscVal&#39;</span>,</span>
+<span id="cb24-158"><a href="#cb24-158" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;MoSold&#39;</span>,</span>
+<span id="cb24-159"><a href="#cb24-159" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;YrSold&#39;</span>,</span>
+<span id="cb24-160"><a href="#cb24-160" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;SaleType&#39;</span>,</span>
+<span id="cb24-161"><a href="#cb24-161" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;SaleCondition&#39;</span>,</span>
+<span id="cb24-162"><a href="#cb24-162" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;TotalSF&#39;</span>,</span>
+<span id="cb24-163"><a href="#cb24-163" aria-hidden="true" tabindex="-1"></a>                       <span class="st">&#39;SFPerRoom&#39;</span>]]</span>
+<span id="cb24-164"><a href="#cb24-164" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-165"><a href="#cb24-165" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-166"><a href="#cb24-166" aria-hidden="true" tabindex="-1"></a><span class="co"># 正解データを読み込みます。</span></span>
+<span id="cb24-167"><a href="#cb24-167" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
+<span id="cb24-168"><a href="#cb24-168" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;SalePrice&#39;</span>]</span></code></pre></div>
+<p>House Pricesは特徴量の数が多くて大変でした……。なんでGetting
+Startedにこんなに特徴量が多い問題があるのかというと、統計的な数値演算で予測する場合向けに、予測に役立つ特徴量を取捨選択する手法を学ぶためだと思うんですよ。でも、我々は勾配ブースティングで決定木なので、取捨選択は機械学習が勝手にやってくれます。というわけで、全部の特徴量を使用してやりました。</p>
+<p>で、日本人ならば5段階評価にするところを、なんでか欧米人は文字で表現する場合があるんですよね……。たとえば、Excellent、Good、Average、Typical、Fair、Poorとか。これを数値に変換する<code>convert_to_number</code>関数を作成しました。Funcyを使うと関数型プログラミングできるので楽ちんです（関数型プログラミングに慣れていないと読みづらいかもしれませんけど……）。で、データを見たところ最低点未満の場合にNaNになっているみたいだったので、NaNを最低値の-1で埋める処理もしています。</p>
+<p>あと、上のコードでは特長量エンジニアリングの結果の<code>TotalSF</code>（総床面積）と<code>SFPerRoom</code>（部屋単位の床面積）を追加されていますけど、これは作成後に特徴量エンジニアリングして精度を検証してを繰り返した際に作成したもので、このコードを最初に作成したときにはもちろんなかったことに注意してください。</p>
+<p>他は、特に工夫なしです。Titanicの時のコードを切り貼りして作成しました。</p>
+<h2 id="モデルの保存と読み込み">モデルの保存と読み込み</h2>
+<p>今回はローカルで作業していますので、作業中に出来た成果物をストレージに保存したり読み込んだりできます。そこで、モデルの保存と読み込み用のモジュールも作成しました。</p>
+<div class="sourceCode" id="cb25"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> glob <span class="im">import</span> glob</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを保存します。</span></span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_params(params):</span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path.join(<span class="st">&#39;house-prices-model&#39;</span>, <span class="st">&#39;params.pickle&#39;</span>), mode<span class="op">=</span><span class="st">&#39;wb&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>        pickle.dump(params, f)</span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを読み込みます。</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_params():</span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path.join(<span class="st">&#39;house-prices-model&#39;</span>, <span class="st">&#39;params.pickle&#39;</span>), mode<span class="op">=</span><span class="st">&#39;rb&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> pickle.load(f)</span>
+<span id="cb25-18"><a href="#cb25-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-19"><a href="#cb25-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-20"><a href="#cb25-20" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを保存します。</span></span>
+<span id="cb25-21"><a href="#cb25-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_model(model):</span>
+<span id="cb25-22"><a href="#cb25-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, booster <span class="kw">in</span> <span class="bu">enumerate</span>(model.boosters):  <span class="co"># 交差検証なので、複数のモデルが生成されます。</span></span>
+<span id="cb25-23"><a href="#cb25-23" aria-hidden="true" tabindex="-1"></a>        booster.save_model(path.join(<span class="st">&#39;house-prices-model&#39;</span>, <span class="ss">f&#39;model-</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">.txt&#39;</span>))</span>
+<span id="cb25-24"><a href="#cb25-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-25"><a href="#cb25-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-26"><a href="#cb25-26" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを読み込みます。</span></span>
+<span id="cb25-27"><a href="#cb25-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_model():</span>
+<span id="cb25-28"><a href="#cb25-28" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> lgb.CVBooster()</span>
+<span id="cb25-29"><a href="#cb25-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-30"><a href="#cb25-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> <span class="bu">sorted</span>(glob(path.join(<span class="st">&#39;house-prices-model&#39;</span>, <span class="st">&#39;model-*.txt&#39;</span>))):  <span class="co"># 交差検証なので、複数のモデルが生成されます。</span></span>
+<span id="cb25-31"><a href="#cb25-31" aria-hidden="true" tabindex="-1"></a>        result.boosters.append(lgb.Booster(model_file<span class="op">=</span><span class="bu">file</span>))</span>
+<span id="cb25-32"><a href="#cb25-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-33"><a href="#cb25-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span>
+<span id="cb25-34"><a href="#cb25-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-35"><a href="#cb25-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-36"><a href="#cb25-36" aria-hidden="true" tabindex="-1"></a><span class="co"># カテゴリーの特徴量を保存します。</span></span>
+<span id="cb25-37"><a href="#cb25-37" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_categorical_features(categorical_features):</span>
+<span id="cb25-38"><a href="#cb25-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path.join(<span class="st">&#39;house-prices-model&#39;</span>, <span class="st">&#39;categorical-features.pickle&#39;</span>), mode<span class="op">=</span><span class="st">&#39;wb&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb25-39"><a href="#cb25-39" aria-hidden="true" tabindex="-1"></a>        pickle.dump(categorical_features, f)</span>
+<span id="cb25-40"><a href="#cb25-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-41"><a href="#cb25-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-42"><a href="#cb25-42" aria-hidden="true" tabindex="-1"></a><span class="co"># カテゴリーの特徴量を読み込みます。</span></span>
+<span id="cb25-43"><a href="#cb25-43" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_categorical_features():</span>
+<span id="cb25-44"><a href="#cb25-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path.join(<span class="st">&#39;house-prices-model&#39;</span>, <span class="st">&#39;categorical-features.pickle&#39;</span>), mode<span class="op">=</span><span class="st">&#39;rb&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb25-45"><a href="#cb25-45" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> pickle.load(f)</span></code></pre></div>
+<p>Titanicの時との違いは、LightGBMのパラメーターもストレージに保存するようにしたことです。ターミナルからコピーしてコードにペーストするのは面倒でしたもんね。</p>
+<p>あとはTitanicの時と同じ。切り貼りと置換で速攻作成しました。</p>
+<h2
+id="ハイパーパラメーターチューニング">ハイパー・パラメーター・チューニング</h2>
+<p>今回は、特徴量エンジニアリングする前にハイパー・パラメーター・チューニングをしました（データセットのモジュールが正しいかを確認するために、最初に一度手作りのハイパー・パラメーターで精度の確認をしたけど）。</p>
+<p>私は特徴量エンジニアリングを直観だけでやっていて、その際に役立つのがLightGBMが出力してれる重要な特徴量で、それはハイパー・パラメーターの値によって結構変わってくるんですよ。だから特徴量エンジニアリングの前にハイパー・パラメーター・チューニングで、例によってOptunaに丸投げで楽しています。</p>
+<div class="sourceCode" id="cb26"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> optuna.integration.lightgbm <span class="im">as</span> lgb</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_train_data_frame, get_categorical_features, get_xs, get_ys</span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model <span class="im">import</span> save_params</span>
+<span id="cb26-7"><a href="#cb26-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-8"><a href="#cb26-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-9"><a href="#cb26-9" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb26-10"><a href="#cb26-10" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_train_data_frame()</span>
+<span id="cb26-11"><a href="#cb26-11" aria-hidden="true" tabindex="-1"></a>categorical_features <span class="op">=</span> get_categorical_features(data_frame)</span>
+<span id="cb26-12"><a href="#cb26-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-13"><a href="#cb26-13" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb26-14"><a href="#cb26-14" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame, categorical_features)</span>
+<span id="cb26-15"><a href="#cb26-15" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb26-16"><a href="#cb26-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-17"><a href="#cb26-17" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを作成します。</span></span>
+<span id="cb26-18"><a href="#cb26-18" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
+<span id="cb26-19"><a href="#cb26-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;objective&#39;</span>: <span class="st">&#39;regression&#39;</span>,</span>
+<span id="cb26-20"><a href="#cb26-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;metric&#39;</span>: <span class="st">&#39;l2&#39;</span>  <span class="co"># Optunaでエラーが出たので、regressionの場合のデフォルトのmetricを設定しました。</span></span>
+<span id="cb26-21"><a href="#cb26-21" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb26-22"><a href="#cb26-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-23"><a href="#cb26-23" aria-hidden="true" tabindex="-1"></a><span class="co"># ハイパー・パラメーター・チューニングをします。</span></span>
+<span id="cb26-24"><a href="#cb26-24" aria-hidden="true" tabindex="-1"></a>tuner <span class="op">=</span> lgb.LightGBMTunerCV(params, lgb.Dataset(xs, label<span class="op">=</span>ys), return_cvbooster<span class="op">=</span><span class="va">True</span>, optuna_seed<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb26-25"><a href="#cb26-25" aria-hidden="true" tabindex="-1"></a>cv_result <span class="op">=</span> tuner.run()</span>
+<span id="cb26-26"><a href="#cb26-26" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tuner.get_best_booster()</span>
+<span id="cb26-27"><a href="#cb26-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-28"><a href="#cb26-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 重要な特徴量を出力します。</span></span>
+<span id="cb26-29"><a href="#cb26-29" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.DataFrame({<span class="st">&#39;feature&#39;</span>: model.boosters[<span class="dv">0</span>].feature_name(), <span class="st">&#39;importance&#39;</span>: np.mean(model.feature_importance(), axis<span class="op">=</span><span class="dv">0</span>)}).sort_values(<span class="st">&#39;importance&#39;</span>, ascending<span class="op">=</span><span class="va">False</span>).head(n<span class="op">=</span><span class="dv">20</span>))</span>
+<span id="cb26-30"><a href="#cb26-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-31"><a href="#cb26-31" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを保存します。</span></span>
+<span id="cb26-32"><a href="#cb26-32" aria-hidden="true" tabindex="-1"></a>save_params(tuner.best_params)</span></code></pre></div>
+<p>今回は回帰なので、<code>objective</code>に<code>regression</code>を指定しています。LightGBMで機械学習するだけならこれだけでも大丈夫なのですけど、Optunaでエラーが出たので<code>metric</code>に<code>regression</code>の場合のデフォルト値である<code>l2</code>を指定しました。</p>
+<h2 id="精度を確認">精度を確認</h2>
+<p>特徴量エンジニアリングは、特徴量を追加して精度を確認するという作業を繰り返さなければなりませんので、精度を確認するためのモジュールも作成します。</p>
+<div class="sourceCode" id="cb27"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_train_data_frame, get_categorical_features, get_xs, get_ys</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model <span class="im">import</span> load_params</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> mean_squared_error</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_train_data_frame()</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>categorical_features <span class="op">=</span> get_categorical_features(data_frame)</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame, categorical_features)</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練データセットを取得します。</span></span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>train_xs <span class="op">=</span> xs[<span class="dv">400</span>:]</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>train_ys <span class="op">=</span> ys[<span class="dv">400</span>:]</span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 検証データセットを取得します。</span></span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>valid_xs <span class="op">=</span> xs[:<span class="dv">400</span>]</span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>valid_ys <span class="op">=</span> ys[:<span class="dv">400</span>]</span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを取得します。</span></span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> load_params()</span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 機械学習します。</span></span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>cv_result <span class="op">=</span> lgb.cv(params, lgb.Dataset(train_xs, label<span class="op">=</span>train_ys), return_cvbooster<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> cv_result[<span class="st">&#39;cvbooster&#39;</span>]</span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a><span class="co"># 重要な特徴量を出力します。</span></span>
+<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.DataFrame({<span class="st">&#39;feature&#39;</span>: model.boosters[<span class="dv">0</span>].feature_name(), <span class="st">&#39;importance&#39;</span>: np.mean(model.feature_importance(), axis<span class="op">=</span><span class="dv">0</span>)}).sort_values(<span class="st">&#39;importance&#39;</span>, ascending<span class="op">=</span><span class="va">False</span>).head(n<span class="op">=</span><span class="dv">20</span>))</span>
+<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a><span class="co"># スコアを出力します。</span></span>
+<span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&#39;Score = </span><span class="sc">{</span>np<span class="sc">.</span>sqrt(mean_squared_error(np.log(valid_ys), np.log(np.mean(model.predict(valid_xs), axis<span class="op">=</span><span class="dv">0</span>))))<span class="sc">}</span><span class="ss">&#39;</span>)</span>
+<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 学習曲線を出力します。</span></span>
+<span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a>plot.plot(cv_result[<span class="st">&#39;l2-mean&#39;</span>])</span>
+<span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div>
+<p>特徴量エンジニアリングでデータセットのモジュールを修正したら、このモジュールを実行するわけですね。で、ずっと特徴量エンジニアリングしていると疲れちゃうので、そんな時にはハイパー・パラメーター・チューニングのモジュールを実行してOptunaが新しいハイパー・パラメーターを作成してくれるまで休憩する感じです。</p>
+<h2 id="モデル作成">モデル作成</h2>
+<p>特徴量エンジニアリングが完了したら、モデルを作成します。</p>
+<div class="sourceCode" id="cb28"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_train_data_frame, get_categorical_features, get_xs, get_ys</span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model <span class="im">import</span> load_params, save_model, save_categorical_features</span>
+<span id="cb28-8"><a href="#cb28-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-9"><a href="#cb28-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-10"><a href="#cb28-10" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb28-11"><a href="#cb28-11" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_train_data_frame()</span>
+<span id="cb28-12"><a href="#cb28-12" aria-hidden="true" tabindex="-1"></a>categorical_features <span class="op">=</span> get_categorical_features(data_frame)</span>
+<span id="cb28-13"><a href="#cb28-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-14"><a href="#cb28-14" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb28-15"><a href="#cb28-15" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame, categorical_features)</span>
+<span id="cb28-16"><a href="#cb28-16" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb28-17"><a href="#cb28-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-18"><a href="#cb28-18" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを取得します。</span></span>
+<span id="cb28-19"><a href="#cb28-19" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> load_params() <span class="op">|</span> {<span class="st">&#39;learning_rate&#39;</span>: <span class="fl">0.01</span>}</span>
+<span id="cb28-20"><a href="#cb28-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-21"><a href="#cb28-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 機械学習します。</span></span>
+<span id="cb28-22"><a href="#cb28-22" aria-hidden="true" tabindex="-1"></a>cv_result <span class="op">=</span> lgb.cv(params, lgb.Dataset(xs, label<span class="op">=</span>ys), return_cvbooster<span class="op">=</span><span class="va">True</span>, num_boost_round<span class="op">=</span><span class="dv">2000</span>)</span>
+<span id="cb28-23"><a href="#cb28-23" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> cv_result[<span class="st">&#39;cvbooster&#39;</span>]</span>
+<span id="cb28-24"><a href="#cb28-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-25"><a href="#cb28-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 重要な特徴量を出力します。</span></span>
+<span id="cb28-26"><a href="#cb28-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(pd.DataFrame({<span class="st">&#39;feature&#39;</span>: model.boosters[<span class="dv">0</span>].feature_name(), <span class="st">&#39;importance&#39;</span>: np.mean(model.feature_importance(), axis<span class="op">=</span><span class="dv">0</span>)}).sort_values(<span class="st">&#39;importance&#39;</span>, ascending<span class="op">=</span><span class="va">False</span>).head(n<span class="op">=</span><span class="dv">20</span>))</span>
+<span id="cb28-27"><a href="#cb28-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-28"><a href="#cb28-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 学習曲線を出力します。</span></span>
+<span id="cb28-29"><a href="#cb28-29" aria-hidden="true" tabindex="-1"></a>plot.plot(cv_result[<span class="st">&#39;l2-mean&#39;</span>])</span>
+<span id="cb28-30"><a href="#cb28-30" aria-hidden="true" tabindex="-1"></a>plot.show()</span>
+<span id="cb28-31"><a href="#cb28-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb28-32"><a href="#cb28-32" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを保存します。</span></span>
+<span id="cb28-33"><a href="#cb28-33" aria-hidden="true" tabindex="-1"></a>save_model(model)</span>
+<span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>save_categorical_features(categorical_features)</span></code></pre></div>
+<p>今回はモジュール化をしましたので、Titanicの時と比べてコードは単純です。説明する場所がない……。</p>
+<h2 id="解答作成">解答作成</h2>
+<p>保存したモデルを使用して、解答を作成します。</p>
+<div class="sourceCode" id="cb29"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_test_data_frame, get_xs</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model <span class="im">import</span> load_categorical_features, load_model</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを読み込みます。</span></span>
+<span id="cb29-9"><a href="#cb29-9" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> load_model()</span>
+<span id="cb29-10"><a href="#cb29-10" aria-hidden="true" tabindex="-1"></a>categorical_features <span class="op">=</span> load_categorical_features()</span>
+<span id="cb29-11"><a href="#cb29-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-12"><a href="#cb29-12" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb29-13"><a href="#cb29-13" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_test_data_frame()</span>
+<span id="cb29-14"><a href="#cb29-14" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame, categorical_features)</span>
+<span id="cb29-15"><a href="#cb29-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-16"><a href="#cb29-16" aria-hidden="true" tabindex="-1"></a><span class="co"># 提出量のCSVを作成します。</span></span>
+<span id="cb29-17"><a href="#cb29-17" aria-hidden="true" tabindex="-1"></a>submission <span class="op">=</span> pd.DataFrame({<span class="st">&#39;Id&#39;</span>: data_frame[<span class="st">&#39;Id&#39;</span>], <span class="st">&#39;SalePrice&#39;</span>: np.mean(model.predict(xs), axis<span class="op">=</span><span class="dv">0</span>)})</span>
+<span id="cb29-18"><a href="#cb29-18" aria-hidden="true" tabindex="-1"></a>submission.to_csv(<span class="st">&#39;submission.csv&#39;</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
+<p>これですべての作業が完了しましたから、Kaggleに提出してみます。スコアは0.12238で329位でした。</p>
+<p><img src="./image/score-histgram-house-prices.png"
+alt="House Pricesのスコアのヒストグラム" /></p>
+<p>うん、そこそこ上位ですね（House
+Pricesのスコアは誤差ですから、小さいほど良い値です）。特徴量の分布とかを丁寧に調べている統計屋さんを、勾配ブースティングのパワーだけで蹴散らしちゃった感じ。プログラミング能力だけでここまで来れるなんて本当に良い時代です。もっと上を目指すならデータ分析が必要なのでしょうけど、このくらい予測できればビジネスでは十分役に立つんじゃないかな。</p>
+<p>ほら、ビジネスに機械学習を活用してみたくなってきたでしょ？　実案件でLightGBMするときには、このHouse
+Prisesのコードを出発点にすればそこそこ楽ちんにプログラミングできると思いますよ。</p>
+<p>x</p>
+<p>x</p>
+<p>x</p>
+<p>x</p>
+<p>x</p>
+<p>x</p>
+<p>x</p>
+<p>x</p>
+<p>x</p>
+<p>x</p>
 <p>このように弱点が見えない深層学習ですけど、深層学習と言われて思い浮かべる以下の図のモデルは全結合（dense）と呼ばれる層を重ねたもので、実は、そんなに精度が高くありません。</p>
 <p><img src="" /></p>
-<h3 id="すべては畳み込みから">すべては畳み込みから</h3>
+<h3 id="すべては畳み込みから始まった">すべては畳み込みから始まった</h3>
 <p>その深層学習の精度が大きく向上したのは、畳み込み（convolution）という手法が発明されてから。で、この畳み込みってのは、画像処理でいうところのフィルタリングそのものなんです。</p>
 <p>画像においては、あるピクセルだけじゃなくて、そのピクセルの上下左右やそのさらに外側のピクセルとの関係が重要ですよね？　白い中に黒いピクセルが縦に並んでるから縦線と認識できるわけで。このような周りとの関係を汎用的な手法で抽出するのがフィルタリングです。</p>
 <p>フィルタリング処理の具定例を示しましょう。こんな感じ。</p>
-<div class="sourceCode" id="cb16"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="bu">filter</span>(image, kernel):</span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> np.zeros((np.shape(image)[<span class="dv">0</span>] <span class="op">-</span> <span class="dv">2</span>, np.shape(image)[<span class="dv">1</span>] <span class="op">-</span> <span class="dv">2</span>))</span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(np.shape(result)[<span class="dv">0</span>]):</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(np.shape(result)[<span class="dv">1</span>]):</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 画像の該当部分とカーネルの内積を求めて新たな画像を作成します。</span></span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>            result[y, x] <span class="op">=</span> np.dot(image[y: y <span class="op">+</span> <span class="dv">3</span>, x: x <span class="op">+</span> <span class="dv">3</span>].flatten(), kernel.flatten())</span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>    result[result <span class="op">&lt;</span>   <span class="dv">0</span>] <span class="op">=</span>   <span class="dv">0</span>  <span class="co"># noqa: E222</span></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>    result[result <span class="op">&gt;</span> <span class="dv">255</span>] <span class="op">=</span> <span class="dv">255</span></span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> cv2.cvtColor(cv2.imread(<span class="st">&#39;4.2.07.tiff&#39;</span>), cv2.COLOR_RGB2GRAY)</span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>plot.imshow(image)</span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a>plot.show()</span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>plot.imshow(<span class="bu">filter</span>(image, np.array([[<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>], [<span class="dv">2</span>, <span class="op">-</span><span class="dv">8</span>, <span class="dv">2</span>], [<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>]])))</span>
-<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div>
-<p>ある点の周囲の画像と行列（コード中の<code>kernel</code>）をベクトルに変換（<code>flatten()</code>）して内積（<code>np.dot()</code>）して、新たな画像を作るわけですね。</p>
-<p>で、本稿は文系のための文書ですから、内積について補足しましょう。でも数式は嫌なので、具体例でやります。題材は、転職で。転職先を、給料と仕事の楽しさで表現してみます。</p>
-<p><img src="" /></p>
-<p>で、あれもこれも欲しいというのは許されないでしょうから、転職先の評価軸は、距離が1のベクトルで表現するとしましょう。上の図の、左下から円周上のどこかに向かうベクトルが、転職先の評価軸となるわけですね。</p>
-<p>で、「高い給料をもらえるなら非合法な仕事でもオッケー」とか「仕事が楽しければ霞を食べて生きていける」という特殊な場合はそれぞれX軸とY軸の値を見るだけで良いのですけど、普通は、給料6割で仕事の楽しさ4割とかで評価したいですよね？　そんな時は、内積が役に立ちます。</p>
-<p><img src="" /></p>
-<p>上の図のように、内積は、あるベクトルの視点で、他のベクトルがどの程度の量になるのかを表現しています。この評価軸のベクトル上での、各転職先の大きさはどのくらいなのかがこれで一目瞭然で転職がはかどっちゃうこと請け合い。しかも、内積ってのは2次元の画像だけじゃなくて、3次元でも4次元でも、1,024次元とかでも成り立つんですよ。だから、先ほどのコードでの<code>kernel</code>のような、9次元のベクトルでも使えるんです。</p>
-<p>でね、先ほどのプログラムの<code>kernel</code>の値は、輪郭の場合に大きな値になるような行列になっています。輪郭抽出なんて機械学習に関係なさそうと思ったかもしれませんけど、もし、こんな感じに丸くなっているとか、こんな感じに尖っているとか、こんな感じに交差しているとかを表現するベクトルを作れば、しかもそれが大量にあるのであれば、たとえば文字認識とかが高い精度でできると思いませんか？</p>
-<p>深層学習は機械学習なので、どのような<code>kernel</code>を使うと文字認識に有効なのかとか、犬と猫を区別するにはどのような<code>kernel</code>があればできるのかとかはコンピューターが調整してくれます。手で行列を作る必要はなくて、だからとても楽ちん。しかも精度が高い！</p>
+<div class="sourceCode" id="cb30"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> cv2</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-5"><a href="#cb30-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-6"><a href="#cb30-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> <span class="bu">filter</span>(image, kernel):</span>
+<span id="cb30-7"><a href="#cb30-7" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> np.zeros((np.shape(image)[<span class="dv">0</span>] <span class="op">-</span> <span class="dv">2</span>, np.shape(image)[<span class="dv">1</span>] <span class="op">-</span> <span class="dv">2</span>))</span>
+<span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(np.shape(result)[<span class="dv">0</span>]):</span>
+<span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(np.shape(result)[<span class="dv">1</span>]):</span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 画像の該当部分とカーネルの内積を求めて新たな画像を作成します。</span></span>
+<span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>            result[y, x] <span class="op">=</span> np.inner(image[y: y <span class="op">+</span> <span class="dv">3</span>, x: x <span class="op">+</span> <span class="dv">3</span>].flatten(), kernel.flatten())</span>
+<span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>    result[result <span class="op">&lt;</span>   <span class="dv">0</span>] <span class="op">=</span>   <span class="dv">0</span>  <span class="co"># noqa: E222</span></span>
+<span id="cb30-15"><a href="#cb30-15" aria-hidden="true" tabindex="-1"></a>    result[result <span class="op">&gt;</span> <span class="dv">255</span>] <span class="op">=</span> <span class="dv">255</span></span>
+<span id="cb30-16"><a href="#cb30-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span>
+<span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> cv2.cvtColor(cv2.imread(<span class="st">&#39;4.2.07.tiff&#39;</span>), cv2.COLOR_RGB2GRAY)</span>
+<span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>plot.imshow(image)</span>
+<span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>plot.show()</span>
+<span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>plot.imshow(<span class="bu">filter</span>(image, np.array([[<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>], [<span class="dv">2</span>, <span class="op">-</span><span class="dv">8</span>, <span class="dv">2</span>], [<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>]])))</span>
+<span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div>
+<p>ある点の周囲の画像と行列（コード中の<code>kernel</code>）をベクトルに変換（<code>flatten()</code>）して内積（<code>np.inner()</code>）して、新たな画像を作るわけですね。</p>
+<p>で、本稿は文系のための文書ですから、ベクトルの内積について補足します。でも数式は嫌なので、図でやりましょう。題材は転職で。転職先を、給料と仕事の楽しさで表現します。</p>
+<p><img src="./image/offers.png"
+alt="転職先を給料と仕事の楽しさでプロット" /></p>
+<p>で、あれもこれも全部欲しいというのは贅沢すぎるので、転職先の評価軸は、距離が1のベクトルで表現するとしましょう。上の図の、左下から円周上のどこかに向かうベクトルが、転職先の評価軸となるわけですね。</p>
+<p>で、「高い給料をもらえるなら非合法な仕事でもオッケー」とか「仕事が楽しければ霞を食べて生きていける」という特殊な場合はそれぞれX軸とY軸の値を見るだけでその軸と垂直なもう片方の軸の値を無視するだけで良いのですけど、普通は、給料2割で仕事の楽しさ8割とかで評価したいですよね？　そんな時は、ベクトルの内積が役に立ちます。</p>
+<p><img src="./image/evaluate_offers_with_inner_product.png"
+alt="転職先を評価ベクトルと内積で評価" /></p>
+<p>上の図のように、ベクトルの内積というのは、あるベクトルの視点で、他のベクトルがどの程度の量になるのかを表現しています。この評価軸のベクトル上での、各転職先の大きさはどのくらいなのかがこれで一目瞭然で転職がはかどっちゃうこと請け合い。しかも、ベクトルの内積ってのは2次元の画像だけじゃなくて、3次元でも4次元でも、1,024次元とかでも成り立つんですよ。だから、先ほどのコードでの<code>kernel</code>のような、9次元のベクトルでも使えるんです。</p>
+<p>でね、先ほどのプログラムの<code>kernel</code>の値は、輪郭の場合に大きな値になるような行列になっていました。輪郭抽出なんて機械学習に関係なさそうと思ったかもしれませんけど、もし、こんな感じに丸くなっているとか、こんな感じに尖っているとか、こんな感じに交差しているとかを表現するベクトルを作るなら、しかもそれが大量にあるならば、たとえば文字認識とかを高い精度でできると思いませんか？</p>
+<p>深層学習は機械学習なので、どのような<code>kernel</code>を使うと文字認識に有効なのかとか、犬と猫を区別するにはどのような<code>kernel</code>があればよいのかとかは、コンピューターが調整してくれます。とても楽ちんで、しかも精度が高い！</p>
 <p>と、これが畳み込みで、この畳み込みのおかげで深層学習での画像認識の精度は大幅に向上したんですよ。</p>
 <h3 id="今はアテンションで">今は、アテンションで</h3>
+<p>でもね、畳み込みって隣り合うものとの関係しか抽出できないので、自然言語のような遠くのものとの関係がある場合には使いづらかったんですよ。そんな場合にも対応できるように編み出されたのがアテンションです。</p>
+<p>＃前の文章の「そんな場合」は遠くに位置する「自然言語のような遠くのものとの関係がある場合」で、ほら、遠くにあるものと関係があるでしょ？</p>
+<p>自然言語処理では、単語をベクトルで表現します。「私」＝[0.1, 0.0, 0.4,
+0.5,
+0.0]みたいな感じ。で、単語のベクトルを要素に持つ行列と単語のベクトルの内積をとる（内積attentionの場合。他に加法注意ってのもあります）と各単語の重みが出てきて、で、その重みに合わせて単語ベクトルと内積をとって、単語と単語の関係を考慮した行列を作成します。で、これだけだとただの行列計算なので、機械学習できるように、重みパラメータを追加した感じがアテンションです。</p>
+<p>あとは、深層学習ってのは本来固定長の入力しか受け付けられないのだけど、それを数式上の工夫で可変長にして、翻訳で精度を大幅に向上させたのがTransformerという深層学習のモデルです。</p>
+<p>アテンションは画像認識等の自然言語以外の分野でも使われていて、今では何をするにもアテンションありきという感じなのですけど、でも、アテンションってベクトルが入力じゃないとダメなんですよ。身長180cmや体重79kg（ちょっとサバ読んだ）のようなデータはスカラー値でベクトルじゃないので、なんとかしてベクトル化しなければなりません（カテゴリーなどの離散量は単語と同じやり方で、連続量は行列を掛け算してバイアスを足すことでベクトル化します）。</p>
+<p>ただ、値をなんとかしてベクトル化すればアテンションが使えて、アテンションは遠くのデータとの関係も考慮してくれるから表の一番左のカラムと一番右のカラムの関係も加味した予測をしてくれるはず。</p>
+<h3
+id="テーブルデータは深層学習以外で">テーブル・データは深層学習「以外」で</h3>
+<p>ではどうするかというと、テーブル・データで深層学習するときには、昔懐かしい全結合になるんですよね。</p>
 </article>
 </body>
 </html>
