@@ -1,21 +1,7 @@
-import numpy as np
 import tensorflow as tf
 
-from dataset import ENCODES, decode, get_test_data_frame, get_xs, get_ys
-from params import Y_MAXIMUM_POSITION
-
-
-def translate(model, xs):
-    ys = np.zeros((len(xs), Y_MAXIMUM_POSITION), dtype=np.int64)
-    ys[:, 0] = ENCODES['^']
-
-    for i in range(1, Y_MAXIMUM_POSITION):
-        ys[:, i] = np.argmax(model.predict((xs, ys[:, :i]))[:, -1], axis=-1)
-
-        if np.all(ys[:, i] == ENCODES['$']):
-            break
-
-    return ys
+from dataset import decode, get_test_data_frame, get_xs, get_ys
+from translation import translate
 
 
 model = tf.keras.models.load_model('model')

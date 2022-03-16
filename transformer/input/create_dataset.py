@@ -9,8 +9,8 @@ rng = np.random.default_rng(0)
 
 
 def create_sentence(op_str, op):
-    x = rng.integers(1000)
-    y = rng.integers(1000)
+    x = rng.integers(1, 1000)
+    y = rng.integers(1, 1000)
     z = op(x, y)
 
     return f'{x}{op_str}{y}', f'{z}'

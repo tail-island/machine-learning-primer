@@ -5,7 +5,7 @@ import pandas as pd
 from funcy import concat, count, dropwhile, map, take, takewhile
 
 
-WORDS = tuple(concat((' ',), ('+', '-'), map(str, range(10)), ('^', '$')))
+WORDS = tuple(concat((' ',), ('+', '-', '*', '/'), map(str, range(10)), ('^', '$')))
 
 ENCODES = dict(zip(WORDS, count()))
 DECODES = dict(zip(count(), WORDS))
