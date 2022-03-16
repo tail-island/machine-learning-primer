@@ -11,14 +11,16 @@ ENCODES = dict(zip(WORDS, count()))
 DECODES = dict(zip(count(), WORDS))
 
 
+def get_data_frame(filename):
+    return pd.read_csv(path.join('..', 'input', filename), dtype={'Expression': 'string', 'Answer': 'string'})
+
+
 def get_train_data_frame():
-    return pd.read_csv(path.join('..', 'input', 'train.csv'),
-                       dtype={'Expression': 'string', 'Answer': 'string'})
+    return get_data_frame('train.csv')
 
 
 def get_test_data_frame():
-    return pd.read_csv(path.join('..', 'input', 'test.csv'),
-                       dtype={'Expression': 'string', 'Answer': 'string'})
+    return get_data_frame('test.csv')
 
 
 def encode(sentence, max_sentence_length):
