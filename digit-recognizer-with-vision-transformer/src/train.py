@@ -6,7 +6,7 @@ from funcy import identity, juxt
 from itertools import starmap
 from operator import eq
 from params import NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, Y_VOCAB_SIZE, DROPOUT_RATE
-from vision_transformer import LearningRateSchedule, Loss, vision_transformer
+from vision_transformer import LearningRateSchedule, vision_transformer
 
 
 rng = np.random.default_rng(0)
@@ -26,9 +26,9 @@ valid_ys = ys[indices[:2000]]
 
 op = vision_transformer(NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, Y_VOCAB_SIZE, 28 * 28 // D_MODEL, DROPOUT_RATE)
 
-model = tf.keras.Model(*juxt(identity, op)(tf.keras.Input(shape=np.shape(train_xs)[1:])))
-model.compile(tf.keras.optimizers.Adam(LearningRateSchedule(D_MODEL), beta_1=0.9, beta_2=0.98, epsilon=1e-9), loss=Loss(), metrics=('accuracy',))
-# model.summay()
+model = tf.keras.Model(*juxt(identity, op)(tf.keras.Input(shape=np.shape(xs)[1:])))
+model.compile(tf.keras.optimizers.Adam(LearningRateSchedule(D_MODEL), beta_1=0.9, beta_2=0.98, epsilon=1e-9), loss='sparse_categorical_crossentropy', metrics=('accuracy',))
+# model.summary()
 
 model.fit(train_xs, train_ys, batch_size=256, epochs=10, validation_data=(valid_xs, valid_ys))
 

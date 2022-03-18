@@ -79,9 +79,9 @@ def vision_transformer(num_blocks, d_model, num_heads, d_ff, y_vocab_size, x_max
         return op
 
     def get_positional_encoding(maximum_position, d_model):
-        result = embedding(1, d_model)(tf.range(0, maximum_position))
+        result = embedding(maximum_position, d_model)(tf.range(0, maximum_position))
 
-        return tf.cast(result[np.newaxis, ...], dtype=tf.float32)
+        return result[np.newaxis, ...]
 
     def encoder(num_blocks, d_model, num_heads, d_ff, maximum_position, dropout_rate):
         normalize_factor = tf.math.sqrt(tf.cast(d_model, tf.float32))
@@ -116,13 +116,3 @@ class LearningRateSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
 
     def __call__(self, step):
         return self.d_model ** -0.5 * tf.math.minimum(step ** -0.5, step * self.warmup_steps ** -1.5)
-
-
-class Loss(tf.keras.losses.Loss):
-    def __init__(self):
-        super(Loss, self).__init__()
-
-        self.sparse_categorical_crossentropy = tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True, reduction='none')
-
-    def call(self, y_true, y_pred):
-        return tf.reduce_mean(self.sparse_categorical_crossentropy(y_true, y_pred) * tf.cast(tf.math.logical_not(tf.math.equal(y_true, 0)), dtype=tf.float32))

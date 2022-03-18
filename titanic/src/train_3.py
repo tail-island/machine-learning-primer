@@ -24,7 +24,7 @@ def add_features(data_frame):
                                  pd.Series(repeat(np.nan, len(data_frame['Name'])), dtype='object'))
 
     # 家族の人数を追加します。
-    data_frame['FamilySize'] = data_frame['SibSp'] + data_frame['Parch']
+    data_frame['FamilySize'] = data_frame['SibSp'] + data_frame['Parch'] + 1
 
     # 料金は合計みたいなので、単価を追加します。
     data_frame['FareUnitPrice'] = data_frame['Fare'] / data_frame['FamilySize']
