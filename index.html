@@ -1365,7 +1365,7 @@ alt="Titanicのスコアのヒストグラム" /></p>
 href="https://www.kaggle.com/c/house-prices-advanced-regression-techniques">House
 Prices</a>をやってみましょう。今度は回帰分析です。あと、Titanicではやらなかったモジュール化でやります。KaggleのNotebookで動かすのは少し大変かもしれませんけど気にしない方向で。</p>
 <h2 id="データセットを取得する">データセットを取得する</h2>
-<p>データセットを取得するモジュールを作成します。</p>
+<p>まずは、データセットを取得するモジュール（dataset.py）を作成します。</p>
 <div class="sourceCode" id="cb24"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
@@ -1538,11 +1538,11 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb24-1"><a h
 <p>House
 Pricesは特徴量の数が多くて大変でした……。なんで初心者向けのGetting
 Startedにこんなに特徴量が多い問題があるのかというと、統計的な数値演算で予測する場合向けに、予測に役立つ特徴量を取捨選択する手法を学ぶためだと思うんですよ。でも、我々は勾配ブースティングで決定木なので、取捨選択は機械学習が勝手にやってくれます。というわけで、全部の特徴量を使用してやりました。</p>
-<p>で、日本人ならば5段階評価にするところを、なんでか欧米人は文字で表現する場合があるんですよね……。たとえば、Excellent、Good、Average、Typical、Fair、Poorとか。これを数値に変換する<code>convert_to_number</code>関数を作成しました。Funcyを使うと関数型プログラミングできるので楽ちんです（関数型プログラミングに慣れていないと読みづらいかもしれませんけど……）。で、データを見たところ最低点未満の場合にNaNになっているみたいだったので、NaNを最低値の-1で埋める処理もしています。</p>
-<p>あと、上のコードでは特長量エンジニアリングの結果の<code>TotalSF</code>（総床面積）と<code>SFPerRoom</code>（部屋単位の床面積）を追加されていますけど、これは作成後に特徴量エンジニアリングして精度を検証してを繰り返した際に作成したもので、このコードを最初に作成したときにはもちろんなかったことに注意してください。</p>
+<p>で、日本人ならば5段階評価にするところを、なんでか欧米人は文字で表現する場合があるんですよね……。たとえば、Excellent、Good、Average、Typical、Fair、Poorとか。これを数値に変換する<code>convert_to_number</code>関数を作成しました。funcyを使うと関数型プログラミングできるので、こんな場合の処理が楽ちんです（関数型プログラミングに慣れていないと読みづらいかもしれませんけど……）。で、データを見たところ最低点未満の場合にNaNになっているみたいだったので、NaNを最低値の-1で埋める処理もしています。</p>
+<p>あと、上のコードでは特長量エンジニアリングの結果の<code>TotalSF</code>（総床面積）と<code>SFPerRoom</code>（部屋単位の床面積）が追加されていますけど、これは作成後に特徴量エンジニアリングして精度を検証してを繰り返した際に作成したもので、このコードを最初に作成したときにはもちろんなかったことに注意してください。</p>
 <p>他は、特に工夫なしです。Titanicの時のコードを切り貼りして作成しました。</p>
 <h2 id="モデルを保存して読み込む">モデルを保存して読み込む</h2>
-<p>今回はローカルで作業していますので、作業中に出来た成果物をストレージに保存したり読み込んだりできます。そこで、モデルの保存と読み込み用のモジュールも作成しました。</p>
+<p>今回はローカルで作業していますので、作業中に出来た成果物をストレージに保存したり読み込んだりできます。そこで、モデルの保存と読み込み用のモジュール（model.py）も作成しました。</p>
 <div class="sourceCode" id="cb25"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
@@ -1595,6 +1595,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb25-1"><a h
 id="ハイパーパラメーターチューニング">ハイパー・パラメーター・チューニング</h2>
 <p>今回は、特徴量エンジニアリングする前にハイパー・パラメーター・チューニングをしました（データセットのモジュールが正しいかを確認するために、最初に一度手作りのハイパー・パラメーターで精度の確認をしたけど）。</p>
 <p>私は特徴量エンジニアリングを直観だけでやっていて、その際に役立つのがLightGBMが出力してれる重要な特徴量で、それはハイパー・パラメーターの値によって結構変わってくるんですよ。だから特徴量エンジニアリングの前にハイパー・パラメーター・チューニングで、例によってOptunaに丸投げで楽しています。</p>
+<p>というわけで、ハイパー・パラメーター・チューニングするモジュール（tune.py）はこんな感じ。</p>
 <div class="sourceCode" id="cb26"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> optuna.integration.lightgbm <span class="im">as</span> lgb</span>
 <span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
@@ -1631,7 +1632,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a h
 <p>今回は回帰なので、<code>objective</code>に<code>regression</code>を指定しています。LightGBMで機械学習するだけならこれだけでも大丈夫なのですけど、Optunaでエラーが出たので<code>metric</code>に<code>regression</code>の場合のデフォルト値である<code>l2</code>を指定しました。</p>
 <h2
 id="特徴量エンジニアリングして精度を確認する">特徴量エンジニアリングして、精度を確認する</h2>
-<p>特徴量エンジニアリングは、特徴量を追加して精度を確認するという作業を繰り返さなければなりませんので、精度を確認するためのモジュールも作成します。</p>
+<p>特徴量エンジニアリングは、特徴量を追加して精度を確認するという作業を繰り返さなければなりませんので、精度を確認するためのモジュール（train.py）も作成します。</p>
 <div class="sourceCode" id="cb27"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
 <span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
@@ -1677,7 +1678,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a h
 <span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div>
 <p>特徴量エンジニアリングでデータセットのモジュールを修正したら、このモジュールを実行して成果を確認するわけですね。で、ずっと特徴量エンジニアリングしていると疲れちゃうので、そんな時にはハイパー・パラメーター・チューニングのモジュールを実行してOptunaが新しいハイパー・パラメーターを作成してくれるまで休憩する感じで作業しました。</p>
 <h2 id="予測モデルを作成する-1">予測モデルを作成する</h2>
-<p>特徴量エンジニアリングが完了したら、予測モデルを作成します。</p>
+<p>特徴量エンジニアリングが完了したら、予測モデルを作成します（create_model.py）。</p>
 <div class="sourceCode" id="cb28"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
 <span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
@@ -1715,7 +1716,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a h
 <span id="cb28-34"><a href="#cb28-34" aria-hidden="true" tabindex="-1"></a>save_categorical_features(categorical_features)</span></code></pre></div>
 <p>今回はモジュール化をしましたので、Titanicの時と比べてコードは単純です。説明する場所がなくて困っちゃう。</p>
 <h2 id="解答を作成する-1">解答を作成する</h2>
-<p>保存したモデルを使用して、解答を作成します。</p>
+<p>保存したモデルを使用して、解答を作成します（create_submission.py）。</p>
 <div class="sourceCode" id="cb29"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
@@ -1742,20 +1743,14 @@ alt="House Pricesのスコアのヒストグラム" /></p>
 Pricesのスコアは誤差ですから、小さいほど良い値です）。特徴量の分布とかを丁寧に調べている統計屋さんを、勾配ブースティングのパワーだけで蹴散らしちゃった感じ。プログラミング能力だけでここまで来れるなんて本当に良い時代です。もっと上を目指すならデータ分析が必要なのでしょうけど、このくらい予測できればビジネスでは十分役に立つんじゃないかな。</p>
 <p>ほら、ビジネスに機械学習を活用してみたくなってきたでしょ？　実案件でLightGBMするときには、このHouse
 Prisesのコードを出発点にすればそこそこ楽ちんにプログラミングできると思いますよ。</p>
-<p>x</p>
-<p>x</p>
-<p>x</p>
-<p>x</p>
-<p>x</p>
-<p>x</p>
-<p>x</p>
-<p>x</p>
-<p>x</p>
-<p>x</p>
-<p>このように弱点が見えない深層学習ですけど、深層学習と言われて思い浮かべる以下の図のモデルは全結合（dense）と呼ばれる層を重ねたもので、実は、そんなに精度が高くありません。</p>
-<p><img src="" /></p>
-<h3 id="すべては畳み込みから始まった">すべては畳み込みから始まった</h3>
-<p>その深層学習の精度が大きく向上したのは、畳み込み（convolution）という手法が発明されてから。で、この畳み込みってのは、画像処理でいうところのフィルタリングそのものなんです。</p>
+<h1 id="tensorflowで深層学習">TensorFlowで深層学習</h1>
+<p>LightGBMで勾配ブースティングが終わりましたので、お待ちかねの深層学習です。</p>
+<p>でね、深層学習と言われて思い浮かべる以下の図のモデルは全結合（dense）と呼ばれる層を重ねたもので、実は、そんなに精度が高くありません。</p>
+<p><img src="./image/multilayer-perceptron.png"
+alt="Multilayer Perceptron" /></p>
+<p>というわけで、まずは、このあまり精度が高くなかった全結合から始まった、深層学習の歴史を。</p>
+<h3 id="畳み込みから始まって">畳み込みから始まって</h3>
+<p>深層学習の精度が大きく向上したのは、畳み込み（convolution）という手法が発明されてからです。で、この畳み込みってのは、画像処理でいうところのフィルタリングそのものなんですよ。</p>
 <p>画像においては、あるピクセルだけじゃなくて、そのピクセルの上下左右やそのさらに外側のピクセルとの関係が重要ですよね？　白い中に黒いピクセルが縦に並んでるから縦線と認識できるわけで。このような周りとの関係を汎用的な手法で抽出するのがフィルタリングです。</p>
 <p>フィルタリング処理の具定例を示しましょう。こんな感じ。</p>
 <div class="sourceCode" id="cb30"><pre
@@ -1785,19 +1780,20 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a h
 <span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>plot.imshow(<span class="bu">filter</span>(image, np.array([[<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>], [<span class="dv">2</span>, <span class="op">-</span><span class="dv">8</span>, <span class="dv">2</span>], [<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>]])))</span>
 <span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div>
-<p>ある点の周囲の画像と行列（コード中の<code>kernel</code>）をベクトルに変換（<code>flatten()</code>）して内積（<code>np.inner()</code>）して、新たな画像を作るわけですね。</p>
+<p>ある点の周囲の画像と行列（コード中の<code>kernel</code>）をベクトルに変換（<code>flatten()</code>）して内積（<code>np.inner()</code>）して、新たな画像を作るわけですね。たったこれだけで、画像から輪郭を抽出することができます。</p>
+<p><img src="./image/filtering.png" alt="フィルタリング" /></p>
 <p>で、本稿は文系のための文書ですから、ベクトルの内積について補足します。でも数式は嫌なので、図でやりましょう。題材は転職で。転職先を、給料と仕事の楽しさで表現します。</p>
+<p>で、あれもこれも全部欲しいというのは贅沢すぎるので、転職先の評価軸は、距離が1のベクトルで表現するとしましょう。下の図の、円周上のどこかに向かうベクトルが、転職先の評価軸となるわけですね。</p>
 <p><img src="./image/offers.png"
 alt="転職先を給料と仕事の楽しさでプロット" /></p>
-<p>で、あれもこれも全部欲しいというのは贅沢すぎるので、転職先の評価軸は、距離が1のベクトルで表現するとしましょう。上の図の、左下から円周上のどこかに向かうベクトルが、転職先の評価軸となるわけですね。</p>
-<p>で、「高い給料をもらえるなら非合法な仕事でもオッケー」とか「仕事が楽しければ霞を食べて生きていける」という特殊な場合はそれぞれX軸とY軸の値を見るだけでその軸と垂直なもう片方の軸の値を無視するだけで良いのですけど、普通は、給料2割で仕事の楽しさ8割とかで評価したいですよね？　そんな時は、ベクトルの内積が役に立ちます。</p>
+<p>で、「高い給料をもらえるなら非合法な仕事でもオッケー」とか「仕事が楽しければ霞を食べて生きていける」という特殊な場合はそれぞれX軸とY軸の値を見るだけでその軸と垂直なもう片方の軸の値を無視できるのですけど、普通は、給料2割で仕事の楽しさ8割とかで評価したいですよね？　そんな時は、ベクトルの内積が役に立ちます。</p>
 <p><img src="./image/evaluate_offers_with_inner_product.png"
 alt="転職先を評価ベクトルと内積で評価" /></p>
-<p>上の図のように、ベクトルの内積というのは、あるベクトルの視点で、他のベクトルがどの程度の量になるのかを表現しています。この評価軸のベクトル上での、各転職先の大きさはどのくらいなのかがこれで一目瞭然で転職がはかどっちゃうこと請け合い。しかも、ベクトルの内積ってのは2次元の画像だけじゃなくて、3次元でも4次元でも、1,024次元とかでも成り立つんですよ。だから、先ほどのコードでの<code>kernel</code>のような、9次元のベクトルでも使えるんです。</p>
-<p>でね、先ほどのプログラムの<code>kernel</code>の値は、輪郭の場合に大きな値になるような行列になっていました。輪郭抽出なんて機械学習に関係なさそうと思ったかもしれませんけど、もし、こんな感じに丸くなっているとか、こんな感じに尖っているとか、こんな感じに交差しているとかを表現するベクトルを作るなら、しかもそれが大量にあるならば、たとえば文字認識とかを高い精度でできると思いませんか？</p>
+<p>上の図のように、ベクトルの内積というのは、あるベクトルの視点で、他のベクトルがどの程度の量になるのかを表現しています。赤色で描かれた給料2割で仕事の楽しさ8割のベクトル上での、各転職先の大きさはどのくらいなのかがこれで一目瞭然で、転職がはかどっちゃうこと請け合い。しかも、ベクトルの内積ってのは2次元の画像だけじゃなくて、3次元でも4次元でも、1,024次元とかでも成り立つんですよ。だから、先ほどのコードでの<code>kernel</code>のような、9次元のベクトルでも使えるんです。</p>
+<p>でね、先ほどのプログラムの<code>kernel</code>の値は、輪郭の場合に大きな値になるような行列になっていたんですよ。輪郭抽出なんて機械学習に関係なさそうと思ったかもしれませんけど、もし、こんな感じに丸くなっているとか、こんな感じに尖っているとか、こんな感じに交差しているとかを表現するベクトルを作るなら、しかもそれが大量にあるならば、たとえば文字認識とかを高い精度でできると思いませんか？</p>
 <p>深層学習は機械学習なので、どのような<code>kernel</code>を使うと文字認識に有効なのかとか、犬と猫を区別するにはどのような<code>kernel</code>があればよいのかとかは、コンピューターが調整してくれます。とても楽ちんで、しかも精度が高い！</p>
 <p>と、これが畳み込みで、この畳み込みのおかげで深層学習での画像認識の精度は大幅に向上したんですよ。</p>
-<h3 id="今はアテンションで">今は、アテンションで</h3>
+<h3 id="今はアテンション">今は、アテンション</h3>
 <p>でもね、畳み込みって隣り合うものとの関係しか抽出できないので、自然言語のような遠くのものとの関係がある場合には使いづらかったんですよ。そんな場合にも対応できるように編み出されたのがアテンションです。</p>
 <p>＃前の文章の「そんな場合」は遠くに位置する「自然言語のような遠くのものとの関係がある場合」で、ほら、遠くにあるものと関係があるでしょ？</p>
 <p>自然言語処理では、単語をベクトルで表現します。「私」＝[0.1, 0.0, 0.4,
