@@ -27,7 +27,7 @@ def filter(image, kernel):
 
     for y in range(np.shape(result)[0]):
         for x in range(np.shape(result)[1]):
-            # 画像の該当部分とカーネルの内積を求めて新たな画像を作成します。
+            # 画像の該当部分とカーネルのベクトルの内積を求めて新たな画像を作成します。
             result[y, x] = np.inner(image[y: y + 3, x: x + 3].flatten(), kernel.flatten())
 
     result[result <   0] =   0  # noqa: E222
@@ -36,12 +36,12 @@ def filter(image, kernel):
     return result
 
 
-image = cv2.cvtColor(cv2.imread('4.2.07.tiff'), cv2.COLOR_RGB2GRAY)
+image = cv2.imread('4.2.07.tiff')
 
-plot.imshow(image)
+plot.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
 plot.show()
 
-plot.imshow(filter(image, np.array([[0, 2, 0], [2, -8, 2], [0, 2, 0]])))
+plot.imshow(filter(cv2.cvtColor(image, cv2.COLOR_RGB2GRAY), np.array([[0, 2, 0], [2, -8, 2], [0, 2, 0]])))
 plot.show()
 ~~~
 
@@ -73,7 +73,7 @@ plot.show()
 
 でもね、畳み込みって隣り合うものとの関係しか抽出できないので、自然言語のような遠くのものとの関係がある場合には使いづらかったんですよ。そんな場合にも対応できるように編み出されたのがアテンションです。
 
-＃前の文章の「そんな場合」は遠くに位置する「自然言語のような遠くのものとの関係がある場合」で、ほら、遠くにあるものと関係があるでしょ？
+たとえば、前の文章の「そんな場合」は遠くに位置する「自然言語のような遠くのものとの関係がある場合」で、ほら、自然言語処理では遠くにあるものと関係があるでしょ？
 
 自然言語処理では、単語をベクトルで表現します。「私」＝[0.1, 0.0, 0.4, 0.5, 0.0]みたいな感じ。で、単語のベクトルを要素に持つ行列と単語のベクトルの内積をとる（内積attentionの場合。他に加法attentionってのもありますけどよく知らない）と各単語の重みが出てきて、で、その重みに合わせて単語ベクトルと内積をとって、単語と単語の関係を考慮した行列を作成します。で、これだけだとただの行列計算なので、機械学習できるよう、重みパラメータを追加したのがアテンションです。
 
@@ -87,7 +87,7 @@ plot.show()
 
 ## TensorFlowでTransformer
 
-では、いきなりで申し訳ないのですけど、TensorFlowで流行りのTransformerを作ります。
+では、いきなりで申し訳ないのですけど、流行りのTransformerをTensorFlowで作ります。
 
 いきなりそんな無茶なと感じた貴方は、[言語理解のためのTransformerモデル](https://www.tensorflow.org/tutorials/text/transformer?hl=ja)を開いてみてください。これ、TensorFlowのチュートリアルの一部なんですけど、ここに懇切丁寧にTransformerの作り方が書いてあります。
 
@@ -95,7 +95,7 @@ plot.show()
 
 ただね、TensorFlowを作っているような人ってのはとても頭が良い人で、で、頭が良い人ってのはたいていプログラミングが下手なんですよね……。彼らは頭が良いので、複雑なものを複雑なままで理解できます。で、理解した複雑な内容をそのまま複雑なプログラムとして実装しちゃう。ビジネス・アプリケーションのプログラマーが考えているようなリーダビリティへの考慮とかはゼロの、複雑怪奇な糞コードを書きやがるんですよ。
 
-なので、TensorFlowのチュートリアルをやったあとは、できあがったコードをリファクタリングしましょう。その結果は、こんな感じなりました。
+だから、TensorFlowのチュートリアルをやったあとは、できあがったコードをリファクタリングしましょう。私がリファクタリングした結果は、こんな感じなりました。
 
 ~~~python
 import numpy as np
@@ -517,9 +517,14 @@ print(f'Accuracy: {equal_count / len(xs)}')
 
 あ、シミュレーターを作れるかもしれないけど作るのが面倒なのでとりあえず深層学習ってのもアリですよ。私はこっち派です。
 
-# Vision Transformerで画像認識
+# Vision Transformerで画像のクラス分類
 
-話を元に戻して、KaggleのGetting Startedの[Digit Recognizer](https://www.kaggle.com/c/digit-recognizer)で画像認識をやりましょう。
+話を元に戻して、KaggleのGetting Startedの[Digit Recognizer](https://www.kaggle.com/c/digit-recognizer)で画像のクラス分類をやりましょう。手書き数字の画像認識問題ですね。
+
+## Vision Transformer？
+
+Vision Transformerは、翻訳で大成功したTransformerを元にして作成された、様々な自然言語処理タスクで人間を超えたと話題になったBERTの、画像認識版です。BERTはTransformerを少し修正するだけで作成できるのですけど、Vision Transformerも同様にTransformerの修正で作成可能です。
+
 
 
 

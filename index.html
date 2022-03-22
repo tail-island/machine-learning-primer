@@ -1755,7 +1755,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a h
 <span id="cb30-8"><a href="#cb30-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-9"><a href="#cb30-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> y <span class="kw">in</span> <span class="bu">range</span>(np.shape(result)[<span class="dv">0</span>]):</span>
 <span id="cb30-10"><a href="#cb30-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> x <span class="kw">in</span> <span class="bu">range</span>(np.shape(result)[<span class="dv">1</span>]):</span>
-<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 画像の該当部分とカーネルの内積を求めて新たな画像を作成します。</span></span>
+<span id="cb30-11"><a href="#cb30-11" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 画像の該当部分とカーネルのベクトルの内積を求めて新たな画像を作成します。</span></span>
 <span id="cb30-12"><a href="#cb30-12" aria-hidden="true" tabindex="-1"></a>            result[y, x] <span class="op">=</span> np.inner(image[y: y <span class="op">+</span> <span class="dv">3</span>, x: x <span class="op">+</span> <span class="dv">3</span>].flatten(), kernel.flatten())</span>
 <span id="cb30-13"><a href="#cb30-13" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-14"><a href="#cb30-14" aria-hidden="true" tabindex="-1"></a>    result[result <span class="op">&lt;</span>   <span class="dv">0</span>] <span class="op">=</span>   <span class="dv">0</span>  <span class="co"># noqa: E222</span></span>
@@ -1764,12 +1764,12 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb30-1"><a h
 <span id="cb30-17"><a href="#cb30-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span>
 <span id="cb30-18"><a href="#cb30-18" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-19"><a href="#cb30-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> cv2.cvtColor(cv2.imread(<span class="st">&#39;4.2.07.tiff&#39;</span>), cv2.COLOR_RGB2GRAY)</span>
+<span id="cb30-20"><a href="#cb30-20" aria-hidden="true" tabindex="-1"></a>image <span class="op">=</span> cv2.imread(<span class="st">&#39;4.2.07.tiff&#39;</span>)</span>
 <span id="cb30-21"><a href="#cb30-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>plot.imshow(image)</span>
+<span id="cb30-22"><a href="#cb30-22" aria-hidden="true" tabindex="-1"></a>plot.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))</span>
 <span id="cb30-23"><a href="#cb30-23" aria-hidden="true" tabindex="-1"></a>plot.show()</span>
 <span id="cb30-24"><a href="#cb30-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>plot.imshow(<span class="bu">filter</span>(image, np.array([[<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>], [<span class="dv">2</span>, <span class="op">-</span><span class="dv">8</span>, <span class="dv">2</span>], [<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>]])))</span>
+<span id="cb30-25"><a href="#cb30-25" aria-hidden="true" tabindex="-1"></a>plot.imshow(<span class="bu">filter</span>(cv2.cvtColor(image, cv2.COLOR_RGB2GRAY), np.array([[<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>], [<span class="dv">2</span>, <span class="op">-</span><span class="dv">8</span>, <span class="dv">2</span>], [<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">0</span>]])))</span>
 <span id="cb30-26"><a href="#cb30-26" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div>
 <p>ある点の周囲の画像と行列（コード中の<code>kernel</code>）をベクトルに変換（<code>flatten()</code>）して内積（<code>np.inner()</code>）して、新たな画像を作るわけですね。たったこれだけで、画像から輪郭を抽出することができます。</p>
 <p><img src="./image/4.2.07.png" alt="元画像" /></p>
@@ -1787,7 +1787,7 @@ alt="転職先を評価ベクトルと内積で評価" /></p>
 <p>と、これが畳み込みで、この畳み込みのおかげで深層学習での画像認識の精度は大幅に向上したんです。</p>
 <h2 id="今はアテンション">今は、アテンション</h2>
 <p>でもね、畳み込みって隣り合うものとの関係しか抽出できないので、自然言語のような遠くのものとの関係がある場合には使いづらかったんですよ。そんな場合にも対応できるように編み出されたのがアテンションです。</p>
-<p>＃前の文章の「そんな場合」は遠くに位置する「自然言語のような遠くのものとの関係がある場合」で、ほら、遠くにあるものと関係があるでしょ？</p>
+<p>たとえば、前の文章の「そんな場合」は遠くに位置する「自然言語のような遠くのものとの関係がある場合」で、ほら、自然言語処理では遠くにあるものと関係があるでしょ？</p>
 <p>自然言語処理では、単語をベクトルで表現します。「私」＝[0.1, 0.0, 0.4,
 0.5,
 0.0]みたいな感じ。で、単語のベクトルを要素に持つ行列と単語のベクトルの内積をとる（内積attentionの場合。他に加法attentionってのもありますけどよく知らない）と各単語の重みが出てきて、で、その重みに合わせて単語ベクトルと内積をとって、単語と単語の関係を考慮した行列を作成します。で、これだけだとただの行列計算なので、機械学習できるよう、重みパラメータを追加したのがアテンションです。</p>
@@ -1797,13 +1797,13 @@ id="使用するライブラリはtensorflow">使用するライブラリは、T
 <p>大雑把な歴史の話が終わりましたので、使用するライブラリを選んでいきましょう。玄人はLuaでTorchかPythonでPyTorchを使うみたいで、深層学習の論文ではこれらの環境が良く使われているみたいです。が、素人の私は敢えてGoogle社のTensorFlowを推薦します。</p>
 <p>論文の追試をするとか新しい論文を書くとかなら他の論文と同じ環境が良いのでしょうけど、実際の案件で使用する場合は、やっぱり寄らば大樹の影ですよ。TensorFlowは、様々なプログラミング言語から利用できたり、スマートフォンやIoTデバイスで実行できたりと、周辺機能の充実具合が段違いで優れているので将来のビジネス展開もバッチリですぜ。</p>
 <h2 id="tensorflowでtransformer">TensorFlowでTransformer</h2>
-<p>では、いきなりで申し訳ないのですけど、TensorFlowで流行りのTransformerを作ります。</p>
+<p>では、いきなりで申し訳ないのですけど、流行りのTransformerをTensorFlowで作ります。</p>
 <p>いきなりそんな無茶なと感じた貴方は、<a
 href="https://www.tensorflow.org/tutorials/text/transformer?hl=ja">言語理解のためのTransformerモデル</a>を開いてみてください。これ、TensorFlowのチュートリアルの一部なんですけど、ここに懇切丁寧にTransformerの作り方が書いてあります。</p>
 <p>チュートリアルというのは、コンピューター業界では手を動かして実際にプログラムを作ることや、入門編という意味で使用されます。TensorFlowのチュートリアルはたぶん両方の意味で、入門レベルの人にも分かる記述で、実際に手を動かしてプログラムを作っている間に嫌でも理解できちゃうという内容になっています。いきなりTransformerは難しそうという場合は、<a
 href="https://www.tensorflow.org/tutorials/keras/classification?hl=ja">はじめてのニューラルネットワーク：分類問題の初歩</a>から順を追ってやっていけばオッケーです。</p>
 <p>ただね、TensorFlowを作っているような人ってのはとても頭が良い人で、で、頭が良い人ってのはたいていプログラミングが下手なんですよね……。彼らは頭が良いので、複雑なものを複雑なままで理解できます。で、理解した複雑な内容をそのまま複雑なプログラムとして実装しちゃう。ビジネス・アプリケーションのプログラマーが考えているようなリーダビリティへの考慮とかはゼロの、複雑怪奇な糞コードを書きやがるんですよ。</p>
-<p>なので、TensorFlowのチュートリアルをやったあとは、できあがったコードをリファクタリングしましょう。その結果は、こんな感じなりました。</p>
+<p>だから、TensorFlowのチュートリアルをやったあとは、できあがったコードをリファクタリングしましょう。私がリファクタリングした結果は、こんな感じなりました。</p>
 <div class="sourceCode" id="cb31"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
@@ -2191,10 +2191,15 @@ Networks社とENEOS社の<a
 href="https://matlantis.com/ja/">Matlantis</a>で、マテリアル・インフォマティクスではとても役に立つ（みたい）です。</p>
 <p>こんな感じで、もし遅くてやってられないシミュレーターがあるなら、深層学習で代替できないか検討してみるのも良いと思います。</p>
 <p>あ、シミュレーターを作れるかもしれないけど作るのが面倒なのでとりあえず深層学習ってのもアリですよ。私はこっち派です。</p>
-<h1 id="vision-transformerで画像認識">Vision Transformerで画像認識</h1>
+<h1 id="vision-transformerで画像のクラス分類">Vision
+Transformerで画像のクラス分類</h1>
 <p>話を元に戻して、KaggleのGetting Startedの<a
 href="https://www.kaggle.com/c/digit-recognizer">Digit
-Recognizer</a>で画像認識をやりましょう。</p>
+Recognizer</a>で画像のクラス分類をやりましょう。手書き数字の画像認識問題ですね。</p>
+<h2 id="vision-transformer">Vision Transformer？</h2>
+<p>Vision
+Transformerは、翻訳で大成功したTransformerを元にして作成された、様々な自然言語処理タスクで人間を超えたと話題になったBERTの、画像認識版です。BERTはTransformerを少し修正するだけで作成できるのですけど、Vision
+Transformerも同様にTransformerの修正で作成可能です。</p>
 <p>x</p>
 <p>x</p>
 <p>x</p>
