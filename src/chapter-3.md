@@ -80,8 +80,7 @@ def get_categorical_features(data_frame):
 def get_xs(data_frame, categorical_features):
     # カテゴリ型の特徴量を、数値に変換します。
     for feature, mapping in categorical_features.items():
-        # data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。
-        data_frame[feature] = data_frame[feature].map({**mapping, **{np.nan: -1}}).astype('category')  # astype('category')しておけば、LightGBMがカテゴリ型として扱ってくれて便利です。
+        data_frame[feature] = data_frame[feature].map(mapping).fillna(-1).astype('category')
 
     # 予測に使用するカラムだけを抽出します。NameとTicketは関係なさそうなので無視、Cabinは欠損地が多いので無視しました。
     return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked']]
@@ -118,9 +117,8 @@ params = {
 cv_result = lgb.cv(params, lgb.Dataset(train_xs, label=train_ys), return_cvbooster=True)
 model = cv_result['cvbooster']
 
-# 各特徴量の重要性を出力します。
-for booster in model.boosters:
-    print(pd.DataFrame({'feature': booster.feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
+# 特徴量の重要性を出力します。
+print(pd.DataFrame({'feature': model.boosters[0].feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
 
 # 精度を出力します。
 print(f'Accuracy = {accuracy_score(valid_ys, np.mean(model.predict(valid_xs), axis=0) >= 0.5)}')
@@ -244,8 +242,7 @@ def get_categorical_features(data_frame):
 def get_xs(data_frame, categorical_features):
     # カテゴリ型の特徴量を、数値に変換します。
     for feature, mapping in categorical_features.items():
-        # data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。
-        data_frame[feature] = data_frame[feature].map({**mapping, **{np.nan: -1}}).astype('category')
+        data_frame[feature] = data_frame[feature].map(mapping).fillna(-1).astype('category')
 
     # 予測に使用するカラムだけを抽出します。NameとTicketは関係なさそうなので無視、Cabinは欠損地が多いので無視しました。
     return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Title', 'FamilySize', 'FareUnitPrice']]
@@ -282,9 +279,8 @@ params = {
 cv_result = lgb.cv(params, lgb.Dataset(train_xs, label=train_ys), return_cvbooster=True)
 model = cv_result['cvbooster']
 
-# 各特徴量の重要性を出力します。
-for booster in model.boosters:
-    print(pd.DataFrame({'feature': booster.feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
+# 特徴量の重要性を出力します。
+print(pd.DataFrame({'feature': model.boosters[0].feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
 
 # 精度を出力します。
 print(f'Accuracy = {accuracy_score(valid_ys, np.mean(model.predict(valid_xs), axis=0) >= 0.5)}')
@@ -341,7 +337,7 @@ def add_features(data_frame):
                                  pd.Series(repeat(np.nan, len(data_frame['Name'])), dtype='object'))
 
     # 家族の人数を追加します。
-    data_frame['FamilySize'] = data_frame['SibSp'] + data_frame['Parch']
+    data_frame['FamilySize'] = data_frame['SibSp'] + data_frame['Parch'] + 1
 
     # 料金は合計みたいなので、単価を追加します。
     data_frame['FareUnitPrice'] = data_frame['Fare'] / data_frame['FamilySize']
@@ -358,8 +354,7 @@ def get_categorical_features(data_frame):
 def get_xs(data_frame, categorical_features):
     # カテゴリ型の特徴量を、数値に変換します。
     for feature, mapping in categorical_features.items():
-        # data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。
-        data_frame[feature] = data_frame[feature].map({**mapping, **{np.nan: -1}}).astype('category')
+        data_frame[feature] = data_frame[feature].map(mapping).fillna(-1).astype('category')
 
     # 予測に使用するカラムだけを抽出します。NameとTicketは関係なさそうなので無視、Cabinは欠損地が多いので無視しました。
     return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Title', 'FamilySize', 'FareUnitPrice']]
@@ -389,9 +384,8 @@ tuner = lgb.LightGBMTunerCV(params, lgb.Dataset(xs, label=ys), return_cvbooster=
 cv_result = tuner.run()
 model = tuner.get_best_booster()
 
-# 各特徴量の重要性を出力します。
-for booster in model.boosters:
-    print(pd.DataFrame({'feature': booster.feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
+# 特徴量の重要性を出力します。
+print(pd.DataFrame({'feature': model.boosters[0].feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
 
 # ハイパー・パラメーターを出力します。
 print(tuner.best_params)
@@ -434,7 +428,7 @@ def add_features(data_frame):
                                  pd.Series(repeat(np.nan, len(data_frame['Name'])), dtype='object'))
 
     # 家族の人数を追加します。
-    data_frame['FamilySize'] = data_frame['SibSp'] + data_frame['Parch']
+    data_frame['FamilySize'] = data_frame['SibSp'] + data_frame['Parch'] + 1
 
     # 料金は合計みたいなので、単価を追加します。
     data_frame['FareUnitPrice'] = data_frame['Fare'] / data_frame['FamilySize']
@@ -451,8 +445,7 @@ def get_categorical_features(data_frame):
 def get_xs(data_frame, categorical_features):
     # カテゴリ型の特徴量を、数値に変換します。
     for feature, mapping in categorical_features.items():
-        # data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。
-        data_frame[feature] = data_frame[feature].map({**mapping, **{np.nan: -1}}).astype('category')
+        data_frame[feature] = data_frame[feature].map(mapping).fillna(-1).astype('category')
 
     # 予測に使用するカラムだけを抽出します。NameとTicketは関係なさそうなので無視、Cabinは欠損地が多いので無視しました。
     return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Title', 'FamilySize', 'FareUnitPrice']]
@@ -497,9 +490,8 @@ params = {
 cv_result = lgb.cv(params, lgb.Dataset(train_xs, label=train_ys), return_cvbooster=True)
 model = cv_result['cvbooster']
 
-# 各特徴量の重要性を出力します。
-for booster in model.boosters:
-    print(pd.DataFrame({'feature': booster.feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
+# 特徴量の重要性を出力します。
+print(pd.DataFrame({'feature': model.boosters[0].feature_name(), 'importance': np.mean(model.feature_importance(), axis=0)}).sort_values('importance', ascending=False))
 
 # 精度を出力します。
 print(f'Accuracy = {accuracy_score(valid_ys, np.mean(model.predict(valid_xs), axis=0) >= 0.5)}')
@@ -554,7 +546,7 @@ from functools import reduce
 from funcy import count, repeat
 
 
-# 特徴量を追加します。
+# 特長量を追加します。
 def add_features(data_frame):
     # 肩書追加用の補助関数。
     def add_title(title_series, name_series, id, titles):
@@ -579,17 +571,16 @@ def add_features(data_frame):
     return data_frame
 
 
-# カテゴリ型の特徴量を、どの数値に変換するかのdictを取得します。
+# カテゴリ型の特長量を、どの数値に変換するかのdictを取得します。
 def get_categorical_features(data_frame):
     return dict(map(lambda feature: (feature, dict(zip(data_frame[feature].factorize()[1], count()))), ('Sex', 'Embarked', 'Title')))
 
 
 # データを取得します。
 def get_xs(data_frame, categorical_features):
-    # カテゴリ型の特徴量を、数値に変換します。
+    # カテゴリ型の特長量を、数値に変換します。
     for feature, mapping in categorical_features.items():
-        # data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。
-        data_frame[feature] = data_frame[feature].map({**mapping, **{np.nan: -1}}).astype('category')
+        data_frame[feature] = data_frame[feature].map(mapping).fillna(-1).astype('category')
 
     # 予測に使用するカラムだけを抽出します。NameとTicketは関係なさそうなので無視、Cabinは欠損地が多いので無視しました。
     return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Title', 'FamilySize', 'FareUnitPrice']]
@@ -601,12 +592,12 @@ def get_ys(data_frame):
 
 
 # 機械学習モデルを保存します。
-def save_model(model, name):
+def save_model(model):
     for i, booster in enumerate(model.boosters):  # 交差検証なので、複数のモデルが生成されます。
-        booster.save_model(path.join('titanic-model', f'{name}-{i}.txt'))
+        booster.save_model(path.join('titanic-model', f'model-{i}.txt'))
 
 
-# カテゴリ型の特徴量を、どの数値に変換するかのdictを保存します。
+# カテゴリ型の特長量を、どの数値に変換するかのdictを保存します。
 def save_categorical_features(categorical_features):
     with open(path.join('titanic-model', 'categorical-features.pickle'), mode='wb') as f:
         pickle.dump(categorical_features, f)
@@ -635,7 +626,7 @@ params = {
     'learning_rate': 0.01
 }
 
-# 交差検証で機械学習します。
+# 交差検証法で機械学習します。
 cv_result = lgb.cv(params, lgb.Dataset(xs, label=ys), num_boost_round=1000, return_cvbooster=True)
 model = cv_result['cvbooster']
 
@@ -643,7 +634,7 @@ model = cv_result['cvbooster']
 os.makedirs('titanic-model', exist_ok=True)
 
 # モデルを保存します。
-save_model(model, 'model')
+save_model(model)
 save_categorical_features(categorical_features)
 
 # 学習曲線を出力します。
@@ -677,7 +668,7 @@ from funcy import count, repeat
 from glob import glob
 
 
-# 特徴量を追加します。
+# 特長量を追加します。
 def add_features(data_frame):
     # 肩書追加用の補助関数。
     def add_title(title_series, name_series, id, titles):
@@ -702,17 +693,16 @@ def add_features(data_frame):
     return data_frame
 
 
-# カテゴリ型の特徴量を、どの数値に変換するかのdictを取得します。
+# カテゴリ型の特長量を、どの数値に変換するかのdictを取得します。
 def get_categorical_features(data_frame):
     return dict(map(lambda feature: (feature, dict(zip(data_frame[feature].factorize()[1], count()))), ('Sex', 'Embarked', 'Title')))
 
 
 # データを取得します。
 def get_xs(data_frame, categorical_features):
-    # カテゴリ型の特徴量を、数値に変換します。
+    # カテゴリ型の特長量を、数値に変換します。
     for feature, mapping in categorical_features.items():
-        # data_frame[feature] = data_frame[feature].map(mapping | {np.nan: -1}).astype('category')  # KaggleのNotebookのPythonのバージョンが古くて、merge operatorが使えなかった。
-        data_frame[feature] = data_frame[feature].map({**mapping, **{np.nan: -1}}).astype('category')
+        data_frame[feature] = data_frame[feature].map(mapping).fillna(-1).astype('category')
 
     # 予測に使用するカラムだけを抽出します。NameとTicketは関係なさそうなので無視、Cabinは欠損地が多いので無視しました。
     return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Title', 'FamilySize', 'FareUnitPrice']]
@@ -724,18 +714,18 @@ def is_kaggle_notebook():
 
 
 # モデルをロードします。
-def load_model(name):
+def load_model():
     result = lgb.CVBooster()
 
     base_path = '.' if not is_kaggle_notebook() else path.join('..', 'input')  # KaggleのnotebookのDatasetは../inputに展開されます。。。
 
-    for file in sorted(glob(path.join(base_path, 'titanic-model', f'{name}-*.txt'))):  # 交差検証なので、複数のモデルが生成されます。
+    for file in sorted(glob(path.join(base_path, 'titanic-model', 'model-*.txt'))):  # 交差検証なので、複数のモデルが生成されます。
         result.boosters.append(lgb.Booster(model_file=file))
 
     return result
 
 
-# カテゴリ型の特徴量を、どの数値に変換するかのdictをロードします。
+# カテゴリ型の特長量を、どの数値に変換するかのdictをロードします。
 def load_categorical_features():
     base_path = '.' if not is_kaggle_notebook() else path.join('..', 'input')  # KaggleのnotebookのDatasetは../inputに展開されます。。。
 
@@ -744,7 +734,7 @@ def load_categorical_features():
 
 
 # モデルをロードします。
-model = load_model('model')
+model = load_model()
 categorical_features = load_categorical_features()
 
 # データを読み込んで、前準備をします。
@@ -1187,3 +1177,5 @@ submission.to_csv('submission.csv', index=False)
 うん、そこそこ上位ですね（House Pricesのスコアは誤差ですから、小さいほど良い値です）。特徴量の分布とかを丁寧に調べている統計屋さんを、勾配ブースティングのパワーだけで蹴散らしちゃった感じ。プログラミング能力だけでここまで来れるなんて本当に良い時代です。もっと上を目指すならデータ分析が必要なのでしょうけど、このくらい予測できればビジネスでは十分役に立つんじゃないかな。
 
 ほら、ビジネスに機械学習を活用してみたくなってきたでしょ？　実案件でLightGBMするときには、このHouse Prisesのコードを出発点にすればそこそこ楽ちんにプログラミングできると思いますよ。
+
+うん、LightGBMで勾配ブースティングは、簡単で精度が高くて最高ですな！
