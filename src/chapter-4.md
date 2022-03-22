@@ -79,23 +79,23 @@ plot.show()
 
 あとは、深層学習ってのは本来固定長の入力しか受け付けられないのだけど、それを数式上の工夫で可変長にして、翻訳で精度を大幅に向上させたのがTransformerという深層学習のモデルです。
 
-## 使用するライブラリは、TensorFlowで
+## 使用するライブラリは、TensorFlow
 
 大雑把な歴史の話が終わりましたので、使用するライブラリを選んでいきましょう。玄人はLuaでTorchかPythonでPyTorchを使うみたいで、深層学習の論文ではこれらの環境が良く使われているみたいです。が、素人の私は敢えてGoogle社のTensorFlowを推薦します。
 
-論文の追試をするとか新しい論文を書くとかなら他の論文と同じ環境が良いのでしょうけど、実際の案件で使用する場合は、やっぱり寄らば大樹の影ですよ。TensorFlowは、様々なプログラミング言語から利用できたり、スマートフォンやIoTデバイスで実行できたりと、周辺機能の充実具合が段違いで優れているので将来のビジネス展開もバッチリです。
+論文の追試をするとか新しい論文を書くとかなら他の論文と同じ環境が良いのでしょうけど、実際の案件で使用する場合は、やっぱり寄らば大樹の影ですよ。TensorFlowは、様々なプログラミング言語から利用できたり、スマートフォンやIoTデバイスで実行できたりと、周辺機能の充実具合が段違いで優れているので将来のビジネス展開もバッチリですぜ。
 
 ## TensorFlowでTransformer
 
 では、いきなりで申し訳ないのですけど、TensorFlowで流行りのTransformerを作ります。
 
-そんな無茶なと感じた貴方は、[言語理解のためのTransformerモデル](https://www.tensorflow.org/tutorials/text/transformer?hl=ja)を開いてみてください。これ、TensorFlowのチュートリアルの一部なんですけど、ここに懇切丁寧にTransformerの作り方が書いてあります。
+いきなりそんな無茶なと感じた貴方は、[言語理解のためのTransformerモデル](https://www.tensorflow.org/tutorials/text/transformer?hl=ja)を開いてみてください。これ、TensorFlowのチュートリアルの一部なんですけど、ここに懇切丁寧にTransformerの作り方が書いてあります。
 
-チュートリアルというのは、コンピューター業界では手を動かして実際にプログラムを作ることや、入門編という意味で使用されます。TensorFlowのチュートリアルはたぶん両方の意味で、入門レベルの人にも分かる記述で、実際に手を動かしてプログラムを作っている間に嫌でも理解できちゃうという内容になっています。いきなりTensorFlowは難しそうという場合は、[はじめてのニューラルネットワーク：分類問題の初歩](https://www.tensorflow.org/tutorials/keras/classification?hl=ja)から順を追ってやっていけばオッケーです。
+チュートリアルというのは、コンピューター業界では手を動かして実際にプログラムを作ることや、入門編という意味で使用されます。TensorFlowのチュートリアルはたぶん両方の意味で、入門レベルの人にも分かる記述で、実際に手を動かしてプログラムを作っている間に嫌でも理解できちゃうという内容になっています。いきなりTransformerは難しそうという場合は、[はじめてのニューラルネットワーク：分類問題の初歩](https://www.tensorflow.org/tutorials/keras/classification?hl=ja)から順を追ってやっていけばオッケーです。
 
-ただ、TensorFlowを作っているような人ってのはとても頭が良い人で、で、頭が良い人ってのはプログラミングが下手糞なんですよね……。彼らは頭が良いので、複雑なものを複雑なままで理解できます。で、理解した複雑な内容をそのまま複雑なプログラムとして実装しちゃう。ビジネス・アプリケーションのプログラマーが考えているようなリーダビリティへの考慮とかはゼロの、複雑怪奇な糞コードを書きやがるんですよ。
+ただね、TensorFlowを作っているような人ってのはとても頭が良い人で、で、頭が良い人ってのはたいていプログラミングが下手なんですよね……。彼らは頭が良いので、複雑なものを複雑なままで理解できます。で、理解した複雑な内容をそのまま複雑なプログラムとして実装しちゃう。ビジネス・アプリケーションのプログラマーが考えているようなリーダビリティへの考慮とかはゼロの、複雑怪奇な糞コードを書きやがるんですよ。
 
-なので、TensorFlowのチュートリアルをやって、できあがったコードをリファクタリングしてみました。その結果はこんな感じ。
+なので、TensorFlowのチュートリアルをやったあとは、できあがったコードをリファクタリングしましょう。その結果は、こんな感じなりました。
 
 ~~~python
 import numpy as np
@@ -265,9 +265,259 @@ class Loss(tf.keras.losses.Loss):
         return tf.reduce_mean(self.sparse_categorical_crossentropy(y_true, y_pred) * tf.cast(tf.math.logical_not(tf.math.equal(y_true, 0)), dtype=tf.float32))
 ~~~
 
-このコードの解説はTensorFlowのチュートリアルに任せることにして、なぜ誰かのTransformer実装を使わずに自前でTransformerを実装したのかについて述べさせてください。
+上のコードの解説はTensorFlowのチュートリアルに任せることにして、なぜ誰かのTransformer実装を使わずに自前でTransformerを実装したのかを述べさせてください。
+
+既存のTransformerの実装が存在しないわけじゃありません。GitHubを検索すれば大量に見つかるでしょう。それらを利用すれば、わざわざ実装せずともTransformerできます。でも、できればTensorFlowのチュートリアルを読んで、自前で実装して動かしてみていただきたいです。
+
+その理由は、深層学習がいまだ未成熟な技術だから。新しいモデルが次々に出てきていて、そのモデルを使えば今までできなかったことができるようになって、ビジネスに大いに役立つかもしれません。その新しいモデルの実装があるとは限らないわけで、自前で実装しなければならないかもしれません。その時は、そのひとつ前のモデルの実装経験が役立つでしょう。
+
+あと、深層学習は入力や出力の型が決まっているという問題もあります。画像認識のような場合はこれが結構痛くて、画像の大きさをモデルが要求する大きさに合わせたりしなければなりません。自前で作成するなら、モデルの中身を調整できるのでこんな問題はありません。
+
+ただし、事前学習が必要なくらいに大きなニューラル・ネットワークの場合は、既存の実装を再利用するしかないですけどね……。まぁ、その場合でも自前で深層学習を実装したことによる深い理解は役に立つんじゃないかと。
+
+というわけで実装したTransformerを使用して機械学習してみましょう。TensorFlowのチュートリアルではポルトガル語から英語への翻訳をやっていますけど、ポルトガル語も英語も分からないので、今回は足し算と引き算でやります。`1 + 1`をTransformerにかけたら`2`が出力されるわけですね。
+
+データセットは、以下のようになっています。
+
+~~~csv
+Id,Expression,Answer
+0,934+952,1886
+1,68+487,555
+2,550+690,1240
+3,360+421,781
+4,214+844,1058
+5,453+728,1181
+6,798+178,976
+7,199+809,1008
+8,182+317,499
+9,818+788,1606
+10,966+380,1346
+~~~
+
+このデータセットを読み込むモジュール（dataset.py）はこんな感じ。
+
+~~~python
+import numpy as np
+import os.path as path
+import pandas as pd
+
+from funcy import concat, count, dropwhile, map, take, takewhile
 
 
+# 使用される単語。自然言語処理の処理単位は単語です。今回は面倒なので、文字単位にしました。
+WORDS = tuple(concat((' ',), ('+', '-'), map(str, range(10)), ('^', '$')))
+
+# 単語を整数にエンコード/デコードするためのdictです。
+ENCODES = dict(zip(WORDS, count()))
+DECODES = dict(zip(count(), WORDS))
+
+
+# DataFrameを取得します。
+def get_data_frame(filename):
+    return pd.read_csv(path.join('..', 'input', filename), dtype={'Expression': 'string', 'Answer': 'string'})
+
+
+# 訓練用のDataFrameを取得します。
+def get_train_data_frame():
+    return get_data_frame('train.csv')
+
+
+# テスト用のDataFrameを取得します。
+def get_test_data_frame():
+    return get_data_frame('test.csv')
+
+
+# 深層学習するために、文をエンコードして数値の集合に変換します。
+def encode(sentence, max_sentence_length):
+    return take(max_sentence_length + 2, concat((ENCODES['^'],),  # 文の開始
+                                                map(ENCODES, sentence),
+                                                (ENCODES['$'],),  # 文の終了
+                                                (ENCODES[' '],) * max_sentence_length))  # 残りは空白で埋めます。長さを揃えないと、深層学習できないためです。
+
+
+# 深層学習が出力した数値の集合を、デコードして文字列に変換します。
+def decode(encoded):
+    return ''.join(takewhile(lambda c: c != '$', dropwhile(lambda c: c == '^', map(DECODES, encoded))))
+
+
+# 入力データを取得します。
+def get_xs(data_frame):
+    strings = data_frame['Expression']
+    max_length = max(map(len, strings))
+
+    return np.array(tuple(map(lambda string: tuple(encode(string, max_length)), strings)), dtype=np.int64)
+
+
+# 正解データを取得します。
+def get_ys(data_frame):
+    strings = data_frame['Answer']
+    max_length = max(map(len, strings))
+
+    return np.array(tuple(map(lambda string: tuple(encode(string, max_length)), strings)), dtype=np.int64)
+~~~
+
+自然言語処理では単語単位に一意のIDを割り振る必要があるので、そのためのdictを作成したり文字列をID列にエンコードしたりID列を文字列にデコードしたりする処理を作成しています。
+
+Transformerのハイパー・パラメーターはこんな感じ。
+
+~~~python
+from dataset import WORDS
+
+
+NUM_BLOCKS = 3             # 簡単なタスクなので、Attention is all you needの半分
+D_MODEL = 256              # 簡単なタスクなので、Attention is all you needの半分
+D_FF = 1024                # 簡単なタスクなので、Attention is all you needの半分
+NUM_HEADS = 4              # 簡単なタスクなので、Attention is all you needの半分
+DROPOUT_RATE = 0.1         # ここはAttention is all you needのまま
+X_VOCAB_SIZE = len(WORDS)
+Y_VOCAB_SIZE = len(WORDS)
+X_MAXIMUM_POSITION = 20    # 余裕を持って多めに
+Y_MAXIMUM_POSITION = 20    # 余裕を持って多めに
+~~~
+
+Transformerは[Attention is all you need](https://arxiv.org/abs/1706.03762)という論文のモデルで、この論文が使用しているハイパー・パラメーターをフィーリングで半分に減らしました。
+
+機械学習する部分のコードは、こんな感じ。
+
+~~~python
+import numpy as np
+import tensorflow as tf
+
+from dataset import decode, get_train_data_frame, get_xs, get_ys
+from funcy import identity, juxt
+from itertools import starmap
+from operator import eq
+from params import NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, X_VOCAB_SIZE, Y_VOCAB_SIZE, X_MAXIMUM_POSITION, Y_MAXIMUM_POSITION, DROPOUT_RATE
+from transformer import LearningRateSchedule, Loss, transformer
+from translation import translate
+
+
+rng = np.random.default_rng(0)
+
+# データを読み込みます。
+data_frame = get_train_data_frame()
+
+# データセットを取得します。
+xs = get_xs(data_frame)
+ys = get_ys(data_frame)
+
+# 訓練データセットと検証データセットに分割するためのインデックスを作成します。
+indices = rng.permutation(np.arange(len(xs)))
+
+# 訓練データセットを取得します。
+train_xs = xs[indices[2000:]]
+train_ys = ys[indices[2000:]]
+
+# 検証データセットを取得します。
+valid_xs = xs[indices[:2000]]
+valid_ys = ys[indices[:2000]]
+
+# Transformerを作成します。
+op = transformer(NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, X_VOCAB_SIZE, Y_VOCAB_SIZE, X_MAXIMUM_POSITION, Y_MAXIMUM_POSITION, DROPOUT_RATE)
+
+# Kerasのモデルを作成します。
+model = tf.keras.Model(*juxt(identity, op)([tf.keras.Input(shape=(None,)), tf.keras.Input(shape=(None,))]))
+model.compile(tf.keras.optimizers.Adam(LearningRateSchedule(D_MODEL), beta_1=0.9, beta_2=0.98, epsilon=1e-9), loss=Loss(), metrics=())
+# model.summary()
+
+# 機械学習して、モデルを保存します。
+model.fit((train_xs, train_ys[:, :-1]), train_ys[:, 1:], batch_size=256, epochs=100, validation_data=((valid_xs, valid_ys[:, :-1]), valid_ys[:, 1:]))
+model.save('model', include_optimizer=False)
+
+# 実際に予測させて、精度を確認します。
+print(f'Accuracy = {sum(starmap(eq, zip(map(decode, valid_ys), map(decode, translate(model, valid_xs))))) / len(valid_xs)}')
+~~~
+
+TensorFlowのTransformerのチュートリアルでは、TensorFlowの生APIを使って細かく学習を制御しているのですけど、生APIを使うのは面倒なので簡単便利ライブラリであるKeras（TensorFlowに付属しています）を使用しました。`fit()`の時にいろいろ情報を出力してくれて面白いですよ。
+
+で、上のコード中で使用している`translate()`は、後述するテストのモジュールでも使用するので、共用できるようにモジュール化しました。
+
+~~~python
+import numpy as np
+
+from dataset import ENCODES
+from params import Y_MAXIMUM_POSITION
+
+
+# 翻訳します。
+def translate(model, xs):
+    # 仮の翻訳結果を作成し、文の開始記号を設定します。
+    ys = np.zeros((len(xs), Y_MAXIMUM_POSITION), dtype=np.int64)
+    ys[:, 0] = ENCODES['^']
+
+    # 文の終了記号が出力されたかを表現する変数です。
+    is_ends = np.zeros((len(xs),), dtype=np.int32)
+
+    # Transformerは、学習時は文の単位なのですけど、翻訳は単語単位でやらなければなりません……。
+    for i in range(1, Y_MAXIMUM_POSITION):
+        # 単語を翻訳します。
+        ys[:, i] = np.argmax(model.predict((xs, ys[:, :i]), batch_size=256)[:, -1], axis=-1)  # 256並列で、次の単語を予測します。対象以外の単語も予測されますけど、無視します。
+
+        # 文の終了記号が出力されたか確認します。
+        is_ends |= ys[:, i] == ENCODES['$']
+
+        # すべての文の翻訳が完了した場合はループをブレークします。
+        if np.all(is_ends):
+            break
+
+    return ys
+~~~
+
+Transformerは、学習は文の単位でやる（そのために、文の先を参照しないようにマスクを設定している）のですけど、翻訳するときの単位は単語です。元の文＋1単語目までを入力に2単語目を出力するわけですね。実は3つ目の単語を予測する時にも2つめの単語を予測して出力しているのですけど、`[:, -1]`で捨てています。計算の無駄な気がしますけど、効率よく学習するためなので我慢してください。
+
+最後。テスト・データを翻訳させて、精度を確認します。コードはこんな感じ。
+
+~~~python
+import tensorflow as tf
+
+from dataset import decode, get_test_data_frame, get_xs, get_ys
+from translation import translate
+
+
+# モデルを取得します。
+model = tf.keras.models.load_model('model')
+
+# データを取得します。
+data_frame = get_test_data_frame()
+
+# データセットを取得します。
+xs = get_xs(data_frame)
+ys = get_ys(data_frame)
+
+# 正解した数。
+equal_count = 0
+
+# 実際に予測させて、正解した数を取得します。
+for x, y_true, y_pred in zip(xs, ys, translate(model, xs)):
+    y_true_string = decode(y_true)
+    y_pred_string = decode(y_pred)
+
+    equal = y_true_string == y_pred_string
+    equal_count += equal
+
+    print(f'{decode(x)} {"==" if equal else "!="} {y_pred_string}')  # ついでなので、予測結果を出力させます。
+
+# 精度を出力します。
+print(f'Accuracy: {equal_count / len(xs)}')
+~~~
+
+さて、その精度はどうなったかというと、0.947という高い精度になりました！　大量データがあるなら、Transformerで翻訳できそうですね。
+
+## 深層学習の使いどころ
+
+……ちょっと待って。足し算とか引き算なら、深層学習を使わないで実際に足し算とか引き算するコードを書けば精度100%になるのでは？
+
+はい。おっしゃる通り。もし入力と出力の関係を定義できて、それをシミュレーションできるなら、深層学習を使わないで関係をそのまま実装しちゃえば良いでしょう。シミュレーターを作れるなら、シミュレーターの方が精度が高そうですもんね。
+
+ただ、シミュレーターを作成可能な場合であっても深層学習が役に立つ場合もあるんですよ。それがどんな場合かというと、シミュレーションにやたらと時間がかかる場合です。実は深層学習はすべての関数を近似できるらしいんですよ（その証明は難しくて私では理解できなかったけど）。ということは、シミュレーションを近似できちゃうわけ。
+
+たとえば原子の動きのシミュレーションとかは、量子力学の基本法則を利用する第一原理計算というのがあって、それを活用する密度汎関数法（density functional theory）という計算でできる（らしい）んです。ただ、これってとにかく計算に時間がかかる（っぽい）んですよ。複雑な原子のシミュレーションはとにかく時間がかかってやってられないので、これを深層学習で近似しちゃおうというのが、Preferred Networks社とENEOS社の[Matlantis](https://matlantis.com/ja/)で、マテリアル・インフォマティクスではとても役に立つ（みたい）です。
+
+こんな感じで、もし遅くてやってられないシミュレーターがあるなら、深層学習で代替できないか検討してみるのも良いと思います。
+
+あ、シミュレーターを作れるかもしれないけど作るのが面倒なのでとりあえず深層学習ってのもアリです。
+
+##
 
 x
 

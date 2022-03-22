@@ -1793,17 +1793,17 @@ alt="転職先を評価ベクトルと内積で評価" /></p>
 0.0]みたいな感じ。で、単語のベクトルを要素に持つ行列と単語のベクトルの内積をとる（内積attentionの場合。他に加法attentionってのもありますけどよく知らない）と各単語の重みが出てきて、で、その重みに合わせて単語ベクトルと内積をとって、単語と単語の関係を考慮した行列を作成します。で、これだけだとただの行列計算なので、機械学習できるよう、重みパラメータを追加したのがアテンションです。</p>
 <p>あとは、深層学習ってのは本来固定長の入力しか受け付けられないのだけど、それを数式上の工夫で可変長にして、翻訳で精度を大幅に向上させたのがTransformerという深層学習のモデルです。</p>
 <h2
-id="使用するライブラリはtensorflowで">使用するライブラリは、TensorFlowで</h2>
+id="使用するライブラリはtensorflow">使用するライブラリは、TensorFlow</h2>
 <p>大雑把な歴史の話が終わりましたので、使用するライブラリを選んでいきましょう。玄人はLuaでTorchかPythonでPyTorchを使うみたいで、深層学習の論文ではこれらの環境が良く使われているみたいです。が、素人の私は敢えてGoogle社のTensorFlowを推薦します。</p>
-<p>論文の追試をするとか新しい論文を書くとかなら他の論文と同じ環境が良いのでしょうけど、実際の案件で使用する場合は、やっぱり寄らば大樹の影ですよ。TensorFlowは、様々なプログラミング言語から利用できたり、スマートフォンやIoTデバイスで実行できたりと、周辺機能の充実具合が段違いで優れているので将来のビジネス展開もバッチリです。</p>
+<p>論文の追試をするとか新しい論文を書くとかなら他の論文と同じ環境が良いのでしょうけど、実際の案件で使用する場合は、やっぱり寄らば大樹の影ですよ。TensorFlowは、様々なプログラミング言語から利用できたり、スマートフォンやIoTデバイスで実行できたりと、周辺機能の充実具合が段違いで優れているので将来のビジネス展開もバッチリですぜ。</p>
 <h2 id="tensorflowでtransformer">TensorFlowでTransformer</h2>
 <p>では、いきなりで申し訳ないのですけど、TensorFlowで流行りのTransformerを作ります。</p>
-<p>そんな無茶なと感じた貴方は、<a
+<p>いきなりそんな無茶なと感じた貴方は、<a
 href="https://www.tensorflow.org/tutorials/text/transformer?hl=ja">言語理解のためのTransformerモデル</a>を開いてみてください。これ、TensorFlowのチュートリアルの一部なんですけど、ここに懇切丁寧にTransformerの作り方が書いてあります。</p>
-<p>チュートリアルというのは、コンピューター業界では手を動かして実際にプログラムを作ることや、入門編という意味で使用されます。TensorFlowのチュートリアルはたぶん両方の意味で、入門レベルの人にも分かる記述で、実際に手を動かしてプログラムを作っている間に嫌でも理解できちゃうという内容になっています。いきなりTensorFlowは難しそうという場合は、<a
+<p>チュートリアルというのは、コンピューター業界では手を動かして実際にプログラムを作ることや、入門編という意味で使用されます。TensorFlowのチュートリアルはたぶん両方の意味で、入門レベルの人にも分かる記述で、実際に手を動かしてプログラムを作っている間に嫌でも理解できちゃうという内容になっています。いきなりTransformerは難しそうという場合は、<a
 href="https://www.tensorflow.org/tutorials/keras/classification?hl=ja">はじめてのニューラルネットワーク：分類問題の初歩</a>から順を追ってやっていけばオッケーです。</p>
-<p>ただ、TensorFlowを作っているような人ってのはとても頭が良い人で、で、頭が良い人ってのはプログラミングが下手糞なんですよね……。彼らは頭が良いので、複雑なものを複雑なままで理解できます。で、理解した複雑な内容をそのまま複雑なプログラムとして実装しちゃう。ビジネス・アプリケーションのプログラマーが考えているようなリーダビリティへの考慮とかはゼロの、複雑怪奇な糞コードを書きやがるんですよ。</p>
-<p>なので、TensorFlowのチュートリアルをやって、できあがったコードをリファクタリングしてみました。その結果はこんな感じ。</p>
+<p>ただね、TensorFlowを作っているような人ってのはとても頭が良い人で、で、頭が良い人ってのはたいていプログラミングが下手なんですよね……。彼らは頭が良いので、複雑なものを複雑なままで理解できます。で、理解した複雑な内容をそのまま複雑なプログラムとして実装しちゃう。ビジネス・アプリケーションのプログラマーが考えているようなリーダビリティへの考慮とかはゼロの、複雑怪奇な糞コードを書きやがるんですよ。</p>
+<p>なので、TensorFlowのチュートリアルをやったあとは、できあがったコードをリファクタリングしましょう。その結果は、こんな感じなりました。</p>
 <div class="sourceCode" id="cb31"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
@@ -1970,7 +1970,228 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a h
 <span id="cb31-163"><a href="#cb31-163" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb31-164"><a href="#cb31-164" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> call(<span class="va">self</span>, y_true, y_pred):</span>
 <span id="cb31-165"><a href="#cb31-165" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.reduce_mean(<span class="va">self</span>.sparse_categorical_crossentropy(y_true, y_pred) <span class="op">*</span> tf.cast(tf.math.logical_not(tf.math.equal(y_true, <span class="dv">0</span>)), dtype<span class="op">=</span>tf.float32))</span></code></pre></div>
-<p>このコードの解説はTensorFlowのチュートリアルに任せることにして、なぜ誰かのTransformer実装を使わずに自前でTransformerを実装したのかについて述べさせてください。</p>
+<p>上のコードの解説はTensorFlowのチュートリアルに任せることにして、なぜ誰かのTransformer実装を使わずに自前でTransformerを実装したのかを述べさせてください。</p>
+<p>既存のTransformerの実装が存在しないわけじゃありません。GitHubを検索すれば大量に見つかるでしょう。それらを利用すれば、わざわざ実装せずともTransformerできます。でも、できればTensorFlowのチュートリアルを読んで、自前で実装して動かしてみていただきたいです。</p>
+<p>その理由は、深層学習がいまだ未成熟な技術だから。新しいモデルが次々に出てきていて、そのモデルを使えば今までできなかったことができるようになって、ビジネスに大いに役立つかもしれません。その新しいモデルの実装があるとは限らないわけで、自前で実装しなければならないかもしれません。その時は、そのひとつ前のモデルの実装経験が役立つでしょう。</p>
+<p>あと、深層学習は入力や出力の型が決まっているという問題もあります。画像認識のような場合はこれが結構痛くて、画像の大きさをモデルが要求する大きさに合わせたりしなければなりません。自前で作成するなら、モデルの中身を調整できるのでこんな問題はありません。</p>
+<p>ただし、事前学習が必要なくらいに大きなニューラル・ネットワークの場合は、既存の実装を再利用するしかないですけどね……。まぁ、その場合でも自前で深層学習を実装したことによる深い理解は役に立つんじゃないかと。</p>
+<p>というわけで実装したTransformerを使用して機械学習してみましょう。TensorFlowのチュートリアルではポルトガル語から英語への翻訳をやっていますけど、ポルトガル語も英語も分からないので、今回は足し算と引き算でやります。<code>1 + 1</code>をTransformerにかけたら<code>2</code>が出力されるわけですね。</p>
+<p>データセットは、以下のようになっています。</p>
+<pre class="csv"><code>Id,Expression,Answer
+0,934+952,1886
+1,68+487,555
+2,550+690,1240
+3,360+421,781
+4,214+844,1058
+5,453+728,1181
+6,798+178,976
+7,199+809,1008
+8,182+317,499
+9,818+788,1606
+10,966+380,1346</code></pre>
+<p>このデータセットを読み込むモジュール（dataset.py）はこんな感じ。</p>
+<div class="sourceCode" id="cb33"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-5"><a href="#cb33-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> concat, count, dropwhile, <span class="bu">map</span>, take, takewhile</span>
+<span id="cb33-6"><a href="#cb33-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-7"><a href="#cb33-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-8"><a href="#cb33-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 使用される単語。自然言語処理の処理単位は単語です。今回は面倒なので、文字単位にしました。</span></span>
+<span id="cb33-9"><a href="#cb33-9" aria-hidden="true" tabindex="-1"></a>WORDS <span class="op">=</span> <span class="bu">tuple</span>(concat((<span class="st">&#39; &#39;</span>,), (<span class="st">&#39;+&#39;</span>, <span class="st">&#39;-&#39;</span>), <span class="bu">map</span>(<span class="bu">str</span>, <span class="bu">range</span>(<span class="dv">10</span>)), (<span class="st">&#39;^&#39;</span>, <span class="st">&#39;$&#39;</span>)))</span>
+<span id="cb33-10"><a href="#cb33-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-11"><a href="#cb33-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 単語を整数にエンコード/デコードするためのdictです。</span></span>
+<span id="cb33-12"><a href="#cb33-12" aria-hidden="true" tabindex="-1"></a>ENCODES <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">zip</span>(WORDS, count()))</span>
+<span id="cb33-13"><a href="#cb33-13" aria-hidden="true" tabindex="-1"></a>DECODES <span class="op">=</span> <span class="bu">dict</span>(<span class="bu">zip</span>(count(), WORDS))</span>
+<span id="cb33-14"><a href="#cb33-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-15"><a href="#cb33-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-16"><a href="#cb33-16" aria-hidden="true" tabindex="-1"></a><span class="co"># DataFrameを取得します。</span></span>
+<span id="cb33-17"><a href="#cb33-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_data_frame(filename):</span>
+<span id="cb33-18"><a href="#cb33-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, filename), dtype<span class="op">=</span>{<span class="st">&#39;Expression&#39;</span>: <span class="st">&#39;string&#39;</span>, <span class="st">&#39;Answer&#39;</span>: <span class="st">&#39;string&#39;</span>})</span>
+<span id="cb33-19"><a href="#cb33-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-20"><a href="#cb33-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-21"><a href="#cb33-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練用のDataFrameを取得します。</span></span>
+<span id="cb33-22"><a href="#cb33-22" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_train_data_frame():</span>
+<span id="cb33-23"><a href="#cb33-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;train.csv&#39;</span>)</span>
+<span id="cb33-24"><a href="#cb33-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-25"><a href="#cb33-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-26"><a href="#cb33-26" aria-hidden="true" tabindex="-1"></a><span class="co"># テスト用のDataFrameを取得します。</span></span>
+<span id="cb33-27"><a href="#cb33-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_test_data_frame():</span>
+<span id="cb33-28"><a href="#cb33-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;test.csv&#39;</span>)</span>
+<span id="cb33-29"><a href="#cb33-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-30"><a href="#cb33-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-31"><a href="#cb33-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 深層学習するために、文をエンコードして数値の集合に変換します。</span></span>
+<span id="cb33-32"><a href="#cb33-32" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> encode(sentence, max_sentence_length):</span>
+<span id="cb33-33"><a href="#cb33-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> take(max_sentence_length <span class="op">+</span> <span class="dv">2</span>, concat((ENCODES[<span class="st">&#39;^&#39;</span>],),  <span class="co"># 文の開始</span></span>
+<span id="cb33-34"><a href="#cb33-34" aria-hidden="true" tabindex="-1"></a>                                                <span class="bu">map</span>(ENCODES, sentence),</span>
+<span id="cb33-35"><a href="#cb33-35" aria-hidden="true" tabindex="-1"></a>                                                (ENCODES[<span class="st">&#39;$&#39;</span>],),  <span class="co"># 文の終了</span></span>
+<span id="cb33-36"><a href="#cb33-36" aria-hidden="true" tabindex="-1"></a>                                                (ENCODES[<span class="st">&#39; &#39;</span>],) <span class="op">*</span> max_sentence_length))  <span class="co"># 残りは空白で埋めます。長さを揃えないと、深層学習できないためです。</span></span>
+<span id="cb33-37"><a href="#cb33-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-38"><a href="#cb33-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-39"><a href="#cb33-39" aria-hidden="true" tabindex="-1"></a><span class="co"># 深層学習が出力した数値の集合を、デコードして文字列に変換します。</span></span>
+<span id="cb33-40"><a href="#cb33-40" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> decode(encoded):</span>
+<span id="cb33-41"><a href="#cb33-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">&#39;&#39;</span>.join(takewhile(<span class="kw">lambda</span> c: c <span class="op">!=</span> <span class="st">&#39;$&#39;</span>, dropwhile(<span class="kw">lambda</span> c: c <span class="op">==</span> <span class="st">&#39;^&#39;</span>, <span class="bu">map</span>(DECODES, encoded))))</span>
+<span id="cb33-42"><a href="#cb33-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-43"><a href="#cb33-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-44"><a href="#cb33-44" aria-hidden="true" tabindex="-1"></a><span class="co"># 入力データを取得します。</span></span>
+<span id="cb33-45"><a href="#cb33-45" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame):</span>
+<span id="cb33-46"><a href="#cb33-46" aria-hidden="true" tabindex="-1"></a>    strings <span class="op">=</span> data_frame[<span class="st">&#39;Expression&#39;</span>]</span>
+<span id="cb33-47"><a href="#cb33-47" aria-hidden="true" tabindex="-1"></a>    max_length <span class="op">=</span> <span class="bu">max</span>(<span class="bu">map</span>(<span class="bu">len</span>, strings))</span>
+<span id="cb33-48"><a href="#cb33-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-49"><a href="#cb33-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(<span class="bu">tuple</span>(<span class="bu">map</span>(<span class="kw">lambda</span> string: <span class="bu">tuple</span>(encode(string, max_length)), strings)), dtype<span class="op">=</span>np.int64)</span>
+<span id="cb33-50"><a href="#cb33-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-51"><a href="#cb33-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-52"><a href="#cb33-52" aria-hidden="true" tabindex="-1"></a><span class="co"># 正解データを取得します。</span></span>
+<span id="cb33-53"><a href="#cb33-53" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
+<span id="cb33-54"><a href="#cb33-54" aria-hidden="true" tabindex="-1"></a>    strings <span class="op">=</span> data_frame[<span class="st">&#39;Answer&#39;</span>]</span>
+<span id="cb33-55"><a href="#cb33-55" aria-hidden="true" tabindex="-1"></a>    max_length <span class="op">=</span> <span class="bu">max</span>(<span class="bu">map</span>(<span class="bu">len</span>, strings))</span>
+<span id="cb33-56"><a href="#cb33-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb33-57"><a href="#cb33-57" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(<span class="bu">tuple</span>(<span class="bu">map</span>(<span class="kw">lambda</span> string: <span class="bu">tuple</span>(encode(string, max_length)), strings)), dtype<span class="op">=</span>np.int64)</span></code></pre></div>
+<p>自然言語処理では単語単位に一意のIDを割り振る必要があるので、そのためのdictを作成したり文字列をID列にエンコードしたりID列を文字列にデコードしたりする処理を作成しています。</p>
+<p>Transformerのハイパー・パラメーターはこんな感じ。</p>
+<div class="sourceCode" id="cb34"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> WORDS</span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>NUM_BLOCKS <span class="op">=</span> <span class="dv">3</span>             <span class="co"># 簡単なタスクなので、Attention is all you needの半分</span></span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>D_MODEL <span class="op">=</span> <span class="dv">256</span>              <span class="co"># 簡単なタスクなので、Attention is all you needの半分</span></span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>D_FF <span class="op">=</span> <span class="dv">1024</span>                <span class="co"># 簡単なタスクなので、Attention is all you needの半分</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>NUM_HEADS <span class="op">=</span> <span class="dv">4</span>              <span class="co"># 簡単なタスクなので、Attention is all you needの半分</span></span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>DROPOUT_RATE <span class="op">=</span> <span class="fl">0.1</span>         <span class="co"># ここはAttention is all you needのまま</span></span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>X_VOCAB_SIZE <span class="op">=</span> <span class="bu">len</span>(WORDS)</span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>Y_VOCAB_SIZE <span class="op">=</span> <span class="bu">len</span>(WORDS)</span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>X_MAXIMUM_POSITION <span class="op">=</span> <span class="dv">20</span>    <span class="co"># 余裕を持って多めに</span></span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>Y_MAXIMUM_POSITION <span class="op">=</span> <span class="dv">20</span>    <span class="co"># 余裕を持って多めに</span></span></code></pre></div>
+<p>Transformerは<a href="https://arxiv.org/abs/1706.03762">Attention is
+all you
+need</a>という論文のモデルで、この論文が使用しているハイパー・パラメーターをフィーリングで半分に減らしました。</p>
+<p>機械学習する部分のコードは、こんな感じ。</p>
+<div class="sourceCode" id="cb35"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> decode, get_train_data_frame, get_xs, get_ys</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> identity, juxt</span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> starmap</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> operator <span class="im">import</span> eq</span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> params <span class="im">import</span> NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, X_VOCAB_SIZE, Y_VOCAB_SIZE, X_MAXIMUM_POSITION, Y_MAXIMUM_POSITION, DROPOUT_RATE</span>
+<span id="cb35-9"><a href="#cb35-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformer <span class="im">import</span> LearningRateSchedule, Loss, transformer</span>
+<span id="cb35-10"><a href="#cb35-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> translation <span class="im">import</span> translate</span>
+<span id="cb35-11"><a href="#cb35-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-12"><a href="#cb35-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-13"><a href="#cb35-13" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
+<span id="cb35-14"><a href="#cb35-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-15"><a href="#cb35-15" aria-hidden="true" tabindex="-1"></a><span class="co"># データを読み込みます。</span></span>
+<span id="cb35-16"><a href="#cb35-16" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_train_data_frame()</span>
+<span id="cb35-17"><a href="#cb35-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-18"><a href="#cb35-18" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb35-19"><a href="#cb35-19" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame)</span>
+<span id="cb35-20"><a href="#cb35-20" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb35-21"><a href="#cb35-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-22"><a href="#cb35-22" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練データセットと検証データセットに分割するためのインデックスを作成します。</span></span>
+<span id="cb35-23"><a href="#cb35-23" aria-hidden="true" tabindex="-1"></a>indices <span class="op">=</span> rng.permutation(np.arange(<span class="bu">len</span>(xs)))</span>
+<span id="cb35-24"><a href="#cb35-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-25"><a href="#cb35-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練データセットを取得します。</span></span>
+<span id="cb35-26"><a href="#cb35-26" aria-hidden="true" tabindex="-1"></a>train_xs <span class="op">=</span> xs[indices[<span class="dv">2000</span>:]]</span>
+<span id="cb35-27"><a href="#cb35-27" aria-hidden="true" tabindex="-1"></a>train_ys <span class="op">=</span> ys[indices[<span class="dv">2000</span>:]]</span>
+<span id="cb35-28"><a href="#cb35-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-29"><a href="#cb35-29" aria-hidden="true" tabindex="-1"></a><span class="co"># 検証データセットを取得します。</span></span>
+<span id="cb35-30"><a href="#cb35-30" aria-hidden="true" tabindex="-1"></a>valid_xs <span class="op">=</span> xs[indices[:<span class="dv">2000</span>]]</span>
+<span id="cb35-31"><a href="#cb35-31" aria-hidden="true" tabindex="-1"></a>valid_ys <span class="op">=</span> ys[indices[:<span class="dv">2000</span>]]</span>
+<span id="cb35-32"><a href="#cb35-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-33"><a href="#cb35-33" aria-hidden="true" tabindex="-1"></a><span class="co"># Transformerを作成します。</span></span>
+<span id="cb35-34"><a href="#cb35-34" aria-hidden="true" tabindex="-1"></a>op <span class="op">=</span> transformer(NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, X_VOCAB_SIZE, Y_VOCAB_SIZE, X_MAXIMUM_POSITION, Y_MAXIMUM_POSITION, DROPOUT_RATE)</span>
+<span id="cb35-35"><a href="#cb35-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-36"><a href="#cb35-36" aria-hidden="true" tabindex="-1"></a><span class="co"># Kerasのモデルを作成します。</span></span>
+<span id="cb35-37"><a href="#cb35-37" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.Model(<span class="op">*</span>juxt(identity, op)([tf.keras.Input(shape<span class="op">=</span>(<span class="va">None</span>,)), tf.keras.Input(shape<span class="op">=</span>(<span class="va">None</span>,))]))</span>
+<span id="cb35-38"><a href="#cb35-38" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(tf.keras.optimizers.Adam(LearningRateSchedule(D_MODEL), beta_1<span class="op">=</span><span class="fl">0.9</span>, beta_2<span class="op">=</span><span class="fl">0.98</span>, epsilon<span class="op">=</span><span class="fl">1e-9</span>), loss<span class="op">=</span>Loss(), metrics<span class="op">=</span>())</span>
+<span id="cb35-39"><a href="#cb35-39" aria-hidden="true" tabindex="-1"></a><span class="co"># model.summary()</span></span>
+<span id="cb35-40"><a href="#cb35-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-41"><a href="#cb35-41" aria-hidden="true" tabindex="-1"></a><span class="co"># 機械学習して、モデルを保存します。</span></span>
+<span id="cb35-42"><a href="#cb35-42" aria-hidden="true" tabindex="-1"></a>model.fit((train_xs, train_ys[:, :<span class="op">-</span><span class="dv">1</span>]), train_ys[:, <span class="dv">1</span>:], batch_size<span class="op">=</span><span class="dv">256</span>, epochs<span class="op">=</span><span class="dv">100</span>, validation_data<span class="op">=</span>((valid_xs, valid_ys[:, :<span class="op">-</span><span class="dv">1</span>]), valid_ys[:, <span class="dv">1</span>:]))</span>
+<span id="cb35-43"><a href="#cb35-43" aria-hidden="true" tabindex="-1"></a>model.save(<span class="st">&#39;model&#39;</span>, include_optimizer<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb35-44"><a href="#cb35-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb35-45"><a href="#cb35-45" aria-hidden="true" tabindex="-1"></a><span class="co"># 実際に予測させて、精度を確認します。</span></span>
+<span id="cb35-46"><a href="#cb35-46" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&#39;Accuracy = </span><span class="sc">{</span><span class="bu">sum</span>(starmap(eq, <span class="bu">zip</span>(<span class="bu">map</span>(decode, valid_ys), <span class="bu">map</span>(decode, translate(model, valid_xs))))) <span class="op">/</span> <span class="bu">len</span>(valid_xs)<span class="sc">}</span><span class="ss">&#39;</span>)</span></code></pre></div>
+<p>TensorFlowのTransformerのチュートリアルでは、TensorFlowの生APIを使って細かく学習を制御しているのですけど、生APIを使うのは面倒なので簡単便利ライブラリであるKeras（TensorFlowに付属しています）を使用しました。<code>fit()</code>の時にいろいろ情報を出力してくれて面白いですよ。</p>
+<p>で、上のコード中で使用している<code>translate()</code>は、後述するテストのモジュールでも使用するので、共用できるようにモジュール化しました。</p>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> ENCODES</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> params <span class="im">import</span> Y_MAXIMUM_POSITION</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 翻訳します。</span></span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> translate(model, xs):</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 仮の翻訳結果を作成し、文の開始記号を設定します。</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>    ys <span class="op">=</span> np.zeros((<span class="bu">len</span>(xs), Y_MAXIMUM_POSITION), dtype<span class="op">=</span>np.int64)</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>    ys[:, <span class="dv">0</span>] <span class="op">=</span> ENCODES[<span class="st">&#39;^&#39;</span>]</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 文の終了記号が出力されたかを表現する変数です。</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>    is_ends <span class="op">=</span> np.zeros((<span class="bu">len</span>(xs),), dtype<span class="op">=</span>np.int32)</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Transformerは、学習時は文の単位なのですけど、翻訳は単語単位でやらなければなりません……。</span></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">1</span>, Y_MAXIMUM_POSITION):</span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 単語を翻訳します。</span></span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>        ys[:, i] <span class="op">=</span> np.argmax(model.predict((xs, ys[:, :i]), batch_size<span class="op">=</span><span class="dv">256</span>)[:, <span class="op">-</span><span class="dv">1</span>], axis<span class="op">=-</span><span class="dv">1</span>)  <span class="co"># 256並列で、次の単語を予測します。対象以外の単語も予測されますけど、無視します。</span></span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>        <span class="co"># 文の終了記号が出力されたか確認します。</span></span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>        is_ends <span class="op">|=</span> ys[:, i] <span class="op">==</span> ENCODES[<span class="st">&#39;$&#39;</span>]</span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a>        <span class="co"># すべての文の翻訳が完了した場合はループをブレークします。</span></span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> np.<span class="bu">all</span>(is_ends):</span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a>            <span class="cf">break</span></span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> ys</span></code></pre></div>
+<p>Transformerは、学習は文の単位でやる（そのために、文の先を参照しないようにマスクを設定している）のですけど、翻訳するときの単位は単語です。元の文＋1単語目までを入力に2単語目を出力するわけですね。実は3つ目の単語を予測する時にも2つめの単語を予測して出力しているのですけど、<code>[:, -1]</code>で捨てています。計算の無駄な気がしますけど、効率よく学習するためなので我慢してください。</p>
+<p>最後。テスト・データを翻訳させて、精度を確認します。コードはこんな感じ。</p>
+<div class="sourceCode" id="cb37"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> decode, get_test_data_frame, get_xs, get_ys</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> translation <span class="im">import</span> translate</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを取得します。</span></span>
+<span id="cb37-8"><a href="#cb37-8" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.load_model(<span class="st">&#39;model&#39;</span>)</span>
+<span id="cb37-9"><a href="#cb37-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-10"><a href="#cb37-10" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb37-11"><a href="#cb37-11" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_test_data_frame()</span>
+<span id="cb37-12"><a href="#cb37-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-13"><a href="#cb37-13" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb37-14"><a href="#cb37-14" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame)</span>
+<span id="cb37-15"><a href="#cb37-15" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb37-16"><a href="#cb37-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-17"><a href="#cb37-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 正解した数。</span></span>
+<span id="cb37-18"><a href="#cb37-18" aria-hidden="true" tabindex="-1"></a>equal_count <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb37-19"><a href="#cb37-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-20"><a href="#cb37-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 実際に予測させて、正解した数を取得します。</span></span>
+<span id="cb37-21"><a href="#cb37-21" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> x, y_true, y_pred <span class="kw">in</span> <span class="bu">zip</span>(xs, ys, translate(model, xs)):</span>
+<span id="cb37-22"><a href="#cb37-22" aria-hidden="true" tabindex="-1"></a>    y_true_string <span class="op">=</span> decode(y_true)</span>
+<span id="cb37-23"><a href="#cb37-23" aria-hidden="true" tabindex="-1"></a>    y_pred_string <span class="op">=</span> decode(y_pred)</span>
+<span id="cb37-24"><a href="#cb37-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-25"><a href="#cb37-25" aria-hidden="true" tabindex="-1"></a>    equal <span class="op">=</span> y_true_string <span class="op">==</span> y_pred_string</span>
+<span id="cb37-26"><a href="#cb37-26" aria-hidden="true" tabindex="-1"></a>    equal_count <span class="op">+=</span> equal</span>
+<span id="cb37-27"><a href="#cb37-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-28"><a href="#cb37-28" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f&#39;</span><span class="sc">{</span>decode(x)<span class="sc">}</span><span class="ss"> </span><span class="sc">{</span><span class="st">&quot;==&quot;</span> <span class="cf">if</span> equal <span class="cf">else</span> <span class="st">&quot;!=&quot;</span><span class="sc">}</span><span class="ss"> </span><span class="sc">{</span>y_pred_string<span class="sc">}</span><span class="ss">&#39;</span>)  <span class="co"># ついでなので、予測結果を出力させます。</span></span>
+<span id="cb37-29"><a href="#cb37-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb37-30"><a href="#cb37-30" aria-hidden="true" tabindex="-1"></a><span class="co"># 精度を出力します。</span></span>
+<span id="cb37-31"><a href="#cb37-31" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&#39;Accuracy: </span><span class="sc">{</span>equal_count <span class="op">/</span> <span class="bu">len</span>(xs)<span class="sc">}</span><span class="ss">&#39;</span>)</span></code></pre></div>
+<p>さて、その精度はどうなったかというと、0.947という高い精度になりました！　大量データがあるなら、Transformerで翻訳できそうですね。</p>
+<h2 id="深層学習の使いどころ">深層学習の使いどころ</h2>
+<p>……ちょっと待って。足し算とか引き算なら、深層学習を使わないで実際に足し算とか引き算するコードを書けば精度100%になるのでは？</p>
+<p>はい。おっしゃる通り。もし入力と出力の関係を定義できて、それをシミュレーションできるなら、深層学習を使わないで関係をそのまま実装しちゃえば良いでしょう。シミュレーターを作れるなら、シミュレーターの方が精度が高そうですもんね。</p>
+<p>ただ、シミュレーターを作成可能な場合であっても深層学習が役に立つ場合もあるんですよ。それがどんな場合かというと、シミュレーションにやたらと時間がかかる場合です。実は深層学習はすべての関数を近似できるらしいんですよ（その証明は難しくて私では理解できなかったけど）。ということは、シミュレーションを近似できちゃうわけ。</p>
+<p>たとえば原子の動きのシミュレーションとかは、量子力学の基本法則を利用する第一原理計算というのがあって、それを活用する密度汎関数法（density
+functional
+theory）という計算でできる（らしい）んです。ただ、これってとにかく計算に時間がかかる（っぽい）んですよ。複雑な原子のシミュレーションはとにかく時間がかかってやってられないので、これを深層学習で近似しちゃおうというのが、Preferred
+Networks社とENEOS社の<a
+href="https://matlantis.com/ja/">Matlantis</a>で、マテリアル・インフォマティクスではとても役に立つ（みたい）です。</p>
+<p>こんな感じで、もし遅くてやってられないシミュレーターがあるなら、深層学習で代替できないか検討してみるのも良いと思います。</p>
+<p>あ、シミュレーターを作れるかもしれないけど作るのが面倒なのでとりあえず深層学習ってのもアリです。</p>
+<h2></h2>
 <p>x</p>
 <p>x</p>
 <p>x</p>
