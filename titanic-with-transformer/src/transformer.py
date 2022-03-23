@@ -4,7 +4,7 @@ import tensorflow as tf
 from funcy import func_partial, rcompose
 
 
-def neural_network(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropout_rate):
+def transformer(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropout_rate):
     # KerasやTensorflowのレイヤーや関数をラップします。
 
     def dense(units):

@@ -75,7 +75,7 @@ def dense_net(growth_rate, classes):
 
     return rcompose(conv_2d(64, 1),
                     batch_normalization(),
-                    relu(),  # ImageNetの場合はここでMaxPooling2Dして画素数を減らすのですけど、今回はもともとの画素数が少ないのでやりません。
+                    relu(),  # ImageNetの場合はここでConv2DやMaxPooling2Dで画素数を減らすのですけど、今回はもともとの画素数が少ないのでやりません。
                     dense_net_121(),
                     batch_normalization(),
                     relu(),

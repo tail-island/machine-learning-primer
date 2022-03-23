@@ -4,8 +4,8 @@ import tensorflow as tf
 from dataset import get_feature_ranges, get_train_data_frame, get_categorical_features, get_xs, get_ys
 from funcy import identity, juxt
 from model import save_feature_rangess, save_categorical_features
-from neural_network import LearningRateSchedule, neural_network
 from params import NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, DROPOUT_RATE
+from transformer import LearningRateSchedule, neural_network
 
 
 # データを取得します。

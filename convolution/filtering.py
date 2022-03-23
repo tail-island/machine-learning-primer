@@ -17,10 +17,10 @@ def filter(image, kernel):
     return result
 
 
-image = cv2.cvtColor(cv2.imread('4.2.07.tiff'), cv2.COLOR_RGB2GRAY)
+image = cv2.imread('4.2.07.tiff')
 
-plot.imshow(image)
+plot.imshow(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
 plot.show()
 
-plot.imshow(filter(image, np.array([[0, 2, 0], [2, -8, 2], [0, 2, 0]])))
+plot.imshow(filter(cv2.cvtColor(image, cv2.COLOR_RGB2GRAY), np.array([[0, 2, 0], [2, -8, 2], [0, 2, 0]])))
 plot.show()
