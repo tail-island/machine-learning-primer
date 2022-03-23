@@ -2185,8 +2185,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb37-1"><a h
 <p>さて、その精度はどうなったかというと、0.947という高い精度になりました！　大量データを用意すれば、Transformerで翻訳できそうですね。チュートリアルがあるので、作るのはそんなに大変じゃないですし。</p>
 <h2 id="深層学習の使いどころ">深層学習の使いどころ</h2>
 <p>……でも、ちょっと待って。足し算とか引き算なら、深層学習を使わないで実際に足し算とか引き算するコードを書けば精度が100%になるのでは？</p>
-<p>はい。おっしゃる通り。もし入力と出力の関係を定義できて、それをシミュレーションできるなら、深層学習を使わないでシミュレーターを実装すれば良いでしょう。シミュレーターを作れるなら、シミュレーターの方が精度が高そうですもんね。</p>
-<p>ただ、シミュレーターを作成可能な場合であっても深層学習が役に立つ場合もあるんですよ。それがどんな場合かというと、シミュレーションにやたらと時間がかかる場合です。実は深層学習はすべての関数を近似できるらしくて（証明は難しくて理解できなかったけど）、ということは、シミュレーションを近似できちゃうというわけ。</p>
+<p>はい。おっしゃる通り。もし入力と出力の関係を定義できて、それをプログラムでシミュレーションできるなら、深層学習を使わないでシミュレーターを実装すれば良いでしょう。シミュレーターを作れるなら、シミュレーターの方が精度が高そうですもんね。</p>
+<p>ただ、シミュレーターを作成可能な場合であっても深層学習が役に立つ場合もあるんですよ。それがどんな場合かというと、シミュレーションにやたらと時間がかかる場合。実は深層学習はすべての関数を近似できるらしくて（証明は難しくて理解できなかったけど）、ということは、シミュレーションを近似できちゃうというわけ。</p>
 <p>たとえば原子の動きのシミュレーションは、量子力学の基本法則に立脚した第一原理計算というのがあって、それを活用する密度汎関数法（density
 functional
 theory）という計算でできる（らしい）んです。ただ、これってとにかく計算に時間がかかる（っぽい）んですよ。複雑な原子のシミュレーションはとにかく時間がかかってやってられないので、だからこれを深層学習で近似しちゃおうというのが、Preferred
@@ -2198,7 +2198,7 @@ href="https://matlantis.com/ja/">Matlantis</a>で、マテリアル・インフ�
 Transformerで画像のクラス分類</h1>
 <p>話を元に戻して、KaggleのGetting Startedの<a
 href="https://www.kaggle.com/c/digit-recognizer">Digit
-Recognizer</a>で画像のクラス分類をやりましょう。手書き数字の画像認識問題ですね。</p>
+Recognizer</a>で画像のクラス分類をやりましょう。手書き数字の画像認識問題です。</p>
 <h2 id="vision-transformer">Vision Transformer？</h2>
 <p>Vision
 Transformerは、翻訳で大成功したTransformerを元にして作成された、様々な自然言語処理タスクで人間を超えたと話題になったBERTの、画像認識版です。BERTはTransformerを少し修正するだけで作成できるのですけど、Vision
@@ -2517,10 +2517,10 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb43-1"><a h
 <span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 解答を作成して、保存します。</span></span>
 <span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>submission <span class="op">=</span> pd.DataFrame({<span class="st">&#39;ImageId&#39;</span>: data_frame.index <span class="op">+</span> <span class="dv">1</span>, <span class="st">&#39;Label&#39;</span>: np.argmax(model.predict(xs, batch_size<span class="op">=</span><span class="dv">256</span>), axis<span class="op">=-</span><span class="dv">1</span>)})</span>
 <span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>submission.to_csv(<span class="st">&#39;submission.csv&#39;</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
-<p>さて、テスト・データでの精度は、0.98232。エポック数を増やした分だけ精度が上がったような気がしますが、それでもやっぱり2,000人くらい中の900番目くらい。Digit
+<p>さて、テスト・データでの精度は、0.98232でした。エポック数を増やした分だけ精度が上がったような気がしますが、それでもやっぱり2,000人くらい中の900番目くらい。Digit
 Recognizerでもやっぱりカンニングしている連中はいるけど、それにしたって低すぎます。2020年に画像認識の革命と大騒ぎになったVision
 Transformerを使っているのにどういうこと？</p>
-<p>……ここまで真面目に読んでくださった皆様ごめんなさい。たぶんこんな結果になること、実は知ってた。</p>
+<p>……ここまで真面目に読んでくださった皆様ごめんなさい。たぶんこんな結果になると、実は知ってました。</p>
 <p>というのも、Transformer系って、大量のデータがないと精度が高くならないんですよ。Transformerの後に自然言語処理で人間を超えたと話題になったBERTはBooksCorpusという8億ワードのデータとWikipediaの25億ワードのデータで事前学習しましたし、Vision
 Transformerで最高の精度を出したときはGoogle社のプライベートなデータセットであるJFT-300Mという3億枚の画像を使用して事前学習しています。データの単位は億なんですな。</p>
 <p>それと比較して今回は、事前学習がゼロで、学習に使用したデータは4万2千……。そりゃ、精度なんか出ませんよね。</p>
@@ -2789,167 +2789,9 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb48-1"><a h
 <span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>submission.to_csv(<span class="st">&#39;submission.csv&#39;</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
 <p>やりました！　精度は0.99567で、2,000人位中126位になりました！　カンニング（Digit
 RecognizerのデータはMNISTという答えが公開されているデータセットをそのまま使用しているので、MNISTを見れば正解が分かってしまう）している連中がいることを考えると、かなり良い成績だと思います。</p>
-<p>やったことは、とても簡単ですしね。深層学習と画像認識で検索したら見つかったDenseNetを、Kerasの公式実装を参考にして作成しただけ。こんな簡単なことで高い精度で画像認識できるなんて、深層学習は素晴らしい！</p>
-<h1 id="lightgbmで画像のクラス分類">LightGBMで画像のクラス分類</h1>
-<p>でも、深層学習は、GPUやTPUがないと遅くてやってられないんですよね……。というわけで、GPUやTPUがない場合向けに、LightGBMでも画像のクラス分類をやってみましょう。</p>
-<h2 id="データセットを取得する-3">データセットを取得する</h2>
-<p>LightGBMの場合のデータセットを取得するモジュールはこんな感じ。</p>
-<div class="sourceCode" id="cb49"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="co"># DataFrameを取得します。</span></span>
-<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_data_frame(filename):</span>
-<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;digit-recognizer&#39;</span>, filename))</span>
-<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練用のDataFrameを取得します。</span></span>
-<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_train_data_frame():</span>
-<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;train.csv&#39;</span>)</span>
-<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a><span class="co"># テスト用のDataFrameを取得します。</span></span>
-<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_test_data_frame():</span>
-<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;test.csv&#39;</span>)</span>
-<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 入力データを取得します。</span></span>
-<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame):</span>
-<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="bu">list</span>(<span class="bu">map</span>(<span class="kw">lambda</span> i: <span class="ss">f&#39;pixel</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&#39;</span>, <span class="bu">range</span>(<span class="dv">784</span>)))]</span>
-<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 正解データを取得します。</span></span>
-<span id="cb49-26"><a href="#cb49-26" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
-<span id="cb49-27"><a href="#cb49-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;label&#39;</span>].values</span></code></pre></div>
-<p>正規化不要で楽ちんですな。LightGBMはやっぱり楽ちんでイイ！</p>
-<h2 id="モデルを保存して読み込む-1">モデルを保存して読み込む</h2>
-<p>モデルを保存したり読み込んだりするモジュールはこんな感じ。</p>
-<div class="sourceCode" id="cb50"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
-<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
-<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
-<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> glob <span class="im">import</span> glob</span>
-<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを保存します。</span></span>
-<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_params(params):</span>
-<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path.join(<span class="st">&#39;digit-recognizer-model&#39;</span>, <span class="st">&#39;params.pickle&#39;</span>), mode<span class="op">=</span><span class="st">&#39;wb&#39;</span>) <span class="im">as</span> f:</span>
-<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>        pickle.dump(params, f)</span>
-<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを読み込みます。</span></span>
-<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_params():</span>
-<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path.join(<span class="st">&#39;digit-recognizer-model&#39;</span>, <span class="st">&#39;params.pickle&#39;</span>), mode<span class="op">=</span><span class="st">&#39;rb&#39;</span>) <span class="im">as</span> f:</span>
-<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> pickle.load(f)</span>
-<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを保存します。</span></span>
-<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_model(model):</span>
-<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, booster <span class="kw">in</span> <span class="bu">enumerate</span>(model.boosters):  <span class="co"># 交差検証なので、複数のモデルが生成されます。</span></span>
-<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a>        booster.save_model(path.join(<span class="st">&#39;digit-recognizer-model&#39;</span>, <span class="ss">f&#39;model-</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">.txt&#39;</span>))</span>
-<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを読み込みます。</span></span>
-<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_model():</span>
-<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> lgb.CVBooster()</span>
-<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> <span class="bu">sorted</span>(glob(path.join(<span class="st">&#39;digit-recognizer-model&#39;</span>, <span class="st">&#39;model-*.txt&#39;</span>))):  <span class="co"># 交差検証なので、複数のモデルが生成されます。</span></span>
-<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a>        result.boosters.append(lgb.Booster(model_file<span class="op">=</span><span class="bu">file</span>))</span>
-<span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb50-33"><a href="#cb50-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span></code></pre></div>
-<p>例によって切り貼りして置換しただけです。</p>
-<h2
-id="ハイパーパラメーターチューニング-1">ハイパー・パラメーター・チューニング</h2>
-<p>Optunaに丸投げでハイパー・パラメーター・チューニングをするモジュールはこんな感じ。</p>
-<div class="sourceCode" id="cb51"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> optuna.integration.lightgbm <span class="im">as</span> lgb</span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_train_data_frame, get_xs, get_ys</span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model <span class="im">import</span> save_params</span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
-<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_train_data_frame()</span>
-<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
-<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame)</span>
-<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
-<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを作成します。</span></span>
-<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
-<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;objective&#39;</span>: <span class="st">&#39;multiclass&#39;</span>,</span>
-<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;metric&#39;</span>: <span class="st">&#39;multi_logloss&#39;</span>,</span>
-<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;num_class&#39;</span>: <span class="dv">10</span>,</span>
-<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;force_col_wise&#39;</span>: <span class="va">True</span>  <span class="co"># LightGBMの警告を除去するために追加しました。</span></span>
-<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a><span class="co"># ハイパー・パラメーター・チューニングをします。</span></span>
-<span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a>tuner <span class="op">=</span> lgb.LightGBMTunerCV(params, lgb.Dataset(xs, label<span class="op">=</span>ys), return_cvbooster<span class="op">=</span><span class="va">True</span>, optuna_seed<span class="op">=</span><span class="dv">0</span>)</span>
-<span id="cb51-24"><a href="#cb51-24" aria-hidden="true" tabindex="-1"></a>cv_result <span class="op">=</span> tuner.run()</span>
-<span id="cb51-25"><a href="#cb51-25" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tuner.get_best_booster()</span>
-<span id="cb51-26"><a href="#cb51-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb51-27"><a href="#cb51-27" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを保存します。</span></span>
-<span id="cb51-28"><a href="#cb51-28" aria-hidden="true" tabindex="-1"></a>save_params(tuner.best_params)</span></code></pre></div>
-<p>クラス分類なので<code>objective</code>を<code>multiclass</code>にして、<code>multiclass</code>の場合のデフォルトの<code>metric</code>である<code>multi_logloss</code>を設定しました。あと、クラス分類の場合は何個のクラスに分類するのかという情報が必要なので、<code>num_class</code>に10を指定しています。</p>
-<p>あとはいつも通りです。が、気を付けていただきたいのですけど、このプログラムは実行にやたらと長時間かかります（私の環境では半日くらいかかりました）。なので、夜間とか、どうしても仕事をしたくない日の勤務時間中とかに実行してみてください。</p>
-<h2 id="予測モデルを作成">予測モデルを作成</h2>
-<p>今回は特徴量エンジニアリングの余地がない（画像処理に詳しい人ならできるのかもしれないけど）ので、いきなり予測モデルを作成します。</p>
-<div class="sourceCode" id="cb52"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> optuna.integration.lightgbm <span class="im">as</span> lgb</span>
-<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_train_data_frame, get_xs, get_ys</span>
-<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model <span class="im">import</span> load_params, save_model</span>
-<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
-<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
-<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_train_data_frame()</span>
-<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
-<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame)</span>
-<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
-<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを取得します。</span></span>
-<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> load_params()</span>
-<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 機械学習します。</span></span>
-<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>cv_result <span class="op">=</span> lgb.cv(params, lgb.Dataset(xs, label<span class="op">=</span>ys), return_cvbooster<span class="op">=</span><span class="va">True</span>)</span>
-<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> cv_result[<span class="st">&#39;cvbooster&#39;</span>]</span>
-<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 学習曲線を出力します。</span></span>
-<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a>plot.plot(cv_result[<span class="st">&#39;multi_logloss-mean&#39;</span>])</span>
-<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a>plot.show()</span>
-<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを保存します。</span></span>
-<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a>save_model(model)</span></code></pre></div>
-<p>完全にいつも通りですね。書くことがなくて困っちゃうくらいにLightGBM簡単ですな。</p>
-<h2 id="解答を作成する-4">解答を作成する</h2>
-<p>あとは、解答を作成して、Kaggleに提出するだけ。</p>
-<div class="sourceCode" id="cb53"><pre
-class="sourceCode python"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
-<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_test_data_frame, get_xs</span>
-<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model <span class="im">import</span> load_model</span>
-<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを読み込みます。</span></span>
-<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> load_model()</span>
-<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
-<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_test_data_frame()</span>
-<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame)</span>
-<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 提出量のCSVを作成します。</span></span>
-<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>submission <span class="op">=</span> pd.DataFrame({<span class="st">&#39;ImageId&#39;</span>: data_frame.index <span class="op">+</span> <span class="dv">1</span>, <span class="st">&#39;Label&#39;</span>: np.argmax(np.mean(model.predict(xs), axis<span class="op">=</span><span class="dv">0</span>), axis<span class="op">=-</span><span class="dv">1</span>)})</span>
-<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>submission.to_csv(<span class="st">&#39;submission.csv&#39;</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
-<p>その精度は、0.94128でした。2,000人くらい中の1,740番目くらい。やっぱり画像ならばGPUやTPUを使って深層学習したいけれど、無い袖は振れないのでLightGBMもアリなんじゃないかなぁと。画像の解像度が大きかったりすると、GPUなしで深層学習するより時間がかかったりするかもしれませんけど……。</p>
-<h1 id="transformerでテーブルデータ">Transformerでテーブル・データ</h1>
+<p>やったことは、とても簡単ですしね。深層学習と画像認識で検索したら見つかったDenseNetを、Kerasの公式実装を参考にして作成しただけ。こんな簡単なことで高い精度で画像認識できるなんて、やはり深層学習は素晴らしい！</p>
+<h1
+id="transformerでテーブルデータもやってみた">Transformerでテーブル・データもやってみた</h1>
 </article>
 </body>
 </html>

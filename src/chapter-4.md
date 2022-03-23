@@ -507,9 +507,9 @@ print(f'Accuracy: {equal_count / len(xs)}')
 
 ……でも、ちょっと待って。足し算とか引き算なら、深層学習を使わないで実際に足し算とか引き算するコードを書けば精度が100%になるのでは？
 
-はい。おっしゃる通り。もし入力と出力の関係を定義できて、それをシミュレーションできるなら、深層学習を使わないでシミュレーターを実装すれば良いでしょう。シミュレーターを作れるなら、シミュレーターの方が精度が高そうですもんね。
+はい。おっしゃる通り。もし入力と出力の関係を定義できて、それをプログラムでシミュレーションできるなら、深層学習を使わないでシミュレーターを実装すれば良いでしょう。シミュレーターを作れるなら、シミュレーターの方が精度が高そうですもんね。
 
-ただ、シミュレーターを作成可能な場合であっても深層学習が役に立つ場合もあるんですよ。それがどんな場合かというと、シミュレーションにやたらと時間がかかる場合です。実は深層学習はすべての関数を近似できるらしくて（証明は難しくて理解できなかったけど）、ということは、シミュレーションを近似できちゃうというわけ。
+ただ、シミュレーターを作成可能な場合であっても深層学習が役に立つ場合もあるんですよ。それがどんな場合かというと、シミュレーションにやたらと時間がかかる場合。実は深層学習はすべての関数を近似できるらしくて（証明は難しくて理解できなかったけど）、ということは、シミュレーションを近似できちゃうというわけ。
 
 たとえば原子の動きのシミュレーションは、量子力学の基本法則に立脚した第一原理計算というのがあって、それを活用する密度汎関数法（density functional theory）という計算でできる（らしい）んです。ただ、これってとにかく計算に時間がかかる（っぽい）んですよ。複雑な原子のシミュレーションはとにかく時間がかかってやってられないので、だからこれを深層学習で近似しちゃおうというのが、Preferred Networks社とENEOS社の[Matlantis](https://matlantis.com/ja/)で、マテリアル・インフォマティクス分野ではとても役に立つ（みたい）です。
 
@@ -519,7 +519,7 @@ print(f'Accuracy: {equal_count / len(xs)}')
 
 # Vision Transformerで画像のクラス分類
 
-話を元に戻して、KaggleのGetting Startedの[Digit Recognizer](https://www.kaggle.com/c/digit-recognizer)で画像のクラス分類をやりましょう。手書き数字の画像認識問題ですね。
+話を元に戻して、KaggleのGetting Startedの[Digit Recognizer](https://www.kaggle.com/c/digit-recognizer)で画像のクラス分類をやりましょう。手書き数字の画像認識問題です。
 
 ## Vision Transformer？
 
@@ -868,9 +868,9 @@ submission = pd.DataFrame({'ImageId': data_frame.index + 1, 'Label': np.argmax(m
 submission.to_csv('submission.csv', index=False)
 ~~~
 
-さて、テスト・データでの精度は、0.98232。エポック数を増やした分だけ精度が上がったような気がしますが、それでもやっぱり2,000人くらい中の900番目くらい。Digit Recognizerでもやっぱりカンニングしている連中はいるけど、それにしたって低すぎます。2020年に画像認識の革命と大騒ぎになったVision Transformerを使っているのにどういうこと？
+さて、テスト・データでの精度は、0.98232でした。エポック数を増やした分だけ精度が上がったような気がしますが、それでもやっぱり2,000人くらい中の900番目くらい。Digit Recognizerでもやっぱりカンニングしている連中はいるけど、それにしたって低すぎます。2020年に画像認識の革命と大騒ぎになったVision Transformerを使っているのにどういうこと？
 
-……ここまで真面目に読んでくださった皆様ごめんなさい。たぶんこんな結果になること、実は知ってた。
+……ここまで真面目に読んでくださった皆様ごめんなさい。たぶんこんな結果になると、実は知ってました。
 
 というのも、Transformer系って、大量のデータがないと精度が高くならないんですよ。Transformerの後に自然言語処理で人間を超えたと話題になったBERTはBooksCorpusという8億ワードのデータとWikipediaの25億ワードのデータで事前学習しましたし、Vision Transformerで最高の精度を出したときはGoogle社のプライベートなデータセットであるJFT-300Mという3億枚の画像を使用して事前学習しています。データの単位は億なんですな。
 
@@ -1165,194 +1165,8 @@ submission.to_csv('submission.csv', index=False)
 
 やりました！　精度は0.99567で、2,000人位中126位になりました！　カンニング（Digit RecognizerのデータはMNISTという答えが公開されているデータセットをそのまま使用しているので、MNISTを見れば正解が分かってしまう）している連中がいることを考えると、かなり良い成績だと思います。
 
-やったことは、とても簡単ですしね。深層学習と画像認識で検索したら見つかったDenseNetを、Kerasの公式実装を参考にして作成しただけ。こんな簡単なことで高い精度で画像認識できるなんて、深層学習は素晴らしい！
+やったことは、とても簡単ですしね。深層学習と画像認識で検索したら見つかったDenseNetを、Kerasの公式実装を参考にして作成しただけ。こんな簡単なことで高い精度で画像認識できるなんて、やはり深層学習は素晴らしい！
 
-# LightGBMで画像のクラス分類
-
-でも、深層学習は、GPUやTPUがないと遅くてやってられないんですよね……。というわけで、GPUやTPUがない場合向けに、LightGBMでも画像のクラス分類をやってみましょう。
-
-## データセットを取得する
-
-LightGBMの場合のデータセットを取得するモジュールはこんな感じ。
-
-~~~python
-import pandas as pd
-import os.path as path
-
-
-# DataFrameを取得します。
-def get_data_frame(filename):
-    return pd.read_csv(path.join('..', 'input', 'digit-recognizer', filename))
-
-
-# 訓練用のDataFrameを取得します。
-def get_train_data_frame():
-    return get_data_frame('train.csv')
-
-
-# テスト用のDataFrameを取得します。
-def get_test_data_frame():
-    return get_data_frame('test.csv')
-
-
-# 入力データを取得します。
-def get_xs(data_frame):
-    return data_frame[list(map(lambda i: f'pixel{i}', range(784)))]
-
-
-# 正解データを取得します。
-def get_ys(data_frame):
-    return data_frame['label'].values
-~~~
-
-正規化不要で楽ちんですな。LightGBMはやっぱり楽ちんでイイ！
-
-## モデルを保存して読み込む
-
-モデルを保存したり読み込んだりするモジュールはこんな感じ。
-
-~~~python
-import lightgbm as lgb
-import os.path as path
-import pickle
-
-from glob import glob
-
-
-# LightGBMのパラメーターを保存します。
-def save_params(params):
-    with open(path.join('digit-recognizer-model', 'params.pickle'), mode='wb') as f:
-        pickle.dump(params, f)
-
-
-# LightGBMのパラメーターを読み込みます。
-def load_params():
-    with open(path.join('digit-recognizer-model', 'params.pickle'), mode='rb') as f:
-        return pickle.load(f)
-
-
-# モデルを保存します。
-def save_model(model):
-    for i, booster in enumerate(model.boosters):  # 交差検証なので、複数のモデルが生成されます。
-        booster.save_model(path.join('digit-recognizer-model', f'model-{i}.txt'))
-
-
-# モデルを読み込みます。
-def load_model():
-    result = lgb.CVBooster()
-
-    for file in sorted(glob(path.join('digit-recognizer-model', 'model-*.txt'))):  # 交差検証なので、複数のモデルが生成されます。
-        result.boosters.append(lgb.Booster(model_file=file))
-
-    return result
-~~~
-
-例によって切り貼りして置換しただけです。
-
-## ハイパー・パラメーター・チューニング
-
-Optunaに丸投げでハイパー・パラメーター・チューニングをするモジュールはこんな感じ。
-
-~~~python
-import optuna.integration.lightgbm as lgb
-
-from dataset import get_train_data_frame, get_xs, get_ys
-from model import save_params
-
-
-# データを取得します。
-data_frame = get_train_data_frame()
-
-# データセットを取得します。
-xs = get_xs(data_frame)
-ys = get_ys(data_frame)
-
-# LightGBMのパラメーターを作成します。
-params = {
-    'objective': 'multiclass',
-    'metric': 'multi_logloss',
-    'num_class': 10,
-    'force_col_wise': True  # LightGBMの警告を除去するために追加しました。
-}
-
-# ハイパー・パラメーター・チューニングをします。
-tuner = lgb.LightGBMTunerCV(params, lgb.Dataset(xs, label=ys), return_cvbooster=True, optuna_seed=0)
-cv_result = tuner.run()
-model = tuner.get_best_booster()
-
-# LightGBMのパラメーターを保存します。
-save_params(tuner.best_params)
-~~~
-
-クラス分類なので`objective`を`multiclass`にして、`multiclass`の場合のデフォルトの`metric`である`multi_logloss`を設定しました。あと、クラス分類の場合は何個のクラスに分類するのかという情報が必要なので、`num_class`に10を指定しています。
-
-あとはいつも通りです。が、気を付けていただきたいのですけど、このプログラムは実行にやたらと長時間かかります（私の環境では半日くらいかかりました）。なので、夜間とか、どうしても仕事をしたくない日の勤務時間中とかに実行してみてください。
-
-## 予測モデルを作成
-
-今回は特徴量エンジニアリングの余地がない（画像処理に詳しい人ならできるのかもしれないけど）ので、いきなり予測モデルを作成します。
-
-~~~python
-import matplotlib.pyplot as plot
-import numpy as np
-import optuna.integration.lightgbm as lgb
-
-from dataset import get_train_data_frame, get_xs, get_ys
-from model import load_params, save_model
-
-
-rng = np.random.default_rng(0)
-
-# データを取得します。
-data_frame = get_train_data_frame()
-
-# データセットを取得します。
-xs = get_xs(data_frame)
-ys = get_ys(data_frame)
-
-# LightGBMのパラメーターを取得します。
-params = load_params()
-
-# 機械学習します。
-cv_result = lgb.cv(params, lgb.Dataset(xs, label=ys), return_cvbooster=True)
-model = cv_result['cvbooster']
-
-# 学習曲線を出力します。
-plot.plot(cv_result['multi_logloss-mean'])
-plot.show()
-
-# モデルを保存します。
-save_model(model)
-~~~
-
-完全にいつも通りですね。書くことがなくて困っちゃうくらいにLightGBM簡単ですな。
-
-## 解答を作成する
-
-あとは、解答を作成して、Kaggleに提出するだけ。
-
-~~~python
-import numpy as np
-import pandas as pd
-
-from dataset import get_test_data_frame, get_xs
-from model import load_model
-
-
-# モデルを読み込みます。
-model = load_model()
-
-# データを取得します。
-data_frame = get_test_data_frame()
-xs = get_xs(data_frame)
-
-# 提出量のCSVを作成します。
-submission = pd.DataFrame({'ImageId': data_frame.index + 1, 'Label': np.argmax(np.mean(model.predict(xs), axis=0), axis=-1)})
-submission.to_csv('submission.csv', index=False)
-~~~
-
-その精度は、0.94128でした。2,000人くらい中の1,740番目くらい。やっぱり画像ならばGPUやTPUを使って深層学習したいけれど、無い袖は振れないのでLightGBMもアリなんじゃないかなぁと。画像の解像度が大きかったりすると、GPUなしで深層学習するより時間がかかったりするかもしれませんけど……。
-
-# Transformerでテーブル・データ
+# Transformerでテーブル・データもやってみた
 
 
