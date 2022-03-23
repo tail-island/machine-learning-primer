@@ -102,7 +102,8 @@
 </head>
 <body>
 <article class="markdown-body">
-<p>文系の文系による文系のためのプログラマー向けの機械学習ガイドです。今どきの機械学習ライブラリはとてもよくできているので、私のような数学ダメダメな文系プログラマーでも機械学習できちゃうんですな。機械学習してみたい文系プログラマーの皆様、すげー簡単ですから、一緒に機械学習しましょう。</p>
+<p>文系の文系による文系のためのプログラマー向けの機械学習（machine
+learning）ガイドです。今どきの機械学習ライブラリはとてもよくできているので、私のような数学ダメダメな文系プログラマーでも機械学習できちゃうんですな。機械学習してみたい文系プログラマーの皆様、すげー簡単ですから、一緒に機械学習しましょう。</p>
 <p>本稿のプログラムはすべて<a
 href="https://github.com/tail-island/machine-learning-primer"><a
 href="https://github.com/tail-island/machine-learning-primer">https://github.com/tail-island/machine-learning-primer</a></a>に置きました。お時間があるときにでも、実行してみてください。</p>
@@ -136,7 +137,8 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a hr
 regression）と呼ばれる機械学習の手法を実装したクラスで、線形回帰は、<code>a1 * x[0] + a2 * x[1] + a3 * x[2] ... + b</code>というプログラムで表現可能な場合向けの手法です。西暦から令和の場合は<code>1 * year - 2018</code>で表現できますから、この線形回帰がバッチリあてはまります。</p>
 <p>で、その<code>a1 = 1</code>や<code>b = -2018</code>はどうやって導くのかというと、データから導きます。そのデータが上のコードの<code>xs</code>と<code>ys</code>。2019の時に1になるにはパラメーターをどんな値にすればよいのかなぁ、2020の時に2になるにはどうすればよいのかなぁと試して、できるだけ相違が少ない値を設定していきます。それを実現するための数学のテクニックがいろいろあるらしいのですけど、我々プログラマーがやらなければならないのは<code>fit()</code>メソッドを呼び出すだけ。</p>
 <p>以上で機械学習してパラメーターを適切な値に調整してくれるので、あとは、<code>predict()</code>メソッドを呼び出して予測させればオッケー。線形回帰は入力が配列であることを期待しているのと、あと、一回で複数データ分の予測ができるように作られているので、型を揃えるために<code>xs = ((year,),)</code>したり<code>ys[0]</code>をリターンしています。</p>
-<p>このように、機械学習ってのは、与えられたデータに合うようにパラメーターを調整しているだけなんです。これは、深層学習のような最先端の手法でも同じ。ほら、機械学習って簡単そうでしょ？</p>
+<p>このように、機械学習ってのは、与えられたデータに合うようにパラメーターを調整しているだけなんです。これは、深層学習（deep
+learning）のような最先端の手法でも同じ。ほら、機械学習って簡単そうでしょ？</p>
 <h1
 id="機械学習には様々な手法がある">機械学習には、様々な手法がある</h1>
 <p>もう少し複雑な問題で、もっと機械学習してみましょう。東京都の月平均気温からアイスクリーム月別支出額を予測する場合でやってみます。</p>
@@ -1243,9 +1245,10 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb22-1"><a h
 <span id="cb22-104"><a href="#cb22-104" aria-hidden="true" tabindex="-1"></a><span class="co"># 学習曲線を出力します。</span></span>
 <span id="cb22-105"><a href="#cb22-105" aria-hidden="true" tabindex="-1"></a>plot.plot(cv_result[<span class="st">&#39;binary_logloss-mean&#39;</span>])</span>
 <span id="cb22-106"><a href="#cb22-106" aria-hidden="true" tabindex="-1"></a>plot.show()</span></code></pre></div>
-<p>LightGBMのパラメーターに<code>learning_rate</code>を追加しているところに注意してください。勾配降下法では正解との誤差に基づいてパラメーターを調整していくのですけど、<code>learning_rate</code>を設定することで、大きく一気に調整したり小さく小刻みに調整したりできます。<code>learning_rate</code>が大きければ学習が早く終わりますけど調整が大雑把なので精度はそんなに高くない、小さい場合はその逆で時間はかかるけど精度が高くなります。</p>
-<p>特徴量エンジニアリングするときには早くサイクルを回したいので<code>learning_rate</code>を大きく（デフォルト値でも十分に大きい）、最終成果物を作るときには<code>learning_rate</code>を小さくします。今回は、デフォルト値の1/10に設定しました。</p>
-<p>で、<code>learning_rate</code>を下げた分だけ学習が遅くなりますから、エポック数に相当する<code>num_boost_round</code>（<code>cv()</code>の引数です）の値を大きくしています。</p>
+<p>LightGBMのパラメーターに学習率（learning
+rate）である<code>learning_rate</code>を追加しているところに注意してください。勾配降下法では正解との誤差に基づいてパラメーターを調整していくのですけど、学習率を設定することで、大きく一気に調整したり小さく小刻みに調整したりできます。学習率が大きければ学習が早く終わりますけど調整が大雑把なので精度はそんなに高くない、小さい場合はその逆で時間はかかるけど精度が高くなります。</p>
+<p>特徴量エンジニアリングするときには早くサイクルを回したいので学習率を大きく（デフォルト値でも十分に大きい）、最終成果物を作るときには学習率を小さくします。今回は、デフォルト値の1/10に設定しました。</p>
+<p>で、学習率を下げた分だけ学習が遅くなりますから、エポック数に相当する<code>num_boost_round</code>（<code>cv()</code>の引数です）の値を大きくしています。</p>
 <p>あとは、交差検証なので複数のモデルが作られるのでそれらを全部保存することと、カテゴリーの特徴量を数値化するための情報も帆損しなければなりません。それ以外は、少しでも精度を上げるために検証データを作らずにすべてのデータで学習しているくらいかな。</p>
 <p>あ、今回はKaggleのnotebookで実行しやすいようにモジュール化していませんけど、次の回帰でやるようにモジュール化すればもっとシンプルなコードにできます。実案件ではモジュール化してみてください。</p>
 <h2 id="解答を作成する">解答を作成する</h2>
@@ -1790,7 +1793,7 @@ alt="転職先を評価ベクトルと内積で評価" /></p>
 <p>たとえば、前の文章の「そんな場合」は遠くに位置する「自然言語のような遠くのものとの関係がある場合」で、ほら、自然言語処理では遠くにあるものと関係があるでしょ？</p>
 <p>自然言語処理では、単語をベクトルで表現します。「私」＝[0.1, 0.0, 0.4,
 0.5,
-0.0]みたいな感じ。で、単語のベクトルを要素に持つ行列と単語のベクトルの内積をとる（内積attentionの場合。他に加法attentionってのもありますけどよく知らない）と各単語の重みが出てきて、で、その重みに合わせて単語ベクトルと内積をとって、単語と単語の関係を考慮した行列を作成します。で、これだけだとただの行列計算なので、機械学習できるよう、重みパラメータを追加したのがアテンションです。</p>
+0.0]みたいな感じ。で、単語のベクトルを要素に持つ行列と単語のベクトルの内積をとる（内積attentionの場合。他に加法attentionってのもありますけど私は使ったことない）と各単語の重みが出てきて、で、その重みに合わせて単語ベクトルと内積をとって、単語と単語の関係を考慮した行列を作成します。で、これだけだとただの行列計算なので、機械学習できるよう、重みパラメータを追加したのがアテンションです。</p>
 <p>あとは、深層学習ってのは本来固定長の入力しか受け付けられないのだけど、それを数式上の工夫で可変長にして、翻訳で精度を大幅に向上させたのがTransformerという深層学習のモデルです。</p>
 <h2
 id="使用するライブラリはtensorflow">使用するライブラリは、TensorFlow</h2>
@@ -2183,14 +2186,14 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb37-1"><a h
 <h2 id="深層学習の使いどころ">深層学習の使いどころ</h2>
 <p>……でも、ちょっと待って。足し算とか引き算なら、深層学習を使わないで実際に足し算とか引き算するコードを書けば精度が100%になるのでは？</p>
 <p>はい。おっしゃる通り。もし入力と出力の関係を定義できて、それをシミュレーションできるなら、深層学習を使わないでシミュレーターを実装すれば良いでしょう。シミュレーターを作れるなら、シミュレーターの方が精度が高そうですもんね。</p>
-<p>ただ、シミュレーターを作成可能な場合であっても深層学習が役に立つ場合もあるんですよ。それがどんな場合かというと、シミュレーションにやたらと時間がかかる場合です。実は深層学習はすべての関数を近似できるらしくて（その証明は難しくて私では理解できなかったけど）、ということは、シミュレーションを近似できちゃうというわけ。</p>
+<p>ただ、シミュレーターを作成可能な場合であっても深層学習が役に立つ場合もあるんですよ。それがどんな場合かというと、シミュレーションにやたらと時間がかかる場合です。実は深層学習はすべての関数を近似できるらしくて（証明は難しくて理解できなかったけど）、ということは、シミュレーションを近似できちゃうというわけ。</p>
 <p>たとえば原子の動きのシミュレーションは、量子力学の基本法則に立脚した第一原理計算というのがあって、それを活用する密度汎関数法（density
 functional
 theory）という計算でできる（らしい）んです。ただ、これってとにかく計算に時間がかかる（っぽい）んですよ。複雑な原子のシミュレーションはとにかく時間がかかってやってられないので、だからこれを深層学習で近似しちゃおうというのが、Preferred
 Networks社とENEOS社の<a
-href="https://matlantis.com/ja/">Matlantis</a>で、マテリアル・インフォマティクスではとても役に立つ（みたい）です。</p>
-<p>こんな感じで、もし遅くてやってられないシミュレーターがあるなら、深層学習で代替できないか検討してみるのも良いと思います。</p>
-<p>あ、シミュレーターを作れるかもしれないけど作るのが面倒なのでとりあえず深層学習ってのもアリですよ。私はこっち派です。</p>
+href="https://matlantis.com/ja/">Matlantis</a>で、マテリアル・インフォマティクス分野ではとても役に立つ（みたい）です。</p>
+<p>こんな感じで、もし遅くてやってられないシミュレーターがあるなら、深層学習で代替できないかを検討してみるのも良いと思います。</p>
+<p>あ、シミュレーターを作れるかもしれないけど作るのが面倒なのでとりあえず深層学習ってのもアリで、私はこっち派だったりします。</p>
 <h1 id="vision-transformerで画像のクラス分類">Vision
 Transformerで画像のクラス分類</h1>
 <p>話を元に戻して、KaggleのGetting Startedの<a
@@ -2200,16 +2203,753 @@ Recognizer</a>で画像のクラス分類をやりましょう。手書き数字
 <p>Vision
 Transformerは、翻訳で大成功したTransformerを元にして作成された、様々な自然言語処理タスクで人間を超えたと話題になったBERTの、画像認識版です。BERTはTransformerを少し修正するだけで作成できるのですけど、Vision
 Transformerも同様にTransformerの修正で作成可能です。</p>
-<p>x</p>
-<p>x</p>
-<p>x</p>
-<p>x</p>
-<p>x</p>
-<h3
-id="テーブルデータは深層学習以外で">テーブル・データは深層学習「以外」で</h3>
-<p>ではどうするかというと、テーブル・データで深層学習するときには、昔懐かしい全結合になるんですよね。</p>
-<p>アテンションは画像認識等の自然言語以外の分野でも使われていて、今では何をするにもアテンションありきという感じなのですけど、でも、アテンションってベクトルが入力じゃないとダメなんですよ。身長180cmや体重79kg（ちょっとサバ読んだ）のようなデータはスカラー値でベクトルじゃないので、なんとかしてベクトル化しなければなりません（カテゴリーなどの離散量は単語と同じやり方で、連続量は行列を掛け算してバイアスを足すことでベクトル化します）。</p>
-<p>ただ、値をなんとかしてベクトル化すればアテンションが使えて、アテンションは遠くのデータとの関係も考慮してくれるから表の一番左のカラムと一番右のカラムの関係も加味した予測をしてくれるはず。</p>
+<p>TensorFlowのTransformerのチュートリアルをやった皆様はすでにご存じだと思いますけど、Transformerはエンコーダーとデコーダーで構成されています。エンコーダーで文章全体を表現する行列を作成して、その行列をデコーダーで変換して翻訳先の文章を作るわけ。BERTやVision
+Transformerはこのエンコーダーだけを使用します。</p>
+<p>BERTやVision
+Trasformerでは、文章の頭にクラスを表現するベクトルを追加して、で、そのベクトルに相当する部分の出力を使用してクラス分類する（BERTの場合は、ネガ/ポジの感情判定したりする）わけですね。BERTの場合は、入力となった単語のベクトルに相当する部分を使って、文と質問のペアの、質問に相当する文の箇所を推論したりもします。</p>
+<p>で、BERTはその学習方法が面白かったりする（簡単にいくらでも作れる問題で事前学習（pre
+training）している）のですけど、詳細はBERTと事前学習で検索してみてください。これは説明責任を放棄しているわけではなくて、流行りの技術である深層学習はいろいろな人が解説を書いてくれていて、検索するだけで大量の解説が手に入ることを知って欲しいから。</p>
+<p>これはVision
+Transformerについても同様で、検索すれば大量の分かりやすい解説が見つかります。解説が間違えている可能性はあるので<a
+href="https://arxiv.org/abs/2010.11929">論文</a>の参照は必要ですけど、論文だけで理解するより遥かに楽ちんです。</p>
+<p>最新の深層学習のモデルだと論文を読むしかないので深層学習は難しいのですけど、半年から一年遅れくらいでよいなら、大量の解説を利用できるので深層学習はそんなに難しくないですよ。</p>
+<h2 id="vision-transformerを実装する">Vision Transformerを実装する</h2>
+<p>ありがたいことにVision Transformerの<a
+href="https://keras.io/examples/vision/image_classification_with_vision_transformer/">Keras公式実装</a>もあるので、これを参考にすれば簡単に実装できます。今回は、論文から少し離れて、Kerasの実装に合う形（クラスを先頭に追加するのではなく、全結合層でクラス分類する等）で実装しました。</p>
+<p>というわけで、コードはこんな感じになりました。</p>
+<div class="sourceCode" id="cb38"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> func_partial, rcompose</span>
+<span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vision_transformer(num_blocks, d_model, num_heads, d_ff, y_vocab_size, x_maximum_position, dropout_rate):</span>
+<span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># KerasやTensorflowのレイヤーや関数をラップします。</span></span>
+<span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> dense(units):</span>
+<span id="cb38-11"><a href="#cb38-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Dense(units)</span>
+<span id="cb38-12"><a href="#cb38-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-13"><a href="#cb38-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> dropout(rate):</span>
+<span id="cb38-14"><a href="#cb38-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Dropout(rate)</span>
+<span id="cb38-15"><a href="#cb38-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-16"><a href="#cb38-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> embedding(input_dim, output_dim):</span>
+<span id="cb38-17"><a href="#cb38-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Embedding(input_dim, output_dim)</span>
+<span id="cb38-18"><a href="#cb38-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-19"><a href="#cb38-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> flatten():</span>
+<span id="cb38-20"><a href="#cb38-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Flatten()</span>
+<span id="cb38-21"><a href="#cb38-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-22"><a href="#cb38-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> gelu():</span>
+<span id="cb38-23"><a href="#cb38-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.activations.gelu</span>
+<span id="cb38-24"><a href="#cb38-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-25"><a href="#cb38-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> layer_normalization():</span>
+<span id="cb38-26"><a href="#cb38-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.LayerNormalization(epsilon<span class="op">=</span><span class="fl">1e-6</span>)</span>
+<span id="cb38-27"><a href="#cb38-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-28"><a href="#cb38-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> reshape(target_shape):</span>
+<span id="cb38-29"><a href="#cb38-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Reshape(target_shape)</span>
+<span id="cb38-30"><a href="#cb38-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-31"><a href="#cb38-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> softmax():</span>
+<span id="cb38-32"><a href="#cb38-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Softmax()</span>
+<span id="cb38-33"><a href="#cb38-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-34"><a href="#cb38-34" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> transpose(perm):</span>
+<span id="cb38-35"><a href="#cb38-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> func_partial(tf.transpose, perm<span class="op">=</span>perm)</span>
+<span id="cb38-36"><a href="#cb38-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-37"><a href="#cb38-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Transformerに必要な演算を定義します。</span></span>
+<span id="cb38-38"><a href="#cb38-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-39"><a href="#cb38-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> scaled_dot_product_attention(x):</span>
+<span id="cb38-40"><a href="#cb38-40" aria-hidden="true" tabindex="-1"></a>        query, key, value <span class="op">=</span> x</span>
+<span id="cb38-41"><a href="#cb38-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-42"><a href="#cb38-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.matmul(tf.nn.softmax(tf.matmul(query, key, transpose_b<span class="op">=</span><span class="va">True</span>) <span class="op">/</span> tf.math.sqrt(tf.cast(tf.shape(key)[<span class="op">-</span><span class="dv">1</span>], tf.float32)), axis<span class="op">=-</span><span class="dv">1</span>), value)</span>
+<span id="cb38-43"><a href="#cb38-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-44"><a href="#cb38-44" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> multi_head_attention(d_model, num_heads):</span>
+<span id="cb38-45"><a href="#cb38-45" aria-hidden="true" tabindex="-1"></a>        split  <span class="op">=</span> rcompose(reshape((<span class="op">-</span><span class="dv">1</span>, num_heads, d_model <span class="op">//</span> num_heads)),  <span class="co"># noqa: E221</span></span>
+<span id="cb38-46"><a href="#cb38-46" aria-hidden="true" tabindex="-1"></a>                          transpose((<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>)))</span>
+<span id="cb38-47"><a href="#cb38-47" aria-hidden="true" tabindex="-1"></a>        concat <span class="op">=</span> rcompose(transpose((<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>)),</span>
+<span id="cb38-48"><a href="#cb38-48" aria-hidden="true" tabindex="-1"></a>                          reshape((<span class="op">-</span><span class="dv">1</span>, d_model)))</span>
+<span id="cb38-49"><a href="#cb38-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-50"><a href="#cb38-50" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> op(inputs):</span>
+<span id="cb38-51"><a href="#cb38-51" aria-hidden="true" tabindex="-1"></a>            q, k, v <span class="op">=</span> inputs</span>
+<span id="cb38-52"><a href="#cb38-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-53"><a href="#cb38-53" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> scaled_dot_product_attention((split(dense(d_model)(q)),</span>
+<span id="cb38-54"><a href="#cb38-54" aria-hidden="true" tabindex="-1"></a>                                              split(dense(d_model)(k)),</span>
+<span id="cb38-55"><a href="#cb38-55" aria-hidden="true" tabindex="-1"></a>                                              split(dense(d_model)(v))))</span>
+<span id="cb38-56"><a href="#cb38-56" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> concat(o)</span>
+<span id="cb38-57"><a href="#cb38-57" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> dense(d_model)(o)</span>
+<span id="cb38-58"><a href="#cb38-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-59"><a href="#cb38-59" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> o</span>
+<span id="cb38-60"><a href="#cb38-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-61"><a href="#cb38-61" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> op</span>
+<span id="cb38-62"><a href="#cb38-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-63"><a href="#cb38-63" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> point_wise_feed_forward(d_model, d_ff):</span>
+<span id="cb38-64"><a href="#cb38-64" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> rcompose(dense(d_ff),</span>
+<span id="cb38-65"><a href="#cb38-65" aria-hidden="true" tabindex="-1"></a>                        gelu(),</span>
+<span id="cb38-66"><a href="#cb38-66" aria-hidden="true" tabindex="-1"></a>                        dense(d_model))</span>
+<span id="cb38-67"><a href="#cb38-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-68"><a href="#cb38-68" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> encoder_block(d_model, num_heads, d_ff, dropout_rate):</span>
+<span id="cb38-69"><a href="#cb38-69" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> op(inputs):</span>
+<span id="cb38-70"><a href="#cb38-70" aria-hidden="true" tabindex="-1"></a>            x <span class="op">=</span> inputs</span>
+<span id="cb38-71"><a href="#cb38-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-72"><a href="#cb38-72" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> layer_normalization()(x)</span>
+<span id="cb38-73"><a href="#cb38-73" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> dropout(dropout_rate)(multi_head_attention(d_model, num_heads)((o, o, o))) <span class="op">+</span> o</span>
+<span id="cb38-74"><a href="#cb38-74" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> layer_normalization()(o)</span>
+<span id="cb38-75"><a href="#cb38-75" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> dropout(dropout_rate)(point_wise_feed_forward(d_model, d_ff)(o)) <span class="op">+</span> o</span>
+<span id="cb38-76"><a href="#cb38-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-77"><a href="#cb38-77" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> o</span>
+<span id="cb38-78"><a href="#cb38-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-79"><a href="#cb38-79" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> op</span>
+<span id="cb38-80"><a href="#cb38-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-81"><a href="#cb38-81" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_positional_encoding(maximum_position, d_model):</span>
+<span id="cb38-82"><a href="#cb38-82" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> embedding(maximum_position, d_model)(tf.<span class="bu">range</span>(<span class="dv">0</span>, maximum_position))</span>
+<span id="cb38-83"><a href="#cb38-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-84"><a href="#cb38-84" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> result[np.newaxis, ...]</span>
+<span id="cb38-85"><a href="#cb38-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-86"><a href="#cb38-86" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> encoder(num_blocks, d_model, num_heads, d_ff, maximum_position, dropout_rate):</span>
+<span id="cb38-87"><a href="#cb38-87" aria-hidden="true" tabindex="-1"></a>        normalize_factor <span class="op">=</span> tf.math.sqrt(tf.cast(d_model, tf.float32))</span>
+<span id="cb38-88"><a href="#cb38-88" aria-hidden="true" tabindex="-1"></a>        positional_encoding <span class="op">=</span> get_positional_encoding(maximum_position, d_model)</span>
+<span id="cb38-89"><a href="#cb38-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-90"><a href="#cb38-90" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> op(inputs):</span>
+<span id="cb38-91"><a href="#cb38-91" aria-hidden="true" tabindex="-1"></a>            x <span class="op">=</span> inputs</span>
+<span id="cb38-92"><a href="#cb38-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-93"><a href="#cb38-93" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> dropout(dropout_rate)(x <span class="op">*</span> normalize_factor <span class="op">+</span> positional_encoding)</span>
+<span id="cb38-94"><a href="#cb38-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-95"><a href="#cb38-95" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_blocks):</span>
+<span id="cb38-96"><a href="#cb38-96" aria-hidden="true" tabindex="-1"></a>                o <span class="op">=</span> encoder_block(d_model, num_heads, d_ff, dropout_rate)((o))</span>
+<span id="cb38-97"><a href="#cb38-97" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-98"><a href="#cb38-98" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> o</span>
+<span id="cb38-99"><a href="#cb38-99" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-100"><a href="#cb38-100" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> op</span>
+<span id="cb38-101"><a href="#cb38-101" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-102"><a href="#cb38-102" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> op(inputs):</span>
+<span id="cb38-103"><a href="#cb38-103" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> inputs</span>
+<span id="cb38-104"><a href="#cb38-104" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-105"><a href="#cb38-105" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> softmax()(dense(y_vocab_size)(flatten()(encoder(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropout_rate)(x))))</span>
+<span id="cb38-106"><a href="#cb38-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-107"><a href="#cb38-107" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> op</span>
+<span id="cb38-108"><a href="#cb38-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-109"><a href="#cb38-109" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-110"><a href="#cb38-110" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LearningRateSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):</span>
+<span id="cb38-111"><a href="#cb38-111" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, d_model, warmup_steps<span class="op">=</span><span class="dv">4000</span>):</span>
+<span id="cb38-112"><a href="#cb38-112" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(LearningRateSchedule, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb38-113"><a href="#cb38-113" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-114"><a href="#cb38-114" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.d_model <span class="op">=</span> tf.cast(d_model, tf.float32)</span>
+<span id="cb38-115"><a href="#cb38-115" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.warmup_steps <span class="op">=</span> warmup_steps</span>
+<span id="cb38-116"><a href="#cb38-116" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-117"><a href="#cb38-117" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, step):</span>
+<span id="cb38-118"><a href="#cb38-118" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.d_model <span class="op">**</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> tf.math.minimum(step <span class="op">**</span> <span class="op">-</span><span class="fl">0.5</span>, step <span class="op">*</span> <span class="va">self</span>.warmup_steps <span class="op">**</span> <span class="op">-</span><span class="fl">1.5</span>)</span></code></pre></div>
+<p>自然言語処理では単語を埋め込み（embedding）してベクトル化して入力にするのですけど、Vision
+Transformerでは画像を例えば16×16のパッチに分けて、それぞれのパッチをベクトルとして扱って入力としているのがキモです（だから、<code>encoder()</code>の最初の<code>embedding</code>がなくなっています）。</p>
+<p>あとは、デコーダーが不要だったり、先読みが無関係なのでマスクがいらなかったり、Layer
+Normalizationが先だったりReLUの代わりにGERUを使ったりと、少しだけニューラル・ネットワークが違うくらい。Transformerのコードがあるなら、その修正で簡単に作成できます。</p>
+<p>……とはいっても、いざ修正してみると大量のエラーが出たりするんですけどね。でも、安心してください。エラーが出るのは関数の引数の型が合わないからで、しかもその型ってのは行列の形だったりします。普段のプログラミングで様々な型を考慮しなければならないのに比べれば、考えなければならないことが少ない分だけ簡単です。<code>print(tf.shape(x))</code>とかすれば行列の形が表示されますしね。</p>
+<h2 id="データセットを取得する-1">データセットを取得する</h2>
+<p>Vision
+Transformerが出来たので、次は、データセットを取得するモジュールを作成します。</p>
+<div class="sourceCode" id="cb39"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> params <span class="im">import</span> D_MODEL_HEIGHT, D_MODEL_WIDTH</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co"># DataFrameを取得します。</span></span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_data_frame(filename):</span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;digit-recognizer&#39;</span>, filename))</span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練用DataFrameを取得します。</span></span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_train_data_frame():</span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;train.csv&#39;</span>)</span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a><span class="co"># テスト用DataFrameを取得します。</span></span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_test_data_frame():</span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;test.csv&#39;</span>)</span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 画像をパッチに分割します。</span></span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> encode(image):</span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> impl():</span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">28</span> <span class="op">//</span> D_MODEL_HEIGHT):</span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">28</span> <span class="op">//</span> D_MODEL_WIDTH):</span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>                <span class="cf">yield</span> image[i <span class="op">*</span> D_MODEL_HEIGHT: i <span class="op">*</span> D_MODEL_HEIGHT <span class="op">+</span> D_MODEL_HEIGHT, j <span class="op">*</span> D_MODEL_WIDTH: j <span class="op">*</span> D_MODEL_WIDTH <span class="op">+</span> D_MODEL_WIDTH].flatten()</span>
+<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(<span class="bu">tuple</span>(impl()))</span>
+<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a><span class="co"># パッチを画像に戻します。</span></span>
+<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> decode(encoded):</span>
+<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> np.zeros((<span class="dv">28</span>, <span class="dv">28</span>), dtype<span class="op">=</span>np.float32)</span>
+<span id="cb39-36"><a href="#cb39-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-37"><a href="#cb39-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">28</span> <span class="op">//</span> D_MODEL_HEIGHT):</span>
+<span id="cb39-38"><a href="#cb39-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">28</span> <span class="op">//</span> D_MODEL_WIDTH):</span>
+<span id="cb39-39"><a href="#cb39-39" aria-hidden="true" tabindex="-1"></a>            result[i <span class="op">*</span> D_MODEL_HEIGHT: i <span class="op">*</span> D_MODEL_HEIGHT <span class="op">+</span> D_MODEL_HEIGHT, j <span class="op">*</span> D_MODEL_WIDTH: j <span class="op">*</span> D_MODEL_WIDTH <span class="op">+</span> D_MODEL_WIDTH] <span class="op">=</span> np.reshape(encoded[i <span class="op">*</span> <span class="dv">28</span> <span class="op">//</span> D_MODEL_WIDTH <span class="op">+</span> j], (D_MODEL_WIDTH, D_MODEL_HEIGHT))</span>
+<span id="cb39-40"><a href="#cb39-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-41"><a href="#cb39-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span>
+<span id="cb39-42"><a href="#cb39-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-43"><a href="#cb39-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-44"><a href="#cb39-44" aria-hidden="true" tabindex="-1"></a><span class="co"># 入力データを取得します。</span></span>
+<span id="cb39-45"><a href="#cb39-45" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame):</span>
+<span id="cb39-46"><a href="#cb39-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(<span class="bu">tuple</span>(<span class="bu">map</span>(encode, np.reshape(data_frame[<span class="bu">list</span>(<span class="bu">map</span>(<span class="kw">lambda</span> i: <span class="ss">f&#39;pixel</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&#39;</span>, <span class="bu">range</span>(<span class="dv">784</span>)))].values <span class="op">/</span> <span class="dv">255</span>, (<span class="op">-</span><span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)))))</span>
+<span id="cb39-47"><a href="#cb39-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-48"><a href="#cb39-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-49"><a href="#cb39-49" aria-hidden="true" tabindex="-1"></a><span class="co"># 出力データを取得します。</span></span>
+<span id="cb39-50"><a href="#cb39-50" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
+<span id="cb39-51"><a href="#cb39-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;label&#39;</span>].values</span></code></pre></div>
+<p>KerasのVision
+Transformer実装では画像をパッチに分割する処理がニューラル・ネットワークに含まれていたのですけど、今回は、今後の解説の都合によりデータセット読み込み時にパッチに分割しました（ごめんなさい。後で述べるデータの水増しができないので少々不利なやり方です……）。</p>
+<p>あと、<code>get_xs()</code>の中で255で割っているのは、データ中は0～255になっているのを0～1に正規化するためです。深層学習のハイパー・パラメーターはデータが正規化されていることを前提にしているので、0～255のような大きな値だと学習が正常に進まないんですよ。</p>
+<h2
+id="ハイパーパラメーターを設定する">ハイパー・パラメーターを設定する</h2>
+<p>上のデータセットのモジュールでも使用していたパッチの大きさ（<code>D_MODEL_WIDTH</code>と<code>D_MODEL_HEIGHT</code>）を含むハイパー・パラメーターを設定するモジュールを作成します。</p>
+<div class="sourceCode" id="cb40"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>NUM_BLOCKS <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>D_MODEL_WIDTH <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>D_MODEL_HEIGHT <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>D_MODEL <span class="op">=</span> D_MODEL_WIDTH <span class="op">*</span> D_MODEL_HEIGHT</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>D_FF <span class="op">=</span> <span class="dv">1024</span></span>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>NUM_HEADS <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>DROPOUT_RATE <span class="op">=</span> <span class="fl">0.1</span></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true" tabindex="-1"></a>Y_VOCAB_SIZE <span class="op">=</span> <span class="dv">10</span></span></code></pre></div>
+<p>パッチの大きさは4×4ドットにしました。今回のデータは28×28ドットなので、これなら割り切れて、あと、そこそこパッチ数も大きくなるんじゃないかと。他は調整が面倒だったのでTransformerを作ったときの値から変えていません。</p>
+<h2 id="機械学習する">機械学習する</h2>
+<p>準備が整ったので、機械学習しましょう。コードはこんな感じ。</p>
+<div class="sourceCode" id="cb41"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_train_data_frame, get_xs, get_ys</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> identity, juxt</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> starmap</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> operator <span class="im">import</span> eq</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> params <span class="im">import</span> NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, Y_VOCAB_SIZE, DROPOUT_RATE</span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vision_transformer <span class="im">import</span> LearningRateSchedule, vision_transformer</span>
+<span id="cb41-10"><a href="#cb41-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-11"><a href="#cb41-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-12"><a href="#cb41-12" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
+<span id="cb41-13"><a href="#cb41-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-14"><a href="#cb41-14" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb41-15"><a href="#cb41-15" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_train_data_frame()</span>
+<span id="cb41-16"><a href="#cb41-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-17"><a href="#cb41-17" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb41-18"><a href="#cb41-18" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame)</span>
+<span id="cb41-19"><a href="#cb41-19" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb41-20"><a href="#cb41-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-21"><a href="#cb41-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練データセットと検証データセットに分割するためのインデックスを作成します。</span></span>
+<span id="cb41-22"><a href="#cb41-22" aria-hidden="true" tabindex="-1"></a>indices <span class="op">=</span> rng.permutation(np.arange(<span class="bu">len</span>(xs)))</span>
+<span id="cb41-23"><a href="#cb41-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-24"><a href="#cb41-24" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練データセットを取得します。</span></span>
+<span id="cb41-25"><a href="#cb41-25" aria-hidden="true" tabindex="-1"></a>train_xs <span class="op">=</span> xs[indices[<span class="dv">2000</span>:]]</span>
+<span id="cb41-26"><a href="#cb41-26" aria-hidden="true" tabindex="-1"></a>train_ys <span class="op">=</span> ys[indices[<span class="dv">2000</span>:]]</span>
+<span id="cb41-27"><a href="#cb41-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-28"><a href="#cb41-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 検証データセットを取得します。</span></span>
+<span id="cb41-29"><a href="#cb41-29" aria-hidden="true" tabindex="-1"></a>valid_xs <span class="op">=</span> xs[indices[:<span class="dv">2000</span>]]</span>
+<span id="cb41-30"><a href="#cb41-30" aria-hidden="true" tabindex="-1"></a>valid_ys <span class="op">=</span> ys[indices[:<span class="dv">2000</span>]]</span>
+<span id="cb41-31"><a href="#cb41-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-32"><a href="#cb41-32" aria-hidden="true" tabindex="-1"></a><span class="co"># Vision Transformerを作成します。</span></span>
+<span id="cb41-33"><a href="#cb41-33" aria-hidden="true" tabindex="-1"></a>op <span class="op">=</span> vision_transformer(NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, Y_VOCAB_SIZE, <span class="dv">28</span> <span class="op">*</span> <span class="dv">28</span> <span class="op">//</span> D_MODEL, DROPOUT_RATE)</span>
+<span id="cb41-34"><a href="#cb41-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-35"><a href="#cb41-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Kerasのモデルを作成します。</span></span>
+<span id="cb41-36"><a href="#cb41-36" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.Model(<span class="op">*</span>juxt(identity, op)(tf.keras.Input(shape<span class="op">=</span>np.shape(xs)[<span class="dv">1</span>:])))</span>
+<span id="cb41-37"><a href="#cb41-37" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(tf.keras.optimizers.Adam(LearningRateSchedule(D_MODEL), beta_1<span class="op">=</span><span class="fl">0.9</span>, beta_2<span class="op">=</span><span class="fl">0.98</span>, epsilon<span class="op">=</span><span class="fl">1e-9</span>), loss<span class="op">=</span><span class="st">&#39;sparse_categorical_crossentropy&#39;</span>, metrics<span class="op">=</span>(<span class="st">&#39;accuracy&#39;</span>,))</span>
+<span id="cb41-38"><a href="#cb41-38" aria-hidden="true" tabindex="-1"></a><span class="co"># model.summary()</span></span>
+<span id="cb41-39"><a href="#cb41-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-40"><a href="#cb41-40" aria-hidden="true" tabindex="-1"></a><span class="co"># 機械学習します。</span></span>
+<span id="cb41-41"><a href="#cb41-41" aria-hidden="true" tabindex="-1"></a>model.fit(train_xs, train_ys, batch_size<span class="op">=</span><span class="dv">256</span>, epochs<span class="op">=</span><span class="dv">10</span>, validation_data<span class="op">=</span>(valid_xs, valid_ys))</span>
+<span id="cb41-42"><a href="#cb41-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-43"><a href="#cb41-43" aria-hidden="true" tabindex="-1"></a><span class="co"># 精度を表示します。</span></span>
+<span id="cb41-44"><a href="#cb41-44" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&#39;Accuracy = </span><span class="sc">{</span><span class="bu">sum</span>(starmap(eq, <span class="bu">zip</span>(valid_ys, np.argmax(model.predict(valid_xs, batch_size<span class="op">=</span><span class="dv">256</span>), axis<span class="op">=-</span><span class="dv">1</span>)))) <span class="op">/</span> <span class="bu">len</span>(valid_xs)<span class="sc">}</span><span class="ss">&#39;</span>)</span></code></pre></div>
+<p>うん、Transformerの時とほぼ同じですね。Transformerの時は入力の行列の形を事前に決められなかった（文の長さは事前には分からない）ので変な形になっていました（それでも問題ないようにニューラル・ネットワークが工夫されていた）けど、今回は画像の大きさが決まっているので<code>tf.keras.Input(shape=np.shape(xs)[1:])</code>として行列の形を指定しました。</p>
+<p>あとは、<code>compile()</code>の時の引数が<code>loss='sparse_categorical_crossentropy'</code>となっています。これは、クラス分類をする時用の損失関数（誤差を計算するための関数。LightGBMの<code>metric</code>）です。あと、Kerasでは、損失関数とは別に、人間に分かりやすい測定結果も出力できるようになっていて、それが<code>metrics</code>です。今回は、ここに精度である<code>accuracy</code>を指定しました。</p>
+<p>残りはTransformerの時と同じです。実行してみると、精度は0.963でした。あれ、なんか精度低い？　2,000人くらい中の1,600番目くらい？</p>
+<h2 id="予測モデルを作成する-2">予測モデルを作成する</h2>
+<p>精度を確認するために、予測モデルを作成してテスト・データで予測して、Kaggleに提出してみましょう。まずは、予測モデルの作成から。</p>
+<div class="sourceCode" id="cb42"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_train_data_frame, get_xs, get_ys</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> identity, juxt</span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> params <span class="im">import</span> NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, Y_VOCAB_SIZE, DROPOUT_RATE</span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> vision_transformer <span class="im">import</span> LearningRateSchedule, vision_transformer</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-12"><a href="#cb42-12" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb42-13"><a href="#cb42-13" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_train_data_frame()</span>
+<span id="cb42-14"><a href="#cb42-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-15"><a href="#cb42-15" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb42-16"><a href="#cb42-16" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame)</span>
+<span id="cb42-17"><a href="#cb42-17" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb42-18"><a href="#cb42-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-19"><a href="#cb42-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Vision Transformerを作成します。</span></span>
+<span id="cb42-20"><a href="#cb42-20" aria-hidden="true" tabindex="-1"></a>op <span class="op">=</span> vision_transformer(NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, Y_VOCAB_SIZE, <span class="dv">28</span> <span class="op">*</span> <span class="dv">28</span> <span class="op">//</span> D_MODEL, DROPOUT_RATE)</span>
+<span id="cb42-21"><a href="#cb42-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-22"><a href="#cb42-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Kerasのモデルを作成します。</span></span>
+<span id="cb42-23"><a href="#cb42-23" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.Model(<span class="op">*</span>juxt(identity, op)(tf.keras.Input(shape<span class="op">=</span>np.shape(xs)[<span class="dv">1</span>:])))</span>
+<span id="cb42-24"><a href="#cb42-24" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(tf.keras.optimizers.Adam(LearningRateSchedule(D_MODEL), beta_1<span class="op">=</span><span class="fl">0.9</span>, beta_2<span class="op">=</span><span class="fl">0.98</span>, epsilon<span class="op">=</span><span class="fl">1e-9</span>), loss<span class="op">=</span><span class="st">&#39;sparse_categorical_crossentropy&#39;</span>, metrics<span class="op">=</span>(<span class="st">&#39;accuracy&#39;</span>,))</span>
+<span id="cb42-25"><a href="#cb42-25" aria-hidden="true" tabindex="-1"></a><span class="co"># model.summary()</span></span>
+<span id="cb42-26"><a href="#cb42-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-27"><a href="#cb42-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 機械学習して、モデルを保存します。</span></span>
+<span id="cb42-28"><a href="#cb42-28" aria-hidden="true" tabindex="-1"></a>model.fit(xs, ys, batch_size<span class="op">=</span><span class="dv">256</span>, epochs<span class="op">=</span><span class="dv">100</span>)</span>
+<span id="cb42-29"><a href="#cb42-29" aria-hidden="true" tabindex="-1"></a>model.save(<span class="st">&#39;digit-recognizer-model&#39;</span>, include_optimizer<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
+<p>機械学習するモジュールからコードを切り貼りして、最後にモデルを保存する処理を追加しただけです。あ、精度が上がるかもと思って、エポック数は10から100に増やしました。</p>
+<h2 id="解答を作成する-2">解答を作成する</h2>
+<p>テスト・データで予測して解答を作成するモジュールを作成します。コードはこんな感じ。</p>
+<div class="sourceCode" id="cb43"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb43-3"><a href="#cb43-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb43-4"><a href="#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="#cb43-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_test_data_frame, get_xs</span>
+<span id="cb43-6"><a href="#cb43-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-7"><a href="#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="#cb43-8" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを取得します。</span></span>
+<span id="cb43-9"><a href="#cb43-9" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.load_model(<span class="st">&#39;digit-recognizer-model&#39;</span>)</span>
+<span id="cb43-10"><a href="#cb43-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-11"><a href="#cb43-11" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb43-12"><a href="#cb43-12" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_test_data_frame()</span>
+<span id="cb43-13"><a href="#cb43-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-14"><a href="#cb43-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 入力データを取得します。</span></span>
+<span id="cb43-15"><a href="#cb43-15" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame)</span>
+<span id="cb43-16"><a href="#cb43-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 解答を作成して、保存します。</span></span>
+<span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>submission <span class="op">=</span> pd.DataFrame({<span class="st">&#39;ImageId&#39;</span>: data_frame.index <span class="op">+</span> <span class="dv">1</span>, <span class="st">&#39;Label&#39;</span>: np.argmax(model.predict(xs, batch_size<span class="op">=</span><span class="dv">256</span>), axis<span class="op">=-</span><span class="dv">1</span>)})</span>
+<span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>submission.to_csv(<span class="st">&#39;submission.csv&#39;</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
+<p>さて、テスト・データでの精度は、0.98232。エポック数を増やした分だけ精度が上がったような気がしますが、それでもやっぱり2,000人くらい中の900番目くらい。Digit
+Recognizerでもやっぱりカンニングしている連中はいるけど、それにしたって低すぎます。2020年に画像認識の革命と大騒ぎになったVision
+Transformerを使っているのにどういうこと？</p>
+<p>……ここまで真面目に読んでくださった皆様ごめんなさい。たぶんこんな結果になること、実は知ってた。</p>
+<p>というのも、Transformer系って、大量のデータがないと精度が高くならないんですよ。Transformerの後に自然言語処理で人間を超えたと話題になったBERTはBooksCorpusという8億ワードのデータとWikipediaの25億ワードのデータで事前学習しましたし、Vision
+Transformerで最高の精度を出したときはGoogle社のプライベートなデータセットであるJFT-300Mという3億枚の画像を使用して事前学習しています。データの単位は億なんですな。</p>
+<p>それと比較して今回は、事前学習がゼロで、学習に使用したデータは4万2千……。そりゃ、精度なんか出ませんよね。</p>
+<p>こんな感じで、実用という意味では、深層学習の最先端は我々一般人の手が届かない遥か彼方に行ってしまいました。そもそもデータが集まらないし、仮にデータが集まっても一般人の手に入るレベルの計算リソースだととても学習させられないし。</p>
+<p>というわけで、事前学習済みのモデルに転移学習（fine
+tuning）するような場合にしか使えないんじゃないかなぁと。貴方の目的に合う事前学習と入力のものが運良く見つかったならば、ですけど。</p>
+<h1 id="densenetで画像のクラス分類">DenseNetで画像のクラス分類</h1>
+<p>だから今回は、アテンションではなく、畳み込みを使うモデルで勝負しました。DenseNetです。</p>
+<h2 id="densenetを実装する">DenseNetを実装する</h2>
+<p>DenseNetの実装はこんな感じ。</p>
+<div class="sourceCode" id="cb44"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> rcompose</span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> dense_net(growth_rate, classes):</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># KerasやTensorflowのレイヤーや関数をラップします。</span></span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> average_pooling_2d(pool_size, strides<span class="op">=</span><span class="va">None</span>):</span>
+<span id="cb44-10"><a href="#cb44-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.AveragePooling2D(pool_size, strides<span class="op">=</span>strides)</span>
+<span id="cb44-11"><a href="#cb44-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-12"><a href="#cb44-12" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> concatenate():</span>
+<span id="cb44-13"><a href="#cb44-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Concatenate()</span>
+<span id="cb44-14"><a href="#cb44-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-15"><a href="#cb44-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> batch_normalization():</span>
+<span id="cb44-16"><a href="#cb44-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.BatchNormalization(epsilon<span class="op">=</span><span class="fl">1.001e-5</span>)</span>
+<span id="cb44-17"><a href="#cb44-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-18"><a href="#cb44-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> conv_2d(filters, kernel_size):</span>
+<span id="cb44-19"><a href="#cb44-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Conv2D(filters, kernel_size, padding<span class="op">=</span><span class="st">&#39;same&#39;</span>, use_bias<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb44-20"><a href="#cb44-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-21"><a href="#cb44-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> dense(units):</span>
+<span id="cb44-22"><a href="#cb44-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Dense(units)</span>
+<span id="cb44-23"><a href="#cb44-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-24"><a href="#cb44-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> global_average_pooling_2d():</span>
+<span id="cb44-25"><a href="#cb44-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.GlobalAveragePooling2D()</span>
+<span id="cb44-26"><a href="#cb44-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-27"><a href="#cb44-27" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> relu():</span>
+<span id="cb44-28"><a href="#cb44-28" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.ReLU()</span>
+<span id="cb44-29"><a href="#cb44-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-30"><a href="#cb44-30" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> softmax():</span>
+<span id="cb44-31"><a href="#cb44-31" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Softmax()</span>
+<span id="cb44-32"><a href="#cb44-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-33"><a href="#cb44-33" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> zero_padding2d(padding):</span>
+<span id="cb44-34"><a href="#cb44-34" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.ZeroPadding2D(padding<span class="op">=</span>padding)</span>
+<span id="cb44-35"><a href="#cb44-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-36"><a href="#cb44-36" aria-hidden="true" tabindex="-1"></a>    <span class="co"># DenseNetに必要な演算を定義します。</span></span>
+<span id="cb44-37"><a href="#cb44-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-38"><a href="#cb44-38" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> dense_block(blocks):</span>
+<span id="cb44-39"><a href="#cb44-39" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> op(inputs):</span>
+<span id="cb44-40"><a href="#cb44-40" aria-hidden="true" tabindex="-1"></a>            result <span class="op">=</span> inputs</span>
+<span id="cb44-41"><a href="#cb44-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-42"><a href="#cb44-42" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(blocks):</span>
+<span id="cb44-43"><a href="#cb44-43" aria-hidden="true" tabindex="-1"></a>                result_ <span class="op">=</span> batch_normalization()(result)</span>
+<span id="cb44-44"><a href="#cb44-44" aria-hidden="true" tabindex="-1"></a>                result_ <span class="op">=</span> relu()(result_)</span>
+<span id="cb44-45"><a href="#cb44-45" aria-hidden="true" tabindex="-1"></a>                result_ <span class="op">=</span> conv_2d(<span class="dv">4</span> <span class="op">*</span> growth_rate, <span class="dv">1</span>)(result_)</span>
+<span id="cb44-46"><a href="#cb44-46" aria-hidden="true" tabindex="-1"></a>                result_ <span class="op">=</span> batch_normalization()(result_)</span>
+<span id="cb44-47"><a href="#cb44-47" aria-hidden="true" tabindex="-1"></a>                result_ <span class="op">=</span> relu()(result_)</span>
+<span id="cb44-48"><a href="#cb44-48" aria-hidden="true" tabindex="-1"></a>                result_ <span class="op">=</span> conv_2d(growth_rate, <span class="dv">3</span>)(result_)</span>
+<span id="cb44-49"><a href="#cb44-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-50"><a href="#cb44-50" aria-hidden="true" tabindex="-1"></a>                result <span class="op">=</span> concatenate()((result, result_))</span>
+<span id="cb44-51"><a href="#cb44-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-52"><a href="#cb44-52" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> result</span>
+<span id="cb44-53"><a href="#cb44-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-54"><a href="#cb44-54" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> op</span>
+<span id="cb44-55"><a href="#cb44-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-56"><a href="#cb44-56" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> transition_block():</span>
+<span id="cb44-57"><a href="#cb44-57" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> op(inputs):</span>
+<span id="cb44-58"><a href="#cb44-58" aria-hidden="true" tabindex="-1"></a>            result <span class="op">=</span> batch_normalization()(inputs)</span>
+<span id="cb44-59"><a href="#cb44-59" aria-hidden="true" tabindex="-1"></a>            result <span class="op">=</span> relu()(result)</span>
+<span id="cb44-60"><a href="#cb44-60" aria-hidden="true" tabindex="-1"></a>            result <span class="op">=</span> conv_2d(<span class="bu">int</span>(tf.keras.backend.int_shape(inputs)[<span class="dv">3</span>] <span class="op">*</span> <span class="fl">0.5</span>), <span class="dv">1</span>)(result)</span>
+<span id="cb44-61"><a href="#cb44-61" aria-hidden="true" tabindex="-1"></a>            result <span class="op">=</span> average_pooling_2d(<span class="dv">2</span>, strides<span class="op">=</span><span class="dv">2</span>)(result)</span>
+<span id="cb44-62"><a href="#cb44-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-63"><a href="#cb44-63" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> result</span>
+<span id="cb44-64"><a href="#cb44-64" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-65"><a href="#cb44-65" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> op</span>
+<span id="cb44-66"><a href="#cb44-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-67"><a href="#cb44-67" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> dense_net_121():</span>
+<span id="cb44-68"><a href="#cb44-68" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> rcompose(dense_block(<span class="dv">6</span>),</span>
+<span id="cb44-69"><a href="#cb44-69" aria-hidden="true" tabindex="-1"></a>                        transition_block(),</span>
+<span id="cb44-70"><a href="#cb44-70" aria-hidden="true" tabindex="-1"></a>                        dense_block(<span class="dv">12</span>),</span>
+<span id="cb44-71"><a href="#cb44-71" aria-hidden="true" tabindex="-1"></a>                        transition_block(),</span>
+<span id="cb44-72"><a href="#cb44-72" aria-hidden="true" tabindex="-1"></a>                        dense_block(<span class="dv">24</span>),</span>
+<span id="cb44-73"><a href="#cb44-73" aria-hidden="true" tabindex="-1"></a>                        transition_block(),</span>
+<span id="cb44-74"><a href="#cb44-74" aria-hidden="true" tabindex="-1"></a>                        dense_block(<span class="dv">16</span>))</span>
+<span id="cb44-75"><a href="#cb44-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-76"><a href="#cb44-76" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> rcompose(conv_2d(<span class="dv">64</span>, <span class="dv">1</span>),</span>
+<span id="cb44-77"><a href="#cb44-77" aria-hidden="true" tabindex="-1"></a>                    batch_normalization(),</span>
+<span id="cb44-78"><a href="#cb44-78" aria-hidden="true" tabindex="-1"></a>                    relu(),  <span class="co"># ImageNetの場合はここでConv2DやMaxPooling2Dで画素数を減らすのですけど、今回はもともとの画素数が少ないのでやりません。</span></span>
+<span id="cb44-79"><a href="#cb44-79" aria-hidden="true" tabindex="-1"></a>                    dense_net_121(),</span>
+<span id="cb44-80"><a href="#cb44-80" aria-hidden="true" tabindex="-1"></a>                    batch_normalization(),</span>
+<span id="cb44-81"><a href="#cb44-81" aria-hidden="true" tabindex="-1"></a>                    relu(),</span>
+<span id="cb44-82"><a href="#cb44-82" aria-hidden="true" tabindex="-1"></a>                    global_average_pooling_2d(),</span>
+<span id="cb44-83"><a href="#cb44-83" aria-hidden="true" tabindex="-1"></a>                    dense(classes),</span>
+<span id="cb44-84"><a href="#cb44-84" aria-hidden="true" tabindex="-1"></a>                    softmax())</span></code></pre></div>
+<p>Transformerに比べるとだいぶん簡単です。例によって、検索で見つけた様々な解説と、<a
+href="https://github.com/keras-team/keras-applications/blob/master/keras_applications/densenet.py">KerasのDenseNet実装</a>を参考にしました。</p>
+<p>DenseNetはImageNetというデータセットを前提にしていて、224×224ドットの画像が入力されることを前提にしています。Digit
+Recognizerの入力は28×28ドットとだいぶん小さいので、コメントに書いたように前処理を省略しました。モデルを自作すると、このような調整が出来て便利です。</p>
+<h2 id="データセットを取得する-2">データセットを取得する</h2>
+<p>データセットを取得するモジュールを作成します。</p>
+<div class="sourceCode" id="cb45"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="co"># DataFrameを取得します。</span></span>
+<span id="cb45-7"><a href="#cb45-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_data_frame(filename):</span>
+<span id="cb45-8"><a href="#cb45-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;digit-recognizer&#39;</span>, filename))</span>
+<span id="cb45-9"><a href="#cb45-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-10"><a href="#cb45-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-11"><a href="#cb45-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練用DataFrameを取得します。</span></span>
+<span id="cb45-12"><a href="#cb45-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_train_data_frame():</span>
+<span id="cb45-13"><a href="#cb45-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;train.csv&#39;</span>)</span>
+<span id="cb45-14"><a href="#cb45-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-15"><a href="#cb45-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-16"><a href="#cb45-16" aria-hidden="true" tabindex="-1"></a><span class="co"># テスト用DataFrameを取得します。</span></span>
+<span id="cb45-17"><a href="#cb45-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_test_data_frame():</span>
+<span id="cb45-18"><a href="#cb45-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;test.csv&#39;</span>)</span>
+<span id="cb45-19"><a href="#cb45-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 入力データを取得します。</span></span>
+<span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame):</span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(np.reshape(data_frame[<span class="bu">list</span>(<span class="bu">map</span>(<span class="kw">lambda</span> i: <span class="ss">f&#39;pixel</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&#39;</span>, <span class="bu">range</span>(<span class="dv">784</span>)))].values <span class="op">/</span> <span class="dv">255</span>, (<span class="op">-</span><span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>, <span class="dv">1</span>)))</span>
+<span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 出力データを取得します。</span></span>
+<span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
+<span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;label&#39;</span>].values</span></code></pre></div>
+<p>画像をパッチに分ける必要がなくなったので、Vision
+Transformerより簡単です。あ、255で割っているのは0～1に正規化するためで、正規化しないと学習が正常に進まないのはVision
+Transformerのところで述べた通りです。</p>
+<h2 id="機械学習する-1">機械学習する</h2>
+<p>準備ができたので、機械学習してみましょう。</p>
+<div class="sourceCode" id="cb46"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_train_data_frame, get_xs, get_ys</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dense_net <span class="im">import</span> dense_net</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> concat, identity, juxt, partial, repeat, take</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> itertools <span class="im">import</span> starmap</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> operator <span class="im">import</span> eq, getitem</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
+<span id="cb46-12"><a href="#cb46-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-13"><a href="#cb46-13" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb46-14"><a href="#cb46-14" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_train_data_frame()</span>
+<span id="cb46-15"><a href="#cb46-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-16"><a href="#cb46-16" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb46-17"><a href="#cb46-17" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame)</span>
+<span id="cb46-18"><a href="#cb46-18" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb46-19"><a href="#cb46-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-20"><a href="#cb46-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練データセットと検証データセットに分割するためのインデックスを作成します。</span></span>
+<span id="cb46-21"><a href="#cb46-21" aria-hidden="true" tabindex="-1"></a>indices <span class="op">=</span> rng.permutation(np.arange(<span class="bu">len</span>(xs)))</span>
+<span id="cb46-22"><a href="#cb46-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-23"><a href="#cb46-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練データセットを取得します。</span></span>
+<span id="cb46-24"><a href="#cb46-24" aria-hidden="true" tabindex="-1"></a>train_xs <span class="op">=</span> xs[indices[<span class="dv">2000</span>:]]</span>
+<span id="cb46-25"><a href="#cb46-25" aria-hidden="true" tabindex="-1"></a>train_ys <span class="op">=</span> ys[indices[<span class="dv">2000</span>:]]</span>
+<span id="cb46-26"><a href="#cb46-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-27"><a href="#cb46-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 検証データセットを取得します。</span></span>
+<span id="cb46-28"><a href="#cb46-28" aria-hidden="true" tabindex="-1"></a>valid_xs <span class="op">=</span> xs[indices[:<span class="dv">2000</span>]]</span>
+<span id="cb46-29"><a href="#cb46-29" aria-hidden="true" tabindex="-1"></a>valid_ys <span class="op">=</span> ys[indices[:<span class="dv">2000</span>]]</span>
+<span id="cb46-30"><a href="#cb46-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-31"><a href="#cb46-31" aria-hidden="true" tabindex="-1"></a><span class="co"># DenseNetを作成します。</span></span>
+<span id="cb46-32"><a href="#cb46-32" aria-hidden="true" tabindex="-1"></a>op <span class="op">=</span> dense_net(<span class="dv">16</span>, <span class="dv">10</span>)</span>
+<span id="cb46-33"><a href="#cb46-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-34"><a href="#cb46-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Kerasのモデルを作成します。</span></span>
+<span id="cb46-35"><a href="#cb46-35" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.Model(<span class="op">*</span>juxt(identity, op)(tf.keras.Input(shape<span class="op">=</span>np.shape(xs)[<span class="dv">1</span>:])))</span>
+<span id="cb46-36"><a href="#cb46-36" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(<span class="st">&#39;adam&#39;</span>, loss<span class="op">=</span><span class="st">&#39;sparse_categorical_crossentropy&#39;</span>, metrics<span class="op">=</span>(<span class="st">&#39;accuracy&#39;</span>,))</span>
+<span id="cb46-37"><a href="#cb46-37" aria-hidden="true" tabindex="-1"></a><span class="co"># model.summary()</span></span>
+<span id="cb46-38"><a href="#cb46-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-39"><a href="#cb46-39" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb46-40"><a href="#cb46-40" aria-hidden="true" tabindex="-1"></a>epoch_size <span class="op">=</span> <span class="dv">40</span></span>
+<span id="cb46-41"><a href="#cb46-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-42"><a href="#cb46-42" aria-hidden="true" tabindex="-1"></a><span class="co"># データの水増しをします。</span></span>
+<span id="cb46-43"><a href="#cb46-43" aria-hidden="true" tabindex="-1"></a>image_data_generator <span class="op">=</span> tf.keras.preprocessing.image.ImageDataGenerator(rotation_range<span class="op">=</span><span class="fl">22.5</span>,</span>
+<span id="cb46-44"><a href="#cb46-44" aria-hidden="true" tabindex="-1"></a>                                                                       width_shift_range<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb46-45"><a href="#cb46-45" aria-hidden="true" tabindex="-1"></a>                                                                       height_shift_range<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb46-46"><a href="#cb46-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-47"><a href="#cb46-47" aria-hidden="true" tabindex="-1"></a><span class="co"># 機械学習して、モデルを保存します。</span></span>
+<span id="cb46-48"><a href="#cb46-48" aria-hidden="true" tabindex="-1"></a>model.fit_generator(image_data_generator.flow(train_xs, train_ys, batch_size<span class="op">=</span>batch_size),</span>
+<span id="cb46-49"><a href="#cb46-49" aria-hidden="true" tabindex="-1"></a>                    steps_per_epoch<span class="op">=</span><span class="bu">len</span>(train_xs) <span class="op">//</span> batch_size,</span>
+<span id="cb46-50"><a href="#cb46-50" aria-hidden="true" tabindex="-1"></a>                    epochs<span class="op">=</span>epoch_size,</span>
+<span id="cb46-51"><a href="#cb46-51" aria-hidden="true" tabindex="-1"></a>                    callbacks<span class="op">=</span>(tf.keras.callbacks.LearningRateScheduler(partial(getitem, <span class="bu">tuple</span>(take(epoch_size, concat(repeat(<span class="fl">0.01</span>, epoch_size <span class="op">//</span> <span class="dv">2</span>), repeat(<span class="fl">0.01</span> <span class="op">/</span> <span class="dv">10</span>, epoch_size <span class="op">//</span> <span class="dv">4</span>), repeat(<span class="fl">0.01</span> <span class="op">/</span> <span class="dv">100</span>))))))),</span>
+<span id="cb46-52"><a href="#cb46-52" aria-hidden="true" tabindex="-1"></a>                    validation_data<span class="op">=</span>(valid_xs, valid_ys))</span>
+<span id="cb46-53"><a href="#cb46-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-54"><a href="#cb46-54" aria-hidden="true" tabindex="-1"></a><span class="co"># 精度を出力します。</span></span>
+<span id="cb46-55"><a href="#cb46-55" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&#39;Accuracy = </span><span class="sc">{</span><span class="bu">sum</span>(starmap(eq, <span class="bu">zip</span>(valid_ys, np.argmax(model.predict(valid_xs, batch_size<span class="op">=</span><span class="dv">256</span>), axis<span class="op">=-</span><span class="dv">1</span>)))) <span class="op">/</span> <span class="bu">len</span>(valid_xs)<span class="sc">}</span><span class="ss">&#39;</span>)</span></code></pre></div>
+<p>前半はVision
+Transformerの時と同じですが、後半はちょっと違っています。</p>
+<p>まずは、Kerasのモデルを<code>compile()</code>するところ。Vision
+Transformerでは学習率を専用のクラスを作成して調整しましたが、今回は、<code>compile()</code>の時は<code>adam</code>を使うようにだけ指定して、後でコールバックを使用して学習率を調整しています。<code>fit()</code>や今回使用した<code>fit_generator()</code>の引数のcallbacksに<code>LearningRateScheduler</code>を指定して、そこでエポック数の半分はデフォルトの学習率、1/4はその1/10、残りは1/100にしています。</p>
+<p>で、TransformerやVision
+Transformerでは曖昧にごまかした学習率の調整なのですけど、これ、遠くにあるゴール目指して歩く時の歩幅だと考えてみてください。まずは、ゴールが遠いので大股で歩かないとゴールにたどりつけませんから、歩幅を大きくします。でも、その歩幅のままだと、いつかはゴールを通り過ぎてしまいます。で、Uターンしたとしても、歩幅が大きいので、またゴールを通り過ぎてしまいます。それでは困るので、学習率を下げて歩幅を小さくします。これで、ゴールまでより近づくことができるようになりますが、その場合であっても、ゴールまでの距離より歩幅の方が大きければまた同じ問題が発生します。だから、念のためもう一度歩幅を狭めたというわけ。</p>
+<p>次は、データの水増し（data
+augmentation）です。機械学習はデータに見つかるパターンしか学習しませんから、データ中のバリエーションを増やしたい。たとえば、少し右にずれている画像とか、少し回転している画像とか、あとは、今回は使えないですけど左右が反転した画像とか。犬猫認識で、もし左を向いたデータしかなければ、右を向いた犬は犬と識別できないことになっちゃいますもんね。というわけで、今回は<code>ImageDataGenerator</code>でデータを加工して水増ししました。上のコードでは、±22.5°まで傾けたり、2/10まで画像を左右や上下に動かしたりしています。</p>
+<p>で、<code>ImageDataGenerator</code>のような、データがどんどん生成されるような場合（他に、データが大きすぎてメモリに乗らない場合にストレージから逐次的に読み込む場合なんてのもあります）は、これまでのように<code>fit()</code>ではなく<code>fit_generator()</code>を使用します。<code>fit()</code>とはちょっと引数が違うので気を付けてください。</p>
+<p>以上でコードの解説は完了しましたので、実行して精度を測定します。で、精度は、0.9955でした。2,000人中の130位くらい。うん、やっぱり深層学習はこうでなきゃ。</p>
+<h2 id="予測モデルを作成する-3">予測モデルを作成する</h2>
+<p>テスト・データでもこのような高い精度がでるのか、確認しましょう。まずは、予測モデルの作成です。</p>
+<div class="sourceCode" id="cb47"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_train_data_frame, get_xs, get_ys</span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dense_net <span class="im">import</span> dense_net</span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> concat, identity, juxt, partial, repeat, take</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> operator <span class="im">import</span> getitem</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-12"><a href="#cb47-12" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb47-13"><a href="#cb47-13" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_train_data_frame()</span>
+<span id="cb47-14"><a href="#cb47-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-15"><a href="#cb47-15" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb47-16"><a href="#cb47-16" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame)</span>
+<span id="cb47-17"><a href="#cb47-17" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb47-18"><a href="#cb47-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-19"><a href="#cb47-19" aria-hidden="true" tabindex="-1"></a><span class="co"># DenseNetを作成します。</span></span>
+<span id="cb47-20"><a href="#cb47-20" aria-hidden="true" tabindex="-1"></a>op <span class="op">=</span> dense_net(<span class="dv">16</span>, <span class="dv">10</span>)</span>
+<span id="cb47-21"><a href="#cb47-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-22"><a href="#cb47-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Kerasのモデルを作成します。</span></span>
+<span id="cb47-23"><a href="#cb47-23" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.Model(<span class="op">*</span>juxt(identity, op)(tf.keras.Input(shape<span class="op">=</span>np.shape(xs)[<span class="dv">1</span>:])))</span>
+<span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(<span class="st">&#39;adam&#39;</span>, loss<span class="op">=</span><span class="st">&#39;sparse_categorical_crossentropy&#39;</span>, metrics<span class="op">=</span>(<span class="st">&#39;accuracy&#39;</span>,))</span>
+<span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a><span class="co"># model.summary()</span></span>
+<span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a>epoch_size <span class="op">=</span> <span class="dv">40</span></span>
+<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a><span class="co"># データの水増しをします。</span></span>
+<span id="cb47-31"><a href="#cb47-31" aria-hidden="true" tabindex="-1"></a>image_data_generator <span class="op">=</span> tf.keras.preprocessing.image.ImageDataGenerator(rotation_range<span class="op">=</span><span class="fl">22.5</span>,</span>
+<span id="cb47-32"><a href="#cb47-32" aria-hidden="true" tabindex="-1"></a>                                                                       width_shift_range<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb47-33"><a href="#cb47-33" aria-hidden="true" tabindex="-1"></a>                                                                       height_shift_range<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb47-34"><a href="#cb47-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-35"><a href="#cb47-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 機械学習して、モデルを保存します。</span></span>
+<span id="cb47-36"><a href="#cb47-36" aria-hidden="true" tabindex="-1"></a>model.fit_generator(image_data_generator.flow(xs, ys, batch_size<span class="op">=</span>batch_size),</span>
+<span id="cb47-37"><a href="#cb47-37" aria-hidden="true" tabindex="-1"></a>                    steps_per_epoch<span class="op">=</span><span class="bu">len</span>(xs) <span class="op">//</span> batch_size,</span>
+<span id="cb47-38"><a href="#cb47-38" aria-hidden="true" tabindex="-1"></a>                    epochs<span class="op">=</span>epoch_size,</span>
+<span id="cb47-39"><a href="#cb47-39" aria-hidden="true" tabindex="-1"></a>                    callbacks<span class="op">=</span>(tf.keras.callbacks.LearningRateScheduler(partial(getitem, <span class="bu">tuple</span>(take(epoch_size, concat(repeat(<span class="fl">0.01</span>, epoch_size <span class="op">//</span> <span class="dv">2</span>), repeat(<span class="fl">0.01</span> <span class="op">/</span> <span class="dv">10</span>, epoch_size <span class="op">//</span> <span class="dv">4</span>), repeat(<span class="fl">0.01</span> <span class="op">/</span> <span class="dv">100</span>))))))))</span>
+<span id="cb47-40"><a href="#cb47-40" aria-hidden="true" tabindex="-1"></a>model.save(<span class="st">&#39;digit-recognizer-model&#39;</span>, include_optimizer<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
+<h2 id="解答を作成する-3">解答を作成する</h2>
+<p>最後。解答の作成です。</p>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-5"><a href="#cb48-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_test_data_frame, get_xs</span>
+<span id="cb48-6"><a href="#cb48-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-7"><a href="#cb48-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-8"><a href="#cb48-8" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを取得します。</span></span>
+<span id="cb48-9"><a href="#cb48-9" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.load_model(<span class="st">&#39;digit-recognizer-model&#39;</span>)</span>
+<span id="cb48-10"><a href="#cb48-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-11"><a href="#cb48-11" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb48-12"><a href="#cb48-12" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_test_data_frame()</span>
+<span id="cb48-13"><a href="#cb48-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-14"><a href="#cb48-14" aria-hidden="true" tabindex="-1"></a><span class="co"># 入力データを取得します。</span></span>
+<span id="cb48-15"><a href="#cb48-15" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame)</span>
+<span id="cb48-16"><a href="#cb48-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb48-17"><a href="#cb48-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 解答を作成して、保存します。</span></span>
+<span id="cb48-18"><a href="#cb48-18" aria-hidden="true" tabindex="-1"></a>submission <span class="op">=</span> pd.DataFrame({<span class="st">&#39;ImageId&#39;</span>: data_frame.index <span class="op">+</span> <span class="dv">1</span>, <span class="st">&#39;Label&#39;</span>: np.argmax(model.predict(xs, batch_size<span class="op">=</span><span class="dv">256</span>), axis<span class="op">=-</span><span class="dv">1</span>)})</span>
+<span id="cb48-19"><a href="#cb48-19" aria-hidden="true" tabindex="-1"></a>submission.to_csv(<span class="st">&#39;submission.csv&#39;</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
+<p>やりました！　精度は0.99567で、2,000人位中126位になりました！　カンニング（Digit
+RecognizerのデータはMNISTという答えが公開されているデータセットをそのまま使用しているので、MNISTを見れば正解が分かってしまう）している連中がいることを考えると、かなり良い成績だと思います。</p>
+<p>やったことは、とても簡単ですしね。深層学習と画像認識で検索したら見つかったDenseNetを、Kerasの公式実装を参考にして作成しただけ。こんな簡単なことで高い精度で画像認識できるなんて、深層学習は素晴らしい！</p>
+<h1 id="lightgbmで画像のクラス分類">LightGBMで画像のクラス分類</h1>
+<p>でも、深層学習は、GPUやTPUがないと遅くてやってられないんですよね……。というわけで、GPUやTPUがない場合向けに、LightGBMでも画像のクラス分類をやってみましょう。</p>
+<h2 id="データセットを取得する-3">データセットを取得する</h2>
+<p>LightGBMの場合のデータセットを取得するモジュールはこんな感じ。</p>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a><span class="co"># DataFrameを取得します。</span></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_data_frame(filename):</span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;digit-recognizer&#39;</span>, filename))</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練用のDataFrameを取得します。</span></span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_train_data_frame():</span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;train.csv&#39;</span>)</span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a><span class="co"># テスト用のDataFrameを取得します。</span></span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_test_data_frame():</span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;test.csv&#39;</span>)</span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 入力データを取得します。</span></span>
+<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame):</span>
+<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="bu">list</span>(<span class="bu">map</span>(<span class="kw">lambda</span> i: <span class="ss">f&#39;pixel</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&#39;</span>, <span class="bu">range</span>(<span class="dv">784</span>)))]</span>
+<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 正解データを取得します。</span></span>
+<span id="cb49-26"><a href="#cb49-26" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
+<span id="cb49-27"><a href="#cb49-27" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;label&#39;</span>].values</span></code></pre></div>
+<p>正規化不要で楽ちんですな。LightGBMはやっぱり楽ちんでイイ！</p>
+<h2 id="モデルを保存して読み込む-1">モデルを保存して読み込む</h2>
+<p>モデルを保存したり読み込んだりするモジュールはこんな感じ。</p>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> lightgbm <span class="im">as</span> lgb</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> glob <span class="im">import</span> glob</span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを保存します。</span></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_params(params):</span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path.join(<span class="st">&#39;digit-recognizer-model&#39;</span>, <span class="st">&#39;params.pickle&#39;</span>), mode<span class="op">=</span><span class="st">&#39;wb&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>        pickle.dump(params, f)</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを読み込みます。</span></span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_params():</span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path.join(<span class="st">&#39;digit-recognizer-model&#39;</span>, <span class="st">&#39;params.pickle&#39;</span>), mode<span class="op">=</span><span class="st">&#39;rb&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> pickle.load(f)</span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを保存します。</span></span>
+<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_model(model):</span>
+<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i, booster <span class="kw">in</span> <span class="bu">enumerate</span>(model.boosters):  <span class="co"># 交差検証なので、複数のモデルが生成されます。</span></span>
+<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a>        booster.save_model(path.join(<span class="st">&#39;digit-recognizer-model&#39;</span>, <span class="ss">f&#39;model-</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">.txt&#39;</span>))</span>
+<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを読み込みます。</span></span>
+<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_model():</span>
+<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> lgb.CVBooster()</span>
+<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> <span class="bu">file</span> <span class="kw">in</span> <span class="bu">sorted</span>(glob(path.join(<span class="st">&#39;digit-recognizer-model&#39;</span>, <span class="st">&#39;model-*.txt&#39;</span>))):  <span class="co"># 交差検証なので、複数のモデルが生成されます。</span></span>
+<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a>        result.boosters.append(lgb.Booster(model_file<span class="op">=</span><span class="bu">file</span>))</span>
+<span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-33"><a href="#cb50-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span></code></pre></div>
+<p>例によって切り貼りして置換しただけです。</p>
+<h2
+id="ハイパーパラメーターチューニング-1">ハイパー・パラメーター・チューニング</h2>
+<p>Optunaに丸投げでハイパー・パラメーター・チューニングをするモジュールはこんな感じ。</p>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> optuna.integration.lightgbm <span class="im">as</span> lgb</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_train_data_frame, get_xs, get_ys</span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model <span class="im">import</span> save_params</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_train_data_frame()</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame)</span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを作成します。</span></span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> {</span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;objective&#39;</span>: <span class="st">&#39;multiclass&#39;</span>,</span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;metric&#39;</span>: <span class="st">&#39;multi_logloss&#39;</span>,</span>
+<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;num_class&#39;</span>: <span class="dv">10</span>,</span>
+<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">&#39;force_col_wise&#39;</span>: <span class="va">True</span>  <span class="co"># LightGBMの警告を除去するために追加しました。</span></span>
+<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a><span class="co"># ハイパー・パラメーター・チューニングをします。</span></span>
+<span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a>tuner <span class="op">=</span> lgb.LightGBMTunerCV(params, lgb.Dataset(xs, label<span class="op">=</span>ys), return_cvbooster<span class="op">=</span><span class="va">True</span>, optuna_seed<span class="op">=</span><span class="dv">0</span>)</span>
+<span id="cb51-24"><a href="#cb51-24" aria-hidden="true" tabindex="-1"></a>cv_result <span class="op">=</span> tuner.run()</span>
+<span id="cb51-25"><a href="#cb51-25" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tuner.get_best_booster()</span>
+<span id="cb51-26"><a href="#cb51-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-27"><a href="#cb51-27" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを保存します。</span></span>
+<span id="cb51-28"><a href="#cb51-28" aria-hidden="true" tabindex="-1"></a>save_params(tuner.best_params)</span></code></pre></div>
+<p>クラス分類なので<code>objective</code>を<code>multiclass</code>にして、<code>multiclass</code>の場合のデフォルトの<code>metric</code>である<code>multi_logloss</code>を設定しました。あと、クラス分類の場合は何個のクラスに分類するのかという情報が必要なので、<code>num_class</code>に10を指定しています。</p>
+<p>あとはいつも通りです。が、気を付けていただきたいのですけど、このプログラムは実行にやたらと長時間かかります（私の環境では半日くらいかかりました）。なので、夜間とか、どうしても仕事をしたくない日の勤務時間中とかに実行してみてください。</p>
+<h2 id="予測モデルを作成">予測モデルを作成</h2>
+<p>今回は特徴量エンジニアリングの余地がない（画像処理に詳しい人ならできるのかもしれないけど）ので、いきなり予測モデルを作成します。</p>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plot</span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> optuna.integration.lightgbm <span class="im">as</span> lgb</span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_train_data_frame, get_xs, get_ys</span>
+<span id="cb52-6"><a href="#cb52-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model <span class="im">import</span> load_params, save_model</span>
+<span id="cb52-7"><a href="#cb52-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-8"><a href="#cb52-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-9"><a href="#cb52-9" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
+<span id="cb52-10"><a href="#cb52-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-11"><a href="#cb52-11" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb52-12"><a href="#cb52-12" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_train_data_frame()</span>
+<span id="cb52-13"><a href="#cb52-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-14"><a href="#cb52-14" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb52-15"><a href="#cb52-15" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame)</span>
+<span id="cb52-16"><a href="#cb52-16" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb52-17"><a href="#cb52-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-18"><a href="#cb52-18" aria-hidden="true" tabindex="-1"></a><span class="co"># LightGBMのパラメーターを取得します。</span></span>
+<span id="cb52-19"><a href="#cb52-19" aria-hidden="true" tabindex="-1"></a>params <span class="op">=</span> load_params()</span>
+<span id="cb52-20"><a href="#cb52-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-21"><a href="#cb52-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 機械学習します。</span></span>
+<span id="cb52-22"><a href="#cb52-22" aria-hidden="true" tabindex="-1"></a>cv_result <span class="op">=</span> lgb.cv(params, lgb.Dataset(xs, label<span class="op">=</span>ys), return_cvbooster<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb52-23"><a href="#cb52-23" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> cv_result[<span class="st">&#39;cvbooster&#39;</span>]</span>
+<span id="cb52-24"><a href="#cb52-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-25"><a href="#cb52-25" aria-hidden="true" tabindex="-1"></a><span class="co"># 学習曲線を出力します。</span></span>
+<span id="cb52-26"><a href="#cb52-26" aria-hidden="true" tabindex="-1"></a>plot.plot(cv_result[<span class="st">&#39;multi_logloss-mean&#39;</span>])</span>
+<span id="cb52-27"><a href="#cb52-27" aria-hidden="true" tabindex="-1"></a>plot.show()</span>
+<span id="cb52-28"><a href="#cb52-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb52-29"><a href="#cb52-29" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを保存します。</span></span>
+<span id="cb52-30"><a href="#cb52-30" aria-hidden="true" tabindex="-1"></a>save_model(model)</span></code></pre></div>
+<p>完全にいつも通りですね。書くことがなくて困っちゃうくらいにLightGBM簡単ですな。</p>
+<h2 id="解答を作成する-4">解答を作成する</h2>
+<p>あとは、解答を作成して、Kaggleに提出するだけ。</p>
+<div class="sourceCode" id="cb53"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_test_data_frame, get_xs</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model <span class="im">import</span> load_model</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを読み込みます。</span></span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> load_model()</span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_test_data_frame()</span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame)</span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a><span class="co"># 提出量のCSVを作成します。</span></span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a>submission <span class="op">=</span> pd.DataFrame({<span class="st">&#39;ImageId&#39;</span>: data_frame.index <span class="op">+</span> <span class="dv">1</span>, <span class="st">&#39;Label&#39;</span>: np.argmax(np.mean(model.predict(xs), axis<span class="op">=</span><span class="dv">0</span>), axis<span class="op">=-</span><span class="dv">1</span>)})</span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>submission.to_csv(<span class="st">&#39;submission.csv&#39;</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
+<p>その精度は、0.94128でした。2,000人くらい中の1,740番目くらい。やっぱり画像ならばGPUやTPUを使って深層学習したいけれど、無い袖は振れないのでLightGBMもアリなんじゃないかなぁと。画像の解像度が大きかったりすると、GPUなしで深層学習するより時間がかかったりするかもしれませんけど……。</p>
+<h1 id="transformerでテーブルデータ">Transformerでテーブル・データ</h1>
 </article>
 </body>
 </html>
