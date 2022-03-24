@@ -1264,10 +1264,10 @@ def transformer(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropou
             # 特徴量をベクトル化します。数値の特長量は、全結合でベクトル化します。
             x0, x1, x2, x3, x4, x5, x6, x7 = tf.split(x, [1, 1, 1, 1, 1, 1, 1, 1], 1)
             o = tf.concat((tf.stack((dense(d_model)(x0),   # PClass
-                                    dense(d_model)(x2),   # Age
-                                    dense(d_model)(x3),   # SibSp
-                                    dense(d_model)(x4),   # Parch
-                                    dense(d_model)(x5)),  # Fare
+                                     dense(d_model)(x2),   # Age
+                                     dense(d_model)(x3),   # SibSp
+                                     dense(d_model)(x4),   # Parch
+                                     dense(d_model)(x5)),  # Fare
                                     axis=1),
                            embedding(2, d_model)(x1),      # Sex。マジック・ナンバーが入ってしまってごめんなさい……
                            embedding(4, d_model)(x6),      # Embarked。マジック・ナンバーが入ってしまってごめんなさい……

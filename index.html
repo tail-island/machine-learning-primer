@@ -2884,10 +2884,10 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb49-1"><a h
 <span id="cb49-93"><a href="#cb49-93" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 特徴量をベクトル化します。数値の特長量は、全結合でベクトル化します。</span></span>
 <span id="cb49-94"><a href="#cb49-94" aria-hidden="true" tabindex="-1"></a>            x0, x1, x2, x3, x4, x5, x6, x7 <span class="op">=</span> tf.split(x, [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>], <span class="dv">1</span>)</span>
 <span id="cb49-95"><a href="#cb49-95" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> tf.concat((tf.stack((dense(d_model)(x0),   <span class="co"># PClass</span></span>
-<span id="cb49-96"><a href="#cb49-96" aria-hidden="true" tabindex="-1"></a>                                    dense(d_model)(x2),   <span class="co"># Age</span></span>
-<span id="cb49-97"><a href="#cb49-97" aria-hidden="true" tabindex="-1"></a>                                    dense(d_model)(x3),   <span class="co"># SibSp</span></span>
-<span id="cb49-98"><a href="#cb49-98" aria-hidden="true" tabindex="-1"></a>                                    dense(d_model)(x4),   <span class="co"># Parch</span></span>
-<span id="cb49-99"><a href="#cb49-99" aria-hidden="true" tabindex="-1"></a>                                    dense(d_model)(x5)),  <span class="co"># Fare</span></span>
+<span id="cb49-96"><a href="#cb49-96" aria-hidden="true" tabindex="-1"></a>                                     dense(d_model)(x2),   <span class="co"># Age</span></span>
+<span id="cb49-97"><a href="#cb49-97" aria-hidden="true" tabindex="-1"></a>                                     dense(d_model)(x3),   <span class="co"># SibSp</span></span>
+<span id="cb49-98"><a href="#cb49-98" aria-hidden="true" tabindex="-1"></a>                                     dense(d_model)(x4),   <span class="co"># Parch</span></span>
+<span id="cb49-99"><a href="#cb49-99" aria-hidden="true" tabindex="-1"></a>                                     dense(d_model)(x5)),  <span class="co"># Fare</span></span>
 <span id="cb49-100"><a href="#cb49-100" aria-hidden="true" tabindex="-1"></a>                                    axis<span class="op">=</span><span class="dv">1</span>),</span>
 <span id="cb49-101"><a href="#cb49-101" aria-hidden="true" tabindex="-1"></a>                           embedding(<span class="dv">2</span>, d_model)(x1),      <span class="co"># Sex。マジック・ナンバーが入ってしまってごめんなさい……</span></span>
 <span id="cb49-102"><a href="#cb49-102" aria-hidden="true" tabindex="-1"></a>                           embedding(<span class="dv">4</span>, d_model)(x6),      <span class="co"># Embarked。マジック・ナンバーが入ってしまってごめんなさい……</span></span>
