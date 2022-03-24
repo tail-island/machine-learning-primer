@@ -3101,7 +3101,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb54-1"><a h
 <span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a>submission <span class="op">=</span> pd.DataFrame({<span class="st">&#39;PassengerId&#39;</span>: data_frame[<span class="st">&#39;PassengerId&#39;</span>], <span class="st">&#39;Survived&#39;</span>: (model.predict(xs)[:, <span class="dv">0</span>] <span class="op">&gt;=</span> <span class="fl">0.5</span>).astype(np.int32)})</span>
 <span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a>submission.to_csv(<span class="st">&#39;submission.csv&#39;</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
 <p>で、オチが予想できたとは思うのですけど、精度は0.74641（LightGBMの時は0.77990でした）とガタガタでした……。まぁ、大量のデータが必要なTransformerで、Titanicみたいなデータ量が少ない問題をやっているんですから当然ですな。でも、大量のデータがあるなら、もっと高い精度が出るかもしれません。</p>
-<p>というわけで、2022年3月現在はまだテーブル・データならLightGBMで良いと思うのですけど、使えるデータの量（または深層学習の進歩）次第では、あと、GPUやTPUが使用可能なら、テーブル・データでも深層学習の方が良くなるかもしれません。</p>
+<p>というわけで、2022年3月現在はまだテーブル・データならLightGBMで良いと思うのですけど、使えるデータの量（または深層学習の進歩）次第では、あと、GPUやTPUが使用可能なら、テーブル・データでも深層学習の方が良いかもしれません。</p>
 <p>うん、少し面倒ではありますけど、深層学習も素晴らしいですな！</p>
 <h1 id="終わりに">終わりに</h1>
 <p>本稿で、機械学習は別に難しくない、というか、作業の多くはデータを読み込んだり整形したりのごく普通のプログラミングで私たちの得意分野なのだということをご理解いただければ幸いです。プログラミングができるのは、とてもとても大きなアドバンテージなんです。</p>
