@@ -1213,7 +1213,7 @@ def transformer(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropou
         return tf.matmul(tf.nn.softmax(tf.matmul(query, key, transpose_b=True) / tf.math.sqrt(tf.cast(tf.shape(key)[-1], tf.float32)), axis=-1), value)
 
     def multi_head_attention(d_model, num_heads):
-        split = rcompose(reshape((-1, num_heads, d_model // num_heads)),  # noqa: E221
+        split  = rcompose(reshape((-1, num_heads, d_model // num_heads)),  # noqa: E221
                           transpose((0, 2, 1, 3)))
         concat = rcompose(transpose((0, 2, 1, 3)),
                           reshape((-1, d_model)))
