@@ -20,7 +20,7 @@ def get_test_data_frame():
 
 # 入力データを取得します。
 def get_xs(data_frame):
-    return np.array(np.reshape(data_frame[list(map(lambda i: f'pixel{i}', range(784)))].values / 255, (-1, 28, 28, 1)))
+    return np.reshape(data_frame[list(map(lambda i: f'pixel{i}', range(784)))].values / 255, (-1, 28, 28, 1))
 
 
 # 出力データを取得します。

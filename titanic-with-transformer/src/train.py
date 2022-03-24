@@ -6,7 +6,7 @@ from funcy import identity, juxt
 from itertools import starmap
 from operator import eq
 from params import NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, DROPOUT_RATE
-from transformer import LearningRateSchedule, neural_network
+from transformer import LearningRateSchedule, transformer
 
 
 rng = np.random.default_rng(0)
@@ -26,7 +26,7 @@ train_ys = ys[indices[200:]]
 valid_xs = xs[indices[:200]]
 valid_ys = ys[indices[:200]]
 
-op = neural_network(NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, np.shape(xs)[1], DROPOUT_RATE)
+op = transformer(NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, np.shape(xs)[1], DROPOUT_RATE)
 
 model = tf.keras.Model(*juxt(identity, op)(tf.keras.Input(shape=np.shape(xs)[1:])))
 model.compile(tf.keras.optimizers.Adam(LearningRateSchedule(D_MODEL), beta_1=0.9, beta_2=0.98, epsilon=1e-9), loss='binary_crossentropy', metrics=('accuracy',))

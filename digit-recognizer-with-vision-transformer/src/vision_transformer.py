@@ -4,7 +4,7 @@ import tensorflow as tf
 from funcy import func_partial, rcompose
 
 
-def vision_transformer(num_blocks, d_model, num_heads, d_ff, y_vocab_size, x_maximum_position, dropout_rate):
+def vision_transformer(num_blocks, patch_height, patch_width, num_heads, d_ff, y_vocab_size, x_maximum_position, dropout_rate):
     # KerasやTensorflowのレイヤーや関数をラップします。
 
     def dense(units):
@@ -83,6 +83,17 @@ def vision_transformer(num_blocks, d_model, num_heads, d_ff, y_vocab_size, x_max
 
         return result[np.newaxis, ...]
 
+    def get_patches():
+        def op(inputs):
+            x = inputs
+
+            o = tf.image.extract_patches(x, (1, patch_height, patch_width, 1), (1, patch_height, patch_width, 1), (1, 1, 1, 1), 'VALID')
+            o = reshape((-1, tf.keras.backend.int_shape(o)[-1]))(o)
+
+            return o
+
+        return op
+
     def encoder(num_blocks, d_model, num_heads, d_ff, maximum_position, dropout_rate):
         normalize_factor = tf.math.sqrt(tf.cast(d_model, tf.float32))
         positional_encoding = get_positional_encoding(maximum_position, d_model)
@@ -90,7 +101,8 @@ def vision_transformer(num_blocks, d_model, num_heads, d_ff, y_vocab_size, x_max
         def op(inputs):
             x = inputs
 
-            o = dropout(dropout_rate)(x * normalize_factor + positional_encoding)
+            o = get_patches()(x)
+            o = dropout(dropout_rate)(o * normalize_factor + positional_encoding)
 
             for _ in range(num_blocks):
                 o = encoder_block(d_model, num_heads, d_ff, dropout_rate)((o))
@@ -102,7 +114,7 @@ def vision_transformer(num_blocks, d_model, num_heads, d_ff, y_vocab_size, x_max
     def op(inputs):
         x = inputs
 
-        return softmax()(dense(y_vocab_size)(flatten()(encoder(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropout_rate)(x))))
+        return softmax()(dense(y_vocab_size)(flatten()(encoder(num_blocks, patch_height * patch_width, num_heads, d_ff, x_maximum_position, dropout_rate)(x))))
 
     return op
 

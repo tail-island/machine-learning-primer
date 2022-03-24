@@ -43,32 +43,38 @@ def get_feature_ranges(data_frame):
     return dict(map(lambda feature: (feature, (data_frame[feature].min(), data_frame[feature].max())), ('Pclass', 'Age', 'SibSp', 'Parch', 'Fare')))
 
 
+# DataFrameを取得します。
 def get_data_frame(filename):
     return add_features(fill_na(pd.read_csv(path.join('..', 'input', 'titanic', filename))))
 
 
+# 訓練用DataFrameを取得します。
 def get_train_data_frame():
     return get_data_frame('train.csv')
 
 
+# テスト用DataFrameを取得します。
 def get_test_data_frame():
     return get_data_frame('test.csv')
 
 
+# 入力データを取得します。
 def get_xs(data_frame, categorical_features, feature_ranges):
     # カテゴリ型の特徴量を、数値に変換します。
     for feature, mapping in categorical_features.items():
-        data_frame[feature] = data_frame[feature].map(mapping).fillna(0).astype('int')
+        data_frame[feature] = data_frame[feature].map(mapping).fillna(0)
 
     # 数値型の特徴量を、正規化します。
     for feature, (min, max) in feature_ranges.items():
         data_frame[feature] = (data_frame[feature] - min) / (max - min)
 
+    # SexはNaNがないので、1を引いて0と1にします。
     data_frame['Sex'] = data_frame['Sex'] - 1
 
     # 予測に使用するカラムだけを抽出します。
     return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Title']].values
 
 
+# 出力データを取得します。
 def get_ys(data_frame):
     return data_frame['Survived'].values

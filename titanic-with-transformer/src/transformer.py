@@ -42,7 +42,7 @@ def transformer(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropou
         return tf.matmul(tf.nn.softmax(tf.matmul(query, key, transpose_b=True) / tf.math.sqrt(tf.cast(tf.shape(key)[-1], tf.float32)), axis=-1), value)
 
     def multi_head_attention(d_model, num_heads):
-        split  = rcompose(reshape((-1, num_heads, d_model // num_heads)),  # noqa: E221
+        split = rcompose(reshape((-1, num_heads, d_model // num_heads)),  # noqa: E221
                           transpose((0, 2, 1, 3)))
         concat = rcompose(transpose((0, 2, 1, 3)),
                           reshape((-1, d_model)))
@@ -90,7 +90,20 @@ def transformer(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropou
         def op(inputs):
             x = inputs
 
-            o = dropout(dropout_rate)(x * normalize_factor + positional_encoding)
+            # 特徴量をベクトル化します。数値の特長量は、全結合でベクトル化します。
+            x0, x1, x2, x3, x4, x5, x6, x7 = tf.split(x, [1, 1, 1, 1, 1, 1, 1, 1], 1)
+            o = tf.concat((tf.stack((dense(d_model)(x0),   # PClass
+                                    dense(d_model)(x2),   # Age
+                                    dense(d_model)(x3),   # SibSp
+                                    dense(d_model)(x4),   # Parch
+                                    dense(d_model)(x5)),  # Fare
+                                    axis=1),
+                           embedding(2, d_model)(x1),      # Sex。マジック・ナンバーが入ってしまってごめんなさい……
+                           embedding(4, d_model)(x6),      # Embarked。マジック・ナンバーが入ってしまってごめんなさい……
+                           embedding(5, d_model)(x7)),     # Title。マジック・ナンバーが入ってしまってごめんなさい……
+                          axis=1)
+
+            o = dropout(dropout_rate)(o * normalize_factor + positional_encoding)
 
             for _ in range(num_blocks):
                 o = encoder_block(d_model, num_heads, d_ff, dropout_rate)((o))
@@ -102,20 +115,7 @@ def transformer(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropou
     def op(inputs):
         x = inputs
 
-        x0, x1, x2, x3, x4, x5, x6, x7 = tf.split(x, [1, 1, 1, 1, 1, 1, 1, 1], 1)
-
-        o = tf.concat((tf.stack((dense(d_model)(x0),   # PClass
-                                 dense(d_model)(x2),   # Age
-                                 dense(d_model)(x3),   # SibSp
-                                 dense(d_model)(x4),   # Parch
-                                 dense(d_model)(x5)),  # Fare
-                                axis=1),
-                       embedding(2, d_model)(x1),      # Sex。マジック・ナンバーが入ってしまってごめんなさい……
-                       embedding(4, d_model)(x6),      # Embarked。マジック・ナンバーが入ってしまってごめんなさい……
-                       embedding(5, d_model)(x7)),     # Title。マジック・ナンバーが入ってしまってごめんなさい……
-                      axis=1)
-
-        return sigmoid()(dense(1)(flatten()(encoder(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropout_rate)(o))))
+        return sigmoid()(dense(1)(flatten()(encoder(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropout_rate)(x))))
 
     return op
 

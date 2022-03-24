@@ -5,7 +5,7 @@ from dataset import get_train_data_frame, get_xs, get_ys
 from funcy import identity, juxt
 from itertools import starmap
 from operator import eq
-from params import NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, Y_VOCAB_SIZE, DROPOUT_RATE
+from params import NUM_BLOCKS, PATCH_HEIGHT, PATCH_WIDTH, D_MODEL, NUM_HEADS, D_FF, Y_VOCAB_SIZE, DROPOUT_RATE
 from vision_transformer import LearningRateSchedule, vision_transformer
 
 
@@ -30,7 +30,7 @@ valid_xs = xs[indices[:2000]]
 valid_ys = ys[indices[:2000]]
 
 # Vision Transformerを作成します。
-op = vision_transformer(NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, Y_VOCAB_SIZE, 28 * 28 // D_MODEL, DROPOUT_RATE)
+op = vision_transformer(NUM_BLOCKS, PATCH_HEIGHT, PATCH_WIDTH, NUM_HEADS, D_FF, Y_VOCAB_SIZE, 28 * 28 // D_MODEL, DROPOUT_RATE)
 
 # Kerasのモデルを作成します。
 model = tf.keras.Model(*juxt(identity, op)(tf.keras.Input(shape=np.shape(xs)[1:])))

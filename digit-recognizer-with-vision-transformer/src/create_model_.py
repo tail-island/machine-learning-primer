@@ -24,6 +24,16 @@ model = tf.keras.Model(*juxt(identity, op)(tf.keras.Input(shape=np.shape(xs)[1:]
 model.compile(tf.keras.optimizers.Adam(LearningRateSchedule(D_MODEL), beta_1=0.9, beta_2=0.98, epsilon=1e-9), loss='sparse_categorical_crossentropy', metrics=('accuracy',))
 # model.summary()
 
+# データの水増しをします。
+image_data_generator = tf.keras.preprocessing.image.ImageDataGenerator(rotation_range=22.5,
+                                                                       width_shift_range=0.2,
+                                                                       height_shift_range=0.2)
+
+batch_size = 256
+epoch_size = 150
+
 # 機械学習して、モデルを保存します。
-model.fit(xs, ys, batch_size=256, epochs=100)
+model.fit(image_data_generator.flow(xs, ys, batch_size=batch_size),
+          steps_per_epoch=len(xs) // batch_size,
+          epochs=epoch_size)
 model.save('digit-recognizer-model', include_optimizer=False)
