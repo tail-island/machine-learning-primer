@@ -2223,7 +2223,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a h
 <span id="cb38-4"><a href="#cb38-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> func_partial, rcompose</span>
 <span id="cb38-5"><a href="#cb38-5" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-6"><a href="#cb38-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vision_transformer(num_blocks, d_model, num_heads, d_ff, y_vocab_size, x_maximum_position, dropout_rate):</span>
+<span id="cb38-7"><a href="#cb38-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> vision_transformer(num_blocks, patch_height, patch_width, num_heads, d_ff, y_vocab_size, x_maximum_position, dropout_rate):</span>
 <span id="cb38-8"><a href="#cb38-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># KerasやTensorflowのレイヤーや関数をラップします。</span></span>
 <span id="cb38-9"><a href="#cb38-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-10"><a href="#cb38-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> dense(units):</span>
@@ -2306,7 +2306,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a h
 <span id="cb38-87"><a href="#cb38-87" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> op(inputs):</span>
 <span id="cb38-88"><a href="#cb38-88" aria-hidden="true" tabindex="-1"></a>            x <span class="op">=</span> inputs</span>
 <span id="cb38-89"><a href="#cb38-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-90"><a href="#cb38-90" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> tf.image.extract_patches(x, (<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>), (<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>), (<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="st">&#39;VALID&#39;</span>)</span>
+<span id="cb38-90"><a href="#cb38-90" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> tf.image.extract_patches(x, (<span class="dv">1</span>, patch_height, patch_width, <span class="dv">1</span>), (<span class="dv">1</span>, patch_height, patch_width, <span class="dv">1</span>), (<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="st">&#39;VALID&#39;</span>)</span>
 <span id="cb38-91"><a href="#cb38-91" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> reshape((<span class="op">-</span><span class="dv">1</span>, tf.keras.backend.int_shape(o)[<span class="op">-</span><span class="dv">1</span>]))(o)</span>
 <span id="cb38-92"><a href="#cb38-92" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-93"><a href="#cb38-93" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> o</span>
@@ -2333,7 +2333,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a h
 <span id="cb38-114"><a href="#cb38-114" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> op(inputs):</span>
 <span id="cb38-115"><a href="#cb38-115" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> inputs</span>
 <span id="cb38-116"><a href="#cb38-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-117"><a href="#cb38-117" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> softmax()(dense(y_vocab_size)(flatten()(encoder(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropout_rate)(x))))</span>
+<span id="cb38-117"><a href="#cb38-117" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> softmax()(dense(y_vocab_size)(flatten()(encoder(num_blocks, patch_height <span class="op">*</span> patch_width, num_heads, d_ff, x_maximum_position, dropout_rate)(x))))</span>
 <span id="cb38-118"><a href="#cb38-118" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-119"><a href="#cb38-119" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> op</span>
 <span id="cb38-120"><a href="#cb38-120" aria-hidden="true" tabindex="-1"></a></span>
@@ -2348,7 +2348,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a h
 <span id="cb38-129"><a href="#cb38-129" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, step):</span>
 <span id="cb38-130"><a href="#cb38-130" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.d_model <span class="op">**</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> tf.math.minimum(step <span class="op">**</span> <span class="op">-</span><span class="fl">0.5</span>, step <span class="op">*</span> <span class="va">self</span>.warmup_steps <span class="op">**</span> <span class="op">-</span><span class="fl">1.5</span>)</span></code></pre></div>
 <p>自然言語処理では単語を埋め込み（embedding）してベクトル化して入力にするのですけど、Vision
-Transformerでは画像を例えば16×16（上のコードでは4×4）のパッチに分けて、それぞれのパッチをベクトルとして扱って入力としているのがキモです。</p>
+Transformerでは画像を例えば16×16のパッチに分けて、それぞれのパッチをベクトルとして扱って入力としているのがキモです。</p>
 <p>あとは、デコーダーが不要だったり、先読みが無関係なのでマスクがいらなかったり、Layer
 Normalizationが先だったりReLUの代わりにGERUを使ったりと、少しだけニューラル・ネットワークが違うくらい。Transformerのコードがあるなら、その修正で簡単に作成できます。</p>
 <p>……とはいっても、いざ修正してみると大量のエラーが出たりするんですけどね。でも、安心してください。エラーが出るのは関数の引数の型が合わないからで、しかもその型ってのは行列の形だったりします。普段のプログラミングで様々な型を考慮しなければならないのに比べれば、考えなければならないことが少ない分だけ簡単です。<code>print(tf.shape(x))</code>とかすれば行列の形が表示されますしね。</p>
@@ -2387,12 +2387,12 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb39-1"><a h
 <p><code>get_xs()</code>の中で255で割っているのは、データ中は0～255になっているのを0～1に正規化するためです。深層学習のハイパー・パラメーターはデータが正規化されていることを前提にしているので、0～255のような大きな値だと学習が正常に進まないんですよ。</p>
 <h2
 id="ハイパーパラメーターを設定する">ハイパー・パラメーターを設定する</h2>
-<p>上のデータセットのモジュールでも使用していたパッチの大きさ（<code>D_MODEL_WIDTH</code>と<code>D_MODEL_HEIGHT</code>）を含むハイパー・パラメーターを設定するモジュールを作成します。</p>
+<p>Transformerのハイパー・パラメーターを設定するモジュールを作成します。</p>
 <div class="sourceCode" id="cb40"><pre
 class="sourceCode python"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>NUM_BLOCKS <span class="op">=</span> <span class="dv">3</span></span>
-<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>D_MODEL_WIDTH <span class="op">=</span> <span class="dv">4</span></span>
-<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>D_MODEL_HEIGHT <span class="op">=</span> <span class="dv">4</span></span>
-<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>D_MODEL <span class="op">=</span> D_MODEL_WIDTH <span class="op">*</span> D_MODEL_HEIGHT</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>PATCH_HEIGHT <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>PATCH_WIDTH <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>D_MODEL <span class="op">=</span> PATCH_HEIGHT <span class="op">*</span> PATCH_WIDTH</span>
 <span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>D_FF <span class="op">=</span> <span class="dv">1024</span></span>
 <span id="cb40-6"><a href="#cb40-6" aria-hidden="true" tabindex="-1"></a>NUM_HEADS <span class="op">=</span> <span class="dv">4</span></span>
 <span id="cb40-7"><a href="#cb40-7" aria-hidden="true" tabindex="-1"></a>DROPOUT_RATE <span class="op">=</span> <span class="fl">0.1</span></span>
@@ -2689,11 +2689,11 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb46-1"><a h
 <span id="cb46-45"><a href="#cb46-45" aria-hidden="true" tabindex="-1"></a>                                                                       height_shift_range<span class="op">=</span><span class="fl">0.2</span>)</span>
 <span id="cb46-46"><a href="#cb46-46" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-47"><a href="#cb46-47" aria-hidden="true" tabindex="-1"></a><span class="co"># 機械学習して、モデルを保存します。</span></span>
-<span id="cb46-48"><a href="#cb46-48" aria-hidden="true" tabindex="-1"></a>model.fit_generator(image_data_generator.flow(train_xs, train_ys, batch_size<span class="op">=</span>batch_size),</span>
-<span id="cb46-49"><a href="#cb46-49" aria-hidden="true" tabindex="-1"></a>                    steps_per_epoch<span class="op">=</span><span class="bu">len</span>(train_xs) <span class="op">//</span> batch_size,</span>
-<span id="cb46-50"><a href="#cb46-50" aria-hidden="true" tabindex="-1"></a>                    epochs<span class="op">=</span>epoch_size,</span>
-<span id="cb46-51"><a href="#cb46-51" aria-hidden="true" tabindex="-1"></a>                    callbacks<span class="op">=</span>(tf.keras.callbacks.LearningRateScheduler(partial(getitem, <span class="bu">tuple</span>(take(epoch_size, concat(repeat(<span class="fl">0.01</span>, epoch_size <span class="op">//</span> <span class="dv">2</span>), repeat(<span class="fl">0.01</span> <span class="op">/</span> <span class="dv">10</span>, epoch_size <span class="op">//</span> <span class="dv">4</span>), repeat(<span class="fl">0.01</span> <span class="op">/</span> <span class="dv">100</span>))))))),</span>
-<span id="cb46-52"><a href="#cb46-52" aria-hidden="true" tabindex="-1"></a>                    validation_data<span class="op">=</span>(valid_xs, valid_ys))</span>
+<span id="cb46-48"><a href="#cb46-48" aria-hidden="true" tabindex="-1"></a>model.fit(image_data_generator.flow(train_xs, train_ys, batch_size<span class="op">=</span>batch_size),</span>
+<span id="cb46-49"><a href="#cb46-49" aria-hidden="true" tabindex="-1"></a>          steps_per_epoch<span class="op">=</span><span class="bu">len</span>(train_xs) <span class="op">//</span> batch_size,</span>
+<span id="cb46-50"><a href="#cb46-50" aria-hidden="true" tabindex="-1"></a>          epochs<span class="op">=</span>epoch_size,</span>
+<span id="cb46-51"><a href="#cb46-51" aria-hidden="true" tabindex="-1"></a>          callbacks<span class="op">=</span>(tf.keras.callbacks.LearningRateScheduler(partial(getitem, <span class="bu">tuple</span>(take(epoch_size, concat(repeat(<span class="fl">0.01</span>, epoch_size <span class="op">//</span> <span class="dv">2</span>), repeat(<span class="fl">0.01</span> <span class="op">/</span> <span class="dv">10</span>, epoch_size <span class="op">//</span> <span class="dv">4</span>), repeat(<span class="fl">0.01</span> <span class="op">/</span> <span class="dv">100</span>))))))),</span>
+<span id="cb46-52"><a href="#cb46-52" aria-hidden="true" tabindex="-1"></a>          validation_data<span class="op">=</span>(valid_xs, valid_ys))</span>
 <span id="cb46-53"><a href="#cb46-53" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb46-54"><a href="#cb46-54" aria-hidden="true" tabindex="-1"></a><span class="co"># 精度を出力します。</span></span>
 <span id="cb46-55"><a href="#cb46-55" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f&#39;Accuracy = </span><span class="sc">{</span><span class="bu">sum</span>(starmap(eq, <span class="bu">zip</span>(valid_ys, np.argmax(model.predict(valid_xs, batch_size<span class="op">=</span><span class="dv">256</span>), axis<span class="op">=-</span><span class="dv">1</span>)))) <span class="op">/</span> <span class="bu">len</span>(valid_xs)<span class="sc">}</span><span class="ss">&#39;</span>)</span></code></pre></div>
@@ -2705,7 +2705,7 @@ Transformerでは学習率を専用のクラスを作成して調整しました
 Transformerでは曖昧にごまかした学習率の調整なのですけど、これ、遠くにあるゴール目指して歩く時の歩幅だと考えてみてください。まずは、ゴールが遠いので大股で歩かないとゴールにたどりつけませんから、歩幅を大きくします。でも、その歩幅のままだと、いつかはゴールを通り過ぎてしまいます。で、Uターンしたとしても、歩幅が大きいので、またゴールを通り過ぎてしまいます。それでは困るので、学習率を下げて歩幅を小さくします。これで、ゴールまでより近づくことができるようになりますが、その場合であっても、ゴールまでの距離より歩幅の方が大きければまた同じ問題が発生します。だから、念のためもう一度歩幅を狭めたというわけ。</p>
 <p>次は、データの水増し（data
 augmentation）です。機械学習はデータに見つかるパターンしか学習しませんから、データ中のバリエーションを増やしたい。たとえば、少し右にずれている画像とか、少し回転している画像とか、あとは、今回は使えないですけど左右が反転した画像とか。犬猫認識で、もし左を向いたデータしかなければ、右を向いた犬は犬と識別できないことになっちゃいますもんね。というわけで、今回は<code>ImageDataGenerator</code>でデータを加工して水増ししました。上のコードでは、±22.5°まで傾けたり、2/10まで画像を左右や上下に動かしたりしています。</p>
-<p>で、<code>ImageDataGenerator</code>のような、データがどんどん生成されるような場合（他に、データが大きすぎてメモリに乗らない場合にストレージから逐次的に読み込む場合なんてのもあります）は、これまでのように<code>fit()</code>ではなく<code>fit_generator()</code>を使用します。<code>fit()</code>とはちょっと引数が違うので気を付けてください。</p>
+<p>で、<code>ImageDataGenerator</code>のような、データがどんどん生成されるような場合（他に、データが大きすぎてメモリに乗らない場合にストレージから逐次的に読み込む場合なんてのもあります）は、<code>fit()</code>とはちょっと引数が違うので気を付けてください。</p>
 <p>以上でコードの解説は完了しましたので、実行して精度を測定します。で、精度は、0.9955でした。2,000人中の130位くらい。うん、やっぱり深層学習はこうでなきゃ。</p>
 <h2 id="予測モデルを作成する-3">予測モデルを作成する</h2>
 <p>テスト・データでもこのような高い精度がでるのか、確認しましょう。まずは、予測モデルの作成です。</p>
@@ -2736,19 +2736,19 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb47-1"><a h
 <span id="cb47-24"><a href="#cb47-24" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(<span class="st">&#39;adam&#39;</span>, loss<span class="op">=</span><span class="st">&#39;sparse_categorical_crossentropy&#39;</span>, metrics<span class="op">=</span>(<span class="st">&#39;accuracy&#39;</span>,))</span>
 <span id="cb47-25"><a href="#cb47-25" aria-hidden="true" tabindex="-1"></a><span class="co"># model.summary()</span></span>
 <span id="cb47-26"><a href="#cb47-26" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">128</span></span>
-<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a>epoch_size <span class="op">=</span> <span class="dv">40</span></span>
-<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a><span class="co"># データの水増しをします。</span></span>
-<span id="cb47-31"><a href="#cb47-31" aria-hidden="true" tabindex="-1"></a>image_data_generator <span class="op">=</span> tf.keras.preprocessing.image.ImageDataGenerator(rotation_range<span class="op">=</span><span class="fl">22.5</span>,</span>
-<span id="cb47-32"><a href="#cb47-32" aria-hidden="true" tabindex="-1"></a>                                                                       width_shift_range<span class="op">=</span><span class="fl">0.2</span>,</span>
-<span id="cb47-33"><a href="#cb47-33" aria-hidden="true" tabindex="-1"></a>                                                                       height_shift_range<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb47-27"><a href="#cb47-27" aria-hidden="true" tabindex="-1"></a><span class="co"># データの水増しをします。</span></span>
+<span id="cb47-28"><a href="#cb47-28" aria-hidden="true" tabindex="-1"></a>image_data_generator <span class="op">=</span> tf.keras.preprocessing.image.ImageDataGenerator(rotation_range<span class="op">=</span><span class="fl">22.5</span>,</span>
+<span id="cb47-29"><a href="#cb47-29" aria-hidden="true" tabindex="-1"></a>                                                                       width_shift_range<span class="op">=</span><span class="fl">0.2</span>,</span>
+<span id="cb47-30"><a href="#cb47-30" aria-hidden="true" tabindex="-1"></a>                                                                       height_shift_range<span class="op">=</span><span class="fl">0.2</span>)</span>
+<span id="cb47-31"><a href="#cb47-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb47-32"><a href="#cb47-32" aria-hidden="true" tabindex="-1"></a>batch_size <span class="op">=</span> <span class="dv">128</span></span>
+<span id="cb47-33"><a href="#cb47-33" aria-hidden="true" tabindex="-1"></a>epoch_size <span class="op">=</span> <span class="dv">40</span></span>
 <span id="cb47-34"><a href="#cb47-34" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb47-35"><a href="#cb47-35" aria-hidden="true" tabindex="-1"></a><span class="co"># 機械学習して、モデルを保存します。</span></span>
-<span id="cb47-36"><a href="#cb47-36" aria-hidden="true" tabindex="-1"></a>model.fit_generator(image_data_generator.flow(xs, ys, batch_size<span class="op">=</span>batch_size),</span>
-<span id="cb47-37"><a href="#cb47-37" aria-hidden="true" tabindex="-1"></a>                    steps_per_epoch<span class="op">=</span><span class="bu">len</span>(xs) <span class="op">//</span> batch_size,</span>
-<span id="cb47-38"><a href="#cb47-38" aria-hidden="true" tabindex="-1"></a>                    epochs<span class="op">=</span>epoch_size,</span>
-<span id="cb47-39"><a href="#cb47-39" aria-hidden="true" tabindex="-1"></a>                    callbacks<span class="op">=</span>(tf.keras.callbacks.LearningRateScheduler(partial(getitem, <span class="bu">tuple</span>(take(epoch_size, concat(repeat(<span class="fl">0.01</span>, epoch_size <span class="op">//</span> <span class="dv">2</span>), repeat(<span class="fl">0.01</span> <span class="op">/</span> <span class="dv">10</span>, epoch_size <span class="op">//</span> <span class="dv">4</span>), repeat(<span class="fl">0.01</span> <span class="op">/</span> <span class="dv">100</span>))))))))</span>
+<span id="cb47-36"><a href="#cb47-36" aria-hidden="true" tabindex="-1"></a>model.fit(image_data_generator.flow(xs, ys, batch_size<span class="op">=</span>batch_size),</span>
+<span id="cb47-37"><a href="#cb47-37" aria-hidden="true" tabindex="-1"></a>          steps_per_epoch<span class="op">=</span><span class="bu">len</span>(xs) <span class="op">//</span> batch_size,</span>
+<span id="cb47-38"><a href="#cb47-38" aria-hidden="true" tabindex="-1"></a>          epochs<span class="op">=</span>epoch_size,</span>
+<span id="cb47-39"><a href="#cb47-39" aria-hidden="true" tabindex="-1"></a>          callbacks<span class="op">=</span>(tf.keras.callbacks.LearningRateScheduler(partial(getitem, <span class="bu">tuple</span>(take(epoch_size, concat(repeat(<span class="fl">0.01</span>, epoch_size <span class="op">//</span> <span class="dv">2</span>), repeat(<span class="fl">0.01</span> <span class="op">/</span> <span class="dv">10</span>, epoch_size <span class="op">//</span> <span class="dv">4</span>), repeat(<span class="fl">0.01</span> <span class="op">/</span> <span class="dv">100</span>))))))))</span>
 <span id="cb47-40"><a href="#cb47-40" aria-hidden="true" tabindex="-1"></a>model.save(<span class="st">&#39;digit-recognizer-model&#39;</span>, include_optimizer<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
 <h2 id="解答を作成する-3">解答を作成する</h2>
 <p>最後。解答の作成です。</p>

@@ -546,7 +546,7 @@ import tensorflow as tf
 from funcy import func_partial, rcompose
 
 
-def vision_transformer(num_blocks, d_model, num_heads, d_ff, y_vocab_size, x_maximum_position, dropout_rate):
+def vision_transformer(num_blocks, patch_height, patch_width, num_heads, d_ff, y_vocab_size, x_maximum_position, dropout_rate):
     # KerasやTensorflowのレイヤーや関数をラップします。
 
     def dense(units):
@@ -629,7 +629,7 @@ def vision_transformer(num_blocks, d_model, num_heads, d_ff, y_vocab_size, x_max
         def op(inputs):
             x = inputs
 
-            o = tf.image.extract_patches(x, (1, 4, 4, 1), (1, 4, 4, 1), (1, 1, 1, 1), 'VALID')
+            o = tf.image.extract_patches(x, (1, patch_height, patch_width, 1), (1, patch_height, patch_width, 1), (1, 1, 1, 1), 'VALID')
             o = reshape((-1, tf.keras.backend.int_shape(o)[-1]))(o)
 
             return o
@@ -656,7 +656,7 @@ def vision_transformer(num_blocks, d_model, num_heads, d_ff, y_vocab_size, x_max
     def op(inputs):
         x = inputs
 
-        return softmax()(dense(y_vocab_size)(flatten()(encoder(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropout_rate)(x))))
+        return softmax()(dense(y_vocab_size)(flatten()(encoder(num_blocks, patch_height * patch_width, num_heads, d_ff, x_maximum_position, dropout_rate)(x))))
 
     return op
 
@@ -672,7 +672,7 @@ class LearningRateSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
         return self.d_model ** -0.5 * tf.math.minimum(step ** -0.5, step * self.warmup_steps ** -1.5)
 ~~~
 
-自然言語処理では単語を埋め込み（embedding）してベクトル化して入力にするのですけど、Vision Transformerでは画像を例えば16×16（上のコードでは4×4）のパッチに分けて、それぞれのパッチをベクトルとして扱って入力としているのがキモです。
+自然言語処理では単語を埋め込み（embedding）してベクトル化して入力にするのですけど、Vision Transformerでは画像を例えば16×16のパッチに分けて、それぞれのパッチをベクトルとして扱って入力としているのがキモです。
 
 あとは、デコーダーが不要だったり、先読みが無関係なのでマスクがいらなかったり、Layer Normalizationが先だったりReLUの代わりにGERUを使ったりと、少しだけニューラル・ネットワークが違うくらい。Transformerのコードがあるなら、その修正で簡単に作成できます。
 
@@ -717,13 +717,13 @@ def get_ys(data_frame):
 
 ## ハイパー・パラメーターを設定する
 
-上のデータセットのモジュールでも使用していたパッチの大きさ（`D_MODEL_WIDTH`と`D_MODEL_HEIGHT`）を含むハイパー・パラメーターを設定するモジュールを作成します。
+Transformerのハイパー・パラメーターを設定するモジュールを作成します。
 
 ~~~python
 NUM_BLOCKS = 3
-D_MODEL_WIDTH = 4
-D_MODEL_HEIGHT = 4
-D_MODEL = D_MODEL_WIDTH * D_MODEL_HEIGHT
+PATCH_HEIGHT = 4
+PATCH_WIDTH = 4
+D_MODEL = PATCH_HEIGHT * PATCH_WIDTH
 D_FF = 1024
 NUM_HEADS = 4
 DROPOUT_RATE = 0.1
@@ -1053,11 +1053,11 @@ image_data_generator = tf.keras.preprocessing.image.ImageDataGenerator(rotation_
                                                                        height_shift_range=0.2)
 
 # 機械学習して、モデルを保存します。
-model.fit_generator(image_data_generator.flow(train_xs, train_ys, batch_size=batch_size),
-                    steps_per_epoch=len(train_xs) // batch_size,
-                    epochs=epoch_size,
-                    callbacks=(tf.keras.callbacks.LearningRateScheduler(partial(getitem, tuple(take(epoch_size, concat(repeat(0.01, epoch_size // 2), repeat(0.01 / 10, epoch_size // 4), repeat(0.01 / 100))))))),
-                    validation_data=(valid_xs, valid_ys))
+model.fit(image_data_generator.flow(train_xs, train_ys, batch_size=batch_size),
+          steps_per_epoch=len(train_xs) // batch_size,
+          epochs=epoch_size,
+          callbacks=(tf.keras.callbacks.LearningRateScheduler(partial(getitem, tuple(take(epoch_size, concat(repeat(0.01, epoch_size // 2), repeat(0.01 / 10, epoch_size // 4), repeat(0.01 / 100))))))),
+          validation_data=(valid_xs, valid_ys))
 
 # 精度を出力します。
 print(f'Accuracy = {sum(starmap(eq, zip(valid_ys, np.argmax(model.predict(valid_xs, batch_size=256), axis=-1)))) / len(valid_xs)}')
@@ -1071,7 +1071,7 @@ print(f'Accuracy = {sum(starmap(eq, zip(valid_ys, np.argmax(model.predict(valid_
 
 次は、データの水増し（data augmentation）です。機械学習はデータに見つかるパターンしか学習しませんから、データ中のバリエーションを増やしたい。たとえば、少し右にずれている画像とか、少し回転している画像とか、あとは、今回は使えないですけど左右が反転した画像とか。犬猫認識で、もし左を向いたデータしかなければ、右を向いた犬は犬と識別できないことになっちゃいますもんね。というわけで、今回は`ImageDataGenerator`でデータを加工して水増ししました。上のコードでは、±22.5°まで傾けたり、2/10まで画像を左右や上下に動かしたりしています。
 
-で、`ImageDataGenerator`のような、データがどんどん生成されるような場合（他に、データが大きすぎてメモリに乗らない場合にストレージから逐次的に読み込む場合なんてのもあります）は、これまでのように`fit()`ではなく`fit_generator()`を使用します。`fit()`とはちょっと引数が違うので気を付けてください。
+で、`ImageDataGenerator`のような、データがどんどん生成されるような場合（他に、データが大きすぎてメモリに乗らない場合にストレージから逐次的に読み込む場合なんてのもあります）は、`fit()`とはちょっと引数が違うので気を付けてください。
 
 以上でコードの解説は完了しましたので、実行して精度を測定します。で、精度は、0.9955でした。2,000人中の130位くらい。うん、やっぱり深層学習はこうでなきゃ。
 
@@ -1106,19 +1106,19 @@ model = tf.keras.Model(*juxt(identity, op)(tf.keras.Input(shape=np.shape(xs)[1:]
 model.compile('adam', loss='sparse_categorical_crossentropy', metrics=('accuracy',))
 # model.summary()
 
-batch_size = 128
-epoch_size = 40
-
 # データの水増しをします。
 image_data_generator = tf.keras.preprocessing.image.ImageDataGenerator(rotation_range=22.5,
                                                                        width_shift_range=0.2,
                                                                        height_shift_range=0.2)
 
+batch_size = 128
+epoch_size = 40
+
 # 機械学習して、モデルを保存します。
-model.fit_generator(image_data_generator.flow(xs, ys, batch_size=batch_size),
-                    steps_per_epoch=len(xs) // batch_size,
-                    epochs=epoch_size,
-                    callbacks=(tf.keras.callbacks.LearningRateScheduler(partial(getitem, tuple(take(epoch_size, concat(repeat(0.01, epoch_size // 2), repeat(0.01 / 10, epoch_size // 4), repeat(0.01 / 100))))))))
+model.fit(image_data_generator.flow(xs, ys, batch_size=batch_size),
+          steps_per_epoch=len(xs) // batch_size,
+          epochs=epoch_size,
+          callbacks=(tf.keras.callbacks.LearningRateScheduler(partial(getitem, tuple(take(epoch_size, concat(repeat(0.01, epoch_size // 2), repeat(0.01 / 10, epoch_size // 4), repeat(0.01 / 100))))))))
 model.save('digit-recognizer-model', include_optimizer=False)
 ~~~
 
