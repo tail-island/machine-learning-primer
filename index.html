@@ -1977,8 +1977,7 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a h
 <p>既存のTransformerの実装が存在しないわけじゃありません。GitHubを検索すれば大量に見つかるでしょう。それらを利用すれば、わざわざ実装せずともTransformerできます。でも、できればTensorFlowのチュートリアルを読んで、自前で実装して動かしてみていただきたいです。</p>
 <p>その理由は、深層学習がいまだ未成熟な技術だから。新しいモデルが次々に出てきていて、そのモデルを使えば今までできなかったことができるようになって、ビジネスに大いに役立つかもしれません。その新しいモデルの実装があるとは限らないわけで、自前で実装しなければならないかもしれません。その時は、そのひとつ前のモデルの実装経験が役立つでしょう。</p>
 <p>あと、深層学習は入力や出力の型が決まっているという問題もあります。画像認識のような場合はこれが結構痛くて、画像の大きさをモデルが要求する大きさに合わせたりしなければなりません。自前で作成するなら、モデルの中身を調整できるのでこんな問題はありません。</p>
-<p>ただし、事前学習が必要なくらいに大きなニューラル・ネットワークの場合は、既存の実装を再利用するしかないですけどね……。まぁ、その場合でも自前で深層学習を実装したことによる深い理解は役に立つんじゃないかと。</p>
-<p>というわけで実装したTransformerを使用して機械学習してみましょう。TensorFlowのチュートリアルではポルトガル語から英語への翻訳をやっていますけど、ポルトガル語も英語も分からないので、今回は足し算と引き算でやります。<code>1 + 1</code>をTransformerにかけたら<code>2</code>が出力されるわけですね。</p>
+<p>というわけで実装したTransformerを使用して機械学習してみましょう。TensorFlowのチュートリアルではポルトガル語から英語への翻訳をやっていますけど、私はポルトガル語も英語も分からないので、足し算と引き算でやってみます。<code>1 + 1</code>をTransformerにかけたら<code>2</code>が出力されるわけですね。</p>
 <p>データセットは、以下のようになっています。</p>
 <pre class="csv"><code>Id,Expression,Answer
 0,934+952,1886
@@ -2303,41 +2302,53 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a h
 <span id="cb38-83"><a href="#cb38-83" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb38-84"><a href="#cb38-84" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> result[np.newaxis, ...]</span>
 <span id="cb38-85"><a href="#cb38-85" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-86"><a href="#cb38-86" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> encoder(num_blocks, d_model, num_heads, d_ff, maximum_position, dropout_rate):</span>
-<span id="cb38-87"><a href="#cb38-87" aria-hidden="true" tabindex="-1"></a>        normalize_factor <span class="op">=</span> tf.math.sqrt(tf.cast(d_model, tf.float32))</span>
-<span id="cb38-88"><a href="#cb38-88" aria-hidden="true" tabindex="-1"></a>        positional_encoding <span class="op">=</span> get_positional_encoding(maximum_position, d_model)</span>
+<span id="cb38-86"><a href="#cb38-86" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_patches():</span>
+<span id="cb38-87"><a href="#cb38-87" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> op(inputs):</span>
+<span id="cb38-88"><a href="#cb38-88" aria-hidden="true" tabindex="-1"></a>            x <span class="op">=</span> inputs</span>
 <span id="cb38-89"><a href="#cb38-89" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-90"><a href="#cb38-90" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> op(inputs):</span>
-<span id="cb38-91"><a href="#cb38-91" aria-hidden="true" tabindex="-1"></a>            x <span class="op">=</span> inputs</span>
+<span id="cb38-90"><a href="#cb38-90" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> tf.image.extract_patches(x, (<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>), (<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">4</span>, <span class="dv">1</span>), (<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>), <span class="st">&#39;VALID&#39;</span>)</span>
+<span id="cb38-91"><a href="#cb38-91" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> reshape((<span class="op">-</span><span class="dv">1</span>, tf.keras.backend.int_shape(o)[<span class="op">-</span><span class="dv">1</span>]))(o)</span>
 <span id="cb38-92"><a href="#cb38-92" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-93"><a href="#cb38-93" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> dropout(dropout_rate)(x <span class="op">*</span> normalize_factor <span class="op">+</span> positional_encoding)</span>
+<span id="cb38-93"><a href="#cb38-93" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> o</span>
 <span id="cb38-94"><a href="#cb38-94" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-95"><a href="#cb38-95" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_blocks):</span>
-<span id="cb38-96"><a href="#cb38-96" aria-hidden="true" tabindex="-1"></a>                o <span class="op">=</span> encoder_block(d_model, num_heads, d_ff, dropout_rate)((o))</span>
-<span id="cb38-97"><a href="#cb38-97" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-98"><a href="#cb38-98" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> o</span>
-<span id="cb38-99"><a href="#cb38-99" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-100"><a href="#cb38-100" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> op</span>
-<span id="cb38-101"><a href="#cb38-101" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-102"><a href="#cb38-102" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> op(inputs):</span>
-<span id="cb38-103"><a href="#cb38-103" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> inputs</span>
-<span id="cb38-104"><a href="#cb38-104" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-105"><a href="#cb38-105" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> softmax()(dense(y_vocab_size)(flatten()(encoder(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropout_rate)(x))))</span>
+<span id="cb38-95"><a href="#cb38-95" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> op</span>
+<span id="cb38-96"><a href="#cb38-96" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-97"><a href="#cb38-97" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> encoder(num_blocks, d_model, num_heads, d_ff, maximum_position, dropout_rate):</span>
+<span id="cb38-98"><a href="#cb38-98" aria-hidden="true" tabindex="-1"></a>        normalize_factor <span class="op">=</span> tf.math.sqrt(tf.cast(d_model, tf.float32))</span>
+<span id="cb38-99"><a href="#cb38-99" aria-hidden="true" tabindex="-1"></a>        positional_encoding <span class="op">=</span> get_positional_encoding(maximum_position, d_model)</span>
+<span id="cb38-100"><a href="#cb38-100" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-101"><a href="#cb38-101" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> op(inputs):</span>
+<span id="cb38-102"><a href="#cb38-102" aria-hidden="true" tabindex="-1"></a>            x <span class="op">=</span> inputs</span>
+<span id="cb38-103"><a href="#cb38-103" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-104"><a href="#cb38-104" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> get_patches()(x)</span>
+<span id="cb38-105"><a href="#cb38-105" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> dropout(dropout_rate)(o <span class="op">*</span> normalize_factor <span class="op">+</span> positional_encoding)</span>
 <span id="cb38-106"><a href="#cb38-106" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-107"><a href="#cb38-107" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> op</span>
-<span id="cb38-108"><a href="#cb38-108" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-107"><a href="#cb38-107" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_blocks):</span>
+<span id="cb38-108"><a href="#cb38-108" aria-hidden="true" tabindex="-1"></a>                o <span class="op">=</span> encoder_block(d_model, num_heads, d_ff, dropout_rate)((o))</span>
 <span id="cb38-109"><a href="#cb38-109" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-110"><a href="#cb38-110" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LearningRateSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):</span>
-<span id="cb38-111"><a href="#cb38-111" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, d_model, warmup_steps<span class="op">=</span><span class="dv">4000</span>):</span>
-<span id="cb38-112"><a href="#cb38-112" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(LearningRateSchedule, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb38-110"><a href="#cb38-110" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> o</span>
+<span id="cb38-111"><a href="#cb38-111" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-112"><a href="#cb38-112" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> op</span>
 <span id="cb38-113"><a href="#cb38-113" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-114"><a href="#cb38-114" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.d_model <span class="op">=</span> tf.cast(d_model, tf.float32)</span>
-<span id="cb38-115"><a href="#cb38-115" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.warmup_steps <span class="op">=</span> warmup_steps</span>
+<span id="cb38-114"><a href="#cb38-114" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> op(inputs):</span>
+<span id="cb38-115"><a href="#cb38-115" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> inputs</span>
 <span id="cb38-116"><a href="#cb38-116" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb38-117"><a href="#cb38-117" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, step):</span>
-<span id="cb38-118"><a href="#cb38-118" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.d_model <span class="op">**</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> tf.math.minimum(step <span class="op">**</span> <span class="op">-</span><span class="fl">0.5</span>, step <span class="op">*</span> <span class="va">self</span>.warmup_steps <span class="op">**</span> <span class="op">-</span><span class="fl">1.5</span>)</span></code></pre></div>
+<span id="cb38-117"><a href="#cb38-117" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> softmax()(dense(y_vocab_size)(flatten()(encoder(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropout_rate)(x))))</span>
+<span id="cb38-118"><a href="#cb38-118" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-119"><a href="#cb38-119" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> op</span>
+<span id="cb38-120"><a href="#cb38-120" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-121"><a href="#cb38-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-122"><a href="#cb38-122" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LearningRateSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):</span>
+<span id="cb38-123"><a href="#cb38-123" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, d_model, warmup_steps<span class="op">=</span><span class="dv">4000</span>):</span>
+<span id="cb38-124"><a href="#cb38-124" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(LearningRateSchedule, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb38-125"><a href="#cb38-125" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-126"><a href="#cb38-126" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.d_model <span class="op">=</span> tf.cast(d_model, tf.float32)</span>
+<span id="cb38-127"><a href="#cb38-127" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.warmup_steps <span class="op">=</span> warmup_steps</span>
+<span id="cb38-128"><a href="#cb38-128" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-129"><a href="#cb38-129" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, step):</span>
+<span id="cb38-130"><a href="#cb38-130" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.d_model <span class="op">**</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> tf.math.minimum(step <span class="op">**</span> <span class="op">-</span><span class="fl">0.5</span>, step <span class="op">*</span> <span class="va">self</span>.warmup_steps <span class="op">**</span> <span class="op">-</span><span class="fl">1.5</span>)</span></code></pre></div>
 <p>自然言語処理では単語を埋め込み（embedding）してベクトル化して入力にするのですけど、Vision
-Transformerでは画像を例えば16×16のパッチに分けて、それぞれのパッチをベクトルとして扱って入力としているのがキモです（だから、<code>encoder()</code>の最初の<code>embedding</code>がなくなっています）。</p>
+Transformerでは画像を例えば16×16（上のコードでは4×4）のパッチに分けて、それぞれのパッチをベクトルとして扱って入力としているのがキモです。</p>
 <p>あとは、デコーダーが不要だったり、先読みが無関係なのでマスクがいらなかったり、Layer
 Normalizationが先だったりReLUの代わりにGERUを使ったりと、少しだけニューラル・ネットワークが違うくらい。Transformerのコードがあるなら、その修正で簡単に作成できます。</p>
 <p>……とはいっても、いざ修正してみると大量のエラーが出たりするんですけどね。でも、安心してください。エラーが出るのは関数の引数の型が合わないからで、しかもその型ってのは行列の形だったりします。普段のプログラミングで様々な型を考慮しなければならないのに比べれば、考えなければならないことが少ない分だけ簡単です。<code>print(tf.shape(x))</code>とかすれば行列の形が表示されますしね。</p>
@@ -2349,56 +2360,31 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb39-1"><a h
 <span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
 <span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
 <span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> params <span class="im">import</span> D_MODEL_HEIGHT, D_MODEL_WIDTH</span>
-<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a><span class="co"># DataFrameを取得します。</span></span>
-<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_data_frame(filename):</span>
-<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;digit-recognizer&#39;</span>, filename))</span>
-<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練用DataFrameを取得します。</span></span>
-<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_train_data_frame():</span>
-<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;train.csv&#39;</span>)</span>
-<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a><span class="co"># テスト用DataFrameを取得します。</span></span>
-<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_test_data_frame():</span>
-<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;test.csv&#39;</span>)</span>
-<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 画像をパッチに分割します。</span></span>
-<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> encode(image):</span>
-<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> impl():</span>
-<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">28</span> <span class="op">//</span> D_MODEL_HEIGHT):</span>
-<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">28</span> <span class="op">//</span> D_MODEL_WIDTH):</span>
-<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>                <span class="cf">yield</span> image[i <span class="op">*</span> D_MODEL_HEIGHT: i <span class="op">*</span> D_MODEL_HEIGHT <span class="op">+</span> D_MODEL_HEIGHT, j <span class="op">*</span> D_MODEL_WIDTH: j <span class="op">*</span> D_MODEL_WIDTH <span class="op">+</span> D_MODEL_WIDTH].flatten()</span>
-<span id="cb39-29"><a href="#cb39-29" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-30"><a href="#cb39-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(<span class="bu">tuple</span>(impl()))</span>
-<span id="cb39-31"><a href="#cb39-31" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-32"><a href="#cb39-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-33"><a href="#cb39-33" aria-hidden="true" tabindex="-1"></a><span class="co"># パッチを画像に戻します。</span></span>
-<span id="cb39-34"><a href="#cb39-34" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> decode(encoded):</span>
-<span id="cb39-35"><a href="#cb39-35" aria-hidden="true" tabindex="-1"></a>    result <span class="op">=</span> np.zeros((<span class="dv">28</span>, <span class="dv">28</span>), dtype<span class="op">=</span>np.float32)</span>
-<span id="cb39-36"><a href="#cb39-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-37"><a href="#cb39-37" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">28</span> <span class="op">//</span> D_MODEL_HEIGHT):</span>
-<span id="cb39-38"><a href="#cb39-38" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> j <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">28</span> <span class="op">//</span> D_MODEL_WIDTH):</span>
-<span id="cb39-39"><a href="#cb39-39" aria-hidden="true" tabindex="-1"></a>            result[i <span class="op">*</span> D_MODEL_HEIGHT: i <span class="op">*</span> D_MODEL_HEIGHT <span class="op">+</span> D_MODEL_HEIGHT, j <span class="op">*</span> D_MODEL_WIDTH: j <span class="op">*</span> D_MODEL_WIDTH <span class="op">+</span> D_MODEL_WIDTH] <span class="op">=</span> np.reshape(encoded[i <span class="op">*</span> <span class="dv">28</span> <span class="op">//</span> D_MODEL_WIDTH <span class="op">+</span> j], (D_MODEL_WIDTH, D_MODEL_HEIGHT))</span>
-<span id="cb39-40"><a href="#cb39-40" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-41"><a href="#cb39-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> result</span>
-<span id="cb39-42"><a href="#cb39-42" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-43"><a href="#cb39-43" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-44"><a href="#cb39-44" aria-hidden="true" tabindex="-1"></a><span class="co"># 入力データを取得します。</span></span>
-<span id="cb39-45"><a href="#cb39-45" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame):</span>
-<span id="cb39-46"><a href="#cb39-46" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(<span class="bu">tuple</span>(<span class="bu">map</span>(encode, np.reshape(data_frame[<span class="bu">list</span>(<span class="bu">map</span>(<span class="kw">lambda</span> i: <span class="ss">f&#39;pixel</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&#39;</span>, <span class="bu">range</span>(<span class="dv">784</span>)))].values <span class="op">/</span> <span class="dv">255</span>, (<span class="op">-</span><span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>)))))</span>
-<span id="cb39-47"><a href="#cb39-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-48"><a href="#cb39-48" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb39-49"><a href="#cb39-49" aria-hidden="true" tabindex="-1"></a><span class="co"># 出力データを取得します。</span></span>
-<span id="cb39-50"><a href="#cb39-50" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
-<span id="cb39-51"><a href="#cb39-51" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;label&#39;</span>].values</span></code></pre></div>
-<p>KerasのVision
-Transformer実装では画像をパッチに分割する処理がニューラル・ネットワークに含まれていたのですけど、今回は、今後の解説の都合によりデータセット読み込み時にパッチに分割しました（ごめんなさい。後で述べるデータの水増しができないので少々不利なやり方です……）。</p>
-<p>あと、<code>get_xs()</code>の中で255で割っているのは、データ中は0～255になっているのを0～1に正規化するためです。深層学習のハイパー・パラメーターはデータが正規化されていることを前提にしているので、0～255のような大きな値だと学習が正常に進まないんですよ。</p>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a><span class="co"># DataFrameを取得します。</span></span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_data_frame(filename):</span>
+<span id="cb39-8"><a href="#cb39-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;digit-recognizer&#39;</span>, filename))</span>
+<span id="cb39-9"><a href="#cb39-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-10"><a href="#cb39-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-11"><a href="#cb39-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練用DataFrameを取得します。</span></span>
+<span id="cb39-12"><a href="#cb39-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_train_data_frame():</span>
+<span id="cb39-13"><a href="#cb39-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;train.csv&#39;</span>)</span>
+<span id="cb39-14"><a href="#cb39-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-15"><a href="#cb39-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-16"><a href="#cb39-16" aria-hidden="true" tabindex="-1"></a><span class="co"># テスト用DataFrameを取得します。</span></span>
+<span id="cb39-17"><a href="#cb39-17" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_test_data_frame():</span>
+<span id="cb39-18"><a href="#cb39-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;test.csv&#39;</span>)</span>
+<span id="cb39-19"><a href="#cb39-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-20"><a href="#cb39-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-21"><a href="#cb39-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 入力データを取得します。</span></span>
+<span id="cb39-22"><a href="#cb39-22" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame):</span>
+<span id="cb39-23"><a href="#cb39-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.reshape(data_frame[<span class="bu">list</span>(<span class="bu">map</span>(<span class="kw">lambda</span> i: <span class="ss">f&#39;pixel</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&#39;</span>, <span class="bu">range</span>(<span class="dv">784</span>)))].values <span class="op">/</span> <span class="dv">255</span>, (<span class="op">-</span><span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>, <span class="dv">1</span>))</span>
+<span id="cb39-24"><a href="#cb39-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-25"><a href="#cb39-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb39-26"><a href="#cb39-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 出力データを取得します。</span></span>
+<span id="cb39-27"><a href="#cb39-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
+<span id="cb39-28"><a href="#cb39-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;label&#39;</span>].values</span></code></pre></div>
+<p><code>get_xs()</code>の中で255で割っているのは、データ中は0～255になっているのを0～1に正規化するためです。深層学習のハイパー・パラメーターはデータが正規化されていることを前提にしているので、0～255のような大きな値だと学習が正常に進まないんですよ。</p>
 <h2
 id="ハイパーパラメーターを設定する">ハイパー・パラメーターを設定する</h2>
 <p>上のデータセットのモジュールでも使用していたパッチの大きさ（<code>D_MODEL_WIDTH</code>と<code>D_MODEL_HEIGHT</code>）を含むハイパー・パラメーターを設定するモジュールを作成します。</p>
@@ -2517,14 +2503,14 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb43-1"><a h
 <span id="cb43-17"><a href="#cb43-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 解答を作成して、保存します。</span></span>
 <span id="cb43-18"><a href="#cb43-18" aria-hidden="true" tabindex="-1"></a>submission <span class="op">=</span> pd.DataFrame({<span class="st">&#39;ImageId&#39;</span>: data_frame.index <span class="op">+</span> <span class="dv">1</span>, <span class="st">&#39;Label&#39;</span>: np.argmax(model.predict(xs, batch_size<span class="op">=</span><span class="dv">256</span>), axis<span class="op">=-</span><span class="dv">1</span>)})</span>
 <span id="cb43-19"><a href="#cb43-19" aria-hidden="true" tabindex="-1"></a>submission.to_csv(<span class="st">&#39;submission.csv&#39;</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
-<p>さて、テスト・データでの精度は、0.98232でした。エポック数を増やした分だけ精度が上がったような気がしますが、それでもやっぱり2,000人くらい中の900番目くらい。Digit
+<p>さて、テスト・データでの精度は、0.98285でした。エポック数を増やした分だけ精度が上がったような気がしますが、それでも2,000人くらい中の900番目くらい。Digit
 Recognizerでもやっぱりカンニングしている連中はいるけど、それにしたって低すぎます。2020年に画像認識の革命と大騒ぎになったVision
 Transformerを使っているのにどういうこと？</p>
 <p>……ここまで真面目に読んでくださった皆様ごめんなさい。たぶんこんな結果になると、実は知ってました。</p>
 <p>というのも、Transformer系って、大量のデータがないと精度が高くならないんですよ。Transformerの後に自然言語処理で人間を超えたと話題になったBERTはBooksCorpusという8億ワードのデータとWikipediaの25億ワードのデータで事前学習しましたし、Vision
-Transformerで最高の精度を出したときはGoogle社のプライベートなデータセットであるJFT-300Mという3億枚の画像を使用して事前学習しています。データの単位は億なんですな。</p>
+Transformerで最高の精度を出したときはGoogle社のプライベートなデータセットであるJFT-300Mという3億枚の画像を使用して事前学習しています。データの単位が億なんですな。</p>
 <p>それと比較して今回は、事前学習がゼロで、学習に使用したデータは4万2千……。そりゃ、精度なんか出ませんよね。</p>
-<p>こんな感じで、実用という意味では、深層学習の最先端は我々一般人の手が届かない遥か彼方に行ってしまいました。そもそもデータが集まらないし、仮にデータが集まっても一般人の手に入るレベルの計算リソースだととても学習させられないし。</p>
+<p>こんな感じで、実用という意味では、深層学習の最先端は我々一般人の手が届かない遥か彼方に行ってしまった感があります。そもそもデータが集まらないし、仮にデータが集まっても一般人の手に入るレベルの計算リソースだととても学習させられないし。</p>
 <p>というわけで、事前学習済みのモデルに転移学習（fine
 tuning）するような場合にしか使えないんじゃないかなぁと。貴方の目的に合う事前学習と入力のものが運良く見つかったならば、ですけど。</p>
 <h1 id="densenetで画像のクラス分類">DenseNetで画像のクラス分類</h1>
@@ -2645,15 +2631,14 @@ class="sourceCode python"><code class="sourceCode python"><span id="cb45-1"><a h
 <span id="cb45-20"><a href="#cb45-20" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb45-21"><a href="#cb45-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 入力データを取得します。</span></span>
 <span id="cb45-22"><a href="#cb45-22" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame):</span>
-<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.array(np.reshape(data_frame[<span class="bu">list</span>(<span class="bu">map</span>(<span class="kw">lambda</span> i: <span class="ss">f&#39;pixel</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&#39;</span>, <span class="bu">range</span>(<span class="dv">784</span>)))].values <span class="op">/</span> <span class="dv">255</span>, (<span class="op">-</span><span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>, <span class="dv">1</span>)))</span>
+<span id="cb45-23"><a href="#cb45-23" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> np.reshape(data_frame[<span class="bu">list</span>(<span class="bu">map</span>(<span class="kw">lambda</span> i: <span class="ss">f&#39;pixel</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">&#39;</span>, <span class="bu">range</span>(<span class="dv">784</span>)))].values <span class="op">/</span> <span class="dv">255</span>, (<span class="op">-</span><span class="dv">1</span>, <span class="dv">28</span>, <span class="dv">28</span>, <span class="dv">1</span>))</span>
 <span id="cb45-24"><a href="#cb45-24" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb45-25"><a href="#cb45-25" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb45-26"><a href="#cb45-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 出力データを取得します。</span></span>
 <span id="cb45-27"><a href="#cb45-27" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
 <span id="cb45-28"><a href="#cb45-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;label&#39;</span>].values</span></code></pre></div>
-<p>画像をパッチに分ける必要がなくなったので、Vision
-Transformerより簡単です。あ、255で割っているのは0～1に正規化するためで、正規化しないと学習が正常に進まないのはVision
-Transformerのところで述べた通りです。</p>
+<p>ごめんなさい。Vision
+Transformerの時と全く同じです。繰り返しになりますけど、255で割っているのは0～1に正規化するためで、正規化しないと学習が正常に進まないので気を付けてください。</p>
 <h2 id="機械学習する-1">機械学習する</h2>
 <p>準備ができたので、機械学習してみましょう。</p>
 <div class="sourceCode" id="cb46"><pre
@@ -2792,6 +2777,335 @@ RecognizerのデータはMNISTという答えが公開されているデータ�
 <p>やったことは、とても簡単ですしね。深層学習と画像認識で検索したら見つかったDenseNetを、Kerasの公式実装を参考にして作成しただけ。こんな簡単なことで高い精度で画像認識できるなんて、やはり深層学習は素晴らしい！</p>
 <h1
 id="transformerでテーブルデータもやってみた">Transformerでテーブル・データもやってみた</h1>
+<p>と、こんな感じで画像（とか音声とか自然言語）なら深層学習でしょうって感じなのですが、テーブル・データではどうなのでしょうか？</p>
+<p>伝統的には、テーブル・データの場合は全結合を重ねただけのMLP（Multilayer
+Perceptron）を使うのですけど、畳み込みもアテンションも使わないのでは精度が上がらなそう。だから畳み込み……は、テーブル・データの場合はカラムの順序に意味がない（年齢→身長→体重と並べても、体重→身長→年齢と並べてもよい）のでちょっと使えません。というわけで、アテンションを使ってみましょう。Transformerを改造して、Titanicをやってみます。</p>
+<h2 id="特徴量をベクトル化する方法">特徴量をベクトル化する方法</h2>
+<p>Transformerを使うためには、特徴量をベクトルに変換できなければなりません。カテゴリー型の特徴量なら<code>embedding</code>が使えますけど、数値型の特長量はどうしましょうか？</p>
+<p>テーブル・データと深層学習でGoogle検索したら見つけた<a
+href="https://tech.preferred.jp/ja/blog/deep-table/">Preferred
+Networks社のBlog</a>からソース・コードを辿ってみたら全結合を使ってベクトル化していたので、この方式を採用しましょう。Blogが参照している論文のどこかに全結合で良い理由が書いてあるのでしょうけど、すみません、参照先の論文はまだ読んでいません……。</p>
+<h2 id="transformer改を作成する">Transformer改を作成する</h2>
+<p>ともあれ、方針が決まりましたので、Transformer（を元に作成したVision
+Transformer）を改造します。</p>
+<div class="sourceCode" id="cb49"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> func_partial, rcompose</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-6"><a href="#cb49-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-7"><a href="#cb49-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> transformer(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropout_rate):</span>
+<span id="cb49-8"><a href="#cb49-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># KerasやTensorflowのレイヤーや関数をラップします。</span></span>
+<span id="cb49-9"><a href="#cb49-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-10"><a href="#cb49-10" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> dense(units):</span>
+<span id="cb49-11"><a href="#cb49-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Dense(units)</span>
+<span id="cb49-12"><a href="#cb49-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-13"><a href="#cb49-13" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> dropout(rate):</span>
+<span id="cb49-14"><a href="#cb49-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Dropout(rate)</span>
+<span id="cb49-15"><a href="#cb49-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-16"><a href="#cb49-16" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> embedding(input_dim, output_dim):</span>
+<span id="cb49-17"><a href="#cb49-17" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Embedding(input_dim, output_dim)</span>
+<span id="cb49-18"><a href="#cb49-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-19"><a href="#cb49-19" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> flatten():</span>
+<span id="cb49-20"><a href="#cb49-20" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Flatten()</span>
+<span id="cb49-21"><a href="#cb49-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-22"><a href="#cb49-22" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> gelu():</span>
+<span id="cb49-23"><a href="#cb49-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.activations.gelu</span>
+<span id="cb49-24"><a href="#cb49-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-25"><a href="#cb49-25" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> layer_normalization():</span>
+<span id="cb49-26"><a href="#cb49-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.LayerNormalization(epsilon<span class="op">=</span><span class="fl">1e-6</span>)</span>
+<span id="cb49-27"><a href="#cb49-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-28"><a href="#cb49-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> reshape(target_shape):</span>
+<span id="cb49-29"><a href="#cb49-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Reshape(target_shape)</span>
+<span id="cb49-30"><a href="#cb49-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-31"><a href="#cb49-31" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> sigmoid():</span>
+<span id="cb49-32"><a href="#cb49-32" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.keras.layers.Activation(<span class="st">&#39;sigmoid&#39;</span>)</span>
+<span id="cb49-33"><a href="#cb49-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-34"><a href="#cb49-34" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> transpose(perm):</span>
+<span id="cb49-35"><a href="#cb49-35" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> func_partial(tf.transpose, perm<span class="op">=</span>perm)</span>
+<span id="cb49-36"><a href="#cb49-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-37"><a href="#cb49-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Transformerに必要な演算を定義します。</span></span>
+<span id="cb49-38"><a href="#cb49-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-39"><a href="#cb49-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> scaled_dot_product_attention(x):</span>
+<span id="cb49-40"><a href="#cb49-40" aria-hidden="true" tabindex="-1"></a>        query, key, value <span class="op">=</span> x</span>
+<span id="cb49-41"><a href="#cb49-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-42"><a href="#cb49-42" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> tf.matmul(tf.nn.softmax(tf.matmul(query, key, transpose_b<span class="op">=</span><span class="va">True</span>) <span class="op">/</span> tf.math.sqrt(tf.cast(tf.shape(key)[<span class="op">-</span><span class="dv">1</span>], tf.float32)), axis<span class="op">=-</span><span class="dv">1</span>), value)</span>
+<span id="cb49-43"><a href="#cb49-43" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-44"><a href="#cb49-44" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> multi_head_attention(d_model, num_heads):</span>
+<span id="cb49-45"><a href="#cb49-45" aria-hidden="true" tabindex="-1"></a>        split <span class="op">=</span> rcompose(reshape((<span class="op">-</span><span class="dv">1</span>, num_heads, d_model <span class="op">//</span> num_heads)),  <span class="co"># noqa: E221</span></span>
+<span id="cb49-46"><a href="#cb49-46" aria-hidden="true" tabindex="-1"></a>                          transpose((<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>)))</span>
+<span id="cb49-47"><a href="#cb49-47" aria-hidden="true" tabindex="-1"></a>        concat <span class="op">=</span> rcompose(transpose((<span class="dv">0</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">3</span>)),</span>
+<span id="cb49-48"><a href="#cb49-48" aria-hidden="true" tabindex="-1"></a>                          reshape((<span class="op">-</span><span class="dv">1</span>, d_model)))</span>
+<span id="cb49-49"><a href="#cb49-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-50"><a href="#cb49-50" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> op(inputs):</span>
+<span id="cb49-51"><a href="#cb49-51" aria-hidden="true" tabindex="-1"></a>            q, k, v <span class="op">=</span> inputs</span>
+<span id="cb49-52"><a href="#cb49-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-53"><a href="#cb49-53" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> scaled_dot_product_attention((split(dense(d_model)(q)),</span>
+<span id="cb49-54"><a href="#cb49-54" aria-hidden="true" tabindex="-1"></a>                                              split(dense(d_model)(k)),</span>
+<span id="cb49-55"><a href="#cb49-55" aria-hidden="true" tabindex="-1"></a>                                              split(dense(d_model)(v))))</span>
+<span id="cb49-56"><a href="#cb49-56" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> concat(o)</span>
+<span id="cb49-57"><a href="#cb49-57" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> dense(d_model)(o)</span>
+<span id="cb49-58"><a href="#cb49-58" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-59"><a href="#cb49-59" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> o</span>
+<span id="cb49-60"><a href="#cb49-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-61"><a href="#cb49-61" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> op</span>
+<span id="cb49-62"><a href="#cb49-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-63"><a href="#cb49-63" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> point_wise_feed_forward(d_model, d_ff):</span>
+<span id="cb49-64"><a href="#cb49-64" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> rcompose(dense(d_ff),</span>
+<span id="cb49-65"><a href="#cb49-65" aria-hidden="true" tabindex="-1"></a>                        gelu(),</span>
+<span id="cb49-66"><a href="#cb49-66" aria-hidden="true" tabindex="-1"></a>                        dense(d_model))</span>
+<span id="cb49-67"><a href="#cb49-67" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-68"><a href="#cb49-68" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> encoder_block(d_model, num_heads, d_ff, dropout_rate):</span>
+<span id="cb49-69"><a href="#cb49-69" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> op(inputs):</span>
+<span id="cb49-70"><a href="#cb49-70" aria-hidden="true" tabindex="-1"></a>            x <span class="op">=</span> inputs</span>
+<span id="cb49-71"><a href="#cb49-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-72"><a href="#cb49-72" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> layer_normalization()(x)</span>
+<span id="cb49-73"><a href="#cb49-73" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> dropout(dropout_rate)(multi_head_attention(d_model, num_heads)((o, o, o))) <span class="op">+</span> o</span>
+<span id="cb49-74"><a href="#cb49-74" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> layer_normalization()(o)</span>
+<span id="cb49-75"><a href="#cb49-75" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> dropout(dropout_rate)(point_wise_feed_forward(d_model, d_ff)(o)) <span class="op">+</span> o</span>
+<span id="cb49-76"><a href="#cb49-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-77"><a href="#cb49-77" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> o</span>
+<span id="cb49-78"><a href="#cb49-78" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-79"><a href="#cb49-79" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> op</span>
+<span id="cb49-80"><a href="#cb49-80" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-81"><a href="#cb49-81" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> get_positional_encoding(maximum_position, d_model):</span>
+<span id="cb49-82"><a href="#cb49-82" aria-hidden="true" tabindex="-1"></a>        result <span class="op">=</span> embedding(maximum_position, d_model)(tf.<span class="bu">range</span>(<span class="dv">0</span>, maximum_position))</span>
+<span id="cb49-83"><a href="#cb49-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-84"><a href="#cb49-84" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> result[np.newaxis, ...]</span>
+<span id="cb49-85"><a href="#cb49-85" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-86"><a href="#cb49-86" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> encoder(num_blocks, d_model, num_heads, d_ff, maximum_position, dropout_rate):</span>
+<span id="cb49-87"><a href="#cb49-87" aria-hidden="true" tabindex="-1"></a>        normalize_factor <span class="op">=</span> tf.math.sqrt(tf.cast(d_model, tf.float32))</span>
+<span id="cb49-88"><a href="#cb49-88" aria-hidden="true" tabindex="-1"></a>        positional_encoding <span class="op">=</span> get_positional_encoding(maximum_position, d_model)</span>
+<span id="cb49-89"><a href="#cb49-89" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-90"><a href="#cb49-90" aria-hidden="true" tabindex="-1"></a>        <span class="kw">def</span> op(inputs):</span>
+<span id="cb49-91"><a href="#cb49-91" aria-hidden="true" tabindex="-1"></a>            x <span class="op">=</span> inputs</span>
+<span id="cb49-92"><a href="#cb49-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-93"><a href="#cb49-93" aria-hidden="true" tabindex="-1"></a>            <span class="co"># 特徴量をベクトル化します。数値の特長量は、全結合でベクトル化します。</span></span>
+<span id="cb49-94"><a href="#cb49-94" aria-hidden="true" tabindex="-1"></a>            x0, x1, x2, x3, x4, x5, x6, x7 <span class="op">=</span> tf.split(x, [<span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>], <span class="dv">1</span>)</span>
+<span id="cb49-95"><a href="#cb49-95" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> tf.concat((tf.stack((dense(d_model)(x0),   <span class="co"># PClass</span></span>
+<span id="cb49-96"><a href="#cb49-96" aria-hidden="true" tabindex="-1"></a>                                    dense(d_model)(x2),   <span class="co"># Age</span></span>
+<span id="cb49-97"><a href="#cb49-97" aria-hidden="true" tabindex="-1"></a>                                    dense(d_model)(x3),   <span class="co"># SibSp</span></span>
+<span id="cb49-98"><a href="#cb49-98" aria-hidden="true" tabindex="-1"></a>                                    dense(d_model)(x4),   <span class="co"># Parch</span></span>
+<span id="cb49-99"><a href="#cb49-99" aria-hidden="true" tabindex="-1"></a>                                    dense(d_model)(x5)),  <span class="co"># Fare</span></span>
+<span id="cb49-100"><a href="#cb49-100" aria-hidden="true" tabindex="-1"></a>                                    axis<span class="op">=</span><span class="dv">1</span>),</span>
+<span id="cb49-101"><a href="#cb49-101" aria-hidden="true" tabindex="-1"></a>                           embedding(<span class="dv">2</span>, d_model)(x1),      <span class="co"># Sex。マジック・ナンバーが入ってしまってごめんなさい……</span></span>
+<span id="cb49-102"><a href="#cb49-102" aria-hidden="true" tabindex="-1"></a>                           embedding(<span class="dv">4</span>, d_model)(x6),      <span class="co"># Embarked。マジック・ナンバーが入ってしまってごめんなさい……</span></span>
+<span id="cb49-103"><a href="#cb49-103" aria-hidden="true" tabindex="-1"></a>                           embedding(<span class="dv">5</span>, d_model)(x7)),     <span class="co"># Title。マジック・ナンバーが入ってしまってごめんなさい……</span></span>
+<span id="cb49-104"><a href="#cb49-104" aria-hidden="true" tabindex="-1"></a>                          axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb49-105"><a href="#cb49-105" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-106"><a href="#cb49-106" aria-hidden="true" tabindex="-1"></a>            o <span class="op">=</span> dropout(dropout_rate)(o <span class="op">*</span> normalize_factor <span class="op">+</span> positional_encoding)</span>
+<span id="cb49-107"><a href="#cb49-107" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-108"><a href="#cb49-108" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> _ <span class="kw">in</span> <span class="bu">range</span>(num_blocks):</span>
+<span id="cb49-109"><a href="#cb49-109" aria-hidden="true" tabindex="-1"></a>                o <span class="op">=</span> encoder_block(d_model, num_heads, d_ff, dropout_rate)((o))</span>
+<span id="cb49-110"><a href="#cb49-110" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-111"><a href="#cb49-111" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> o</span>
+<span id="cb49-112"><a href="#cb49-112" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-113"><a href="#cb49-113" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> op</span>
+<span id="cb49-114"><a href="#cb49-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-115"><a href="#cb49-115" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> op(inputs):</span>
+<span id="cb49-116"><a href="#cb49-116" aria-hidden="true" tabindex="-1"></a>        x <span class="op">=</span> inputs</span>
+<span id="cb49-117"><a href="#cb49-117" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-118"><a href="#cb49-118" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> sigmoid()(dense(<span class="dv">1</span>)(flatten()(encoder(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropout_rate)(x))))</span>
+<span id="cb49-119"><a href="#cb49-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-120"><a href="#cb49-120" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> op</span>
+<span id="cb49-121"><a href="#cb49-121" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-122"><a href="#cb49-122" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-123"><a href="#cb49-123" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> LearningRateSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):</span>
+<span id="cb49-124"><a href="#cb49-124" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, d_model, warmup_steps<span class="op">=</span><span class="dv">4000</span>):</span>
+<span id="cb49-125"><a href="#cb49-125" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>(LearningRateSchedule, <span class="va">self</span>).<span class="fu">__init__</span>()</span>
+<span id="cb49-126"><a href="#cb49-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-127"><a href="#cb49-127" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.d_model <span class="op">=</span> tf.cast(d_model, tf.float32)</span>
+<span id="cb49-128"><a href="#cb49-128" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.warmup_steps <span class="op">=</span> warmup_steps</span>
+<span id="cb49-129"><a href="#cb49-129" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-130"><a href="#cb49-130" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__call__</span>(<span class="va">self</span>, step):</span>
+<span id="cb49-131"><a href="#cb49-131" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.d_model <span class="op">**</span> <span class="op">-</span><span class="fl">0.5</span> <span class="op">*</span> tf.math.minimum(step <span class="op">**</span> <span class="op">-</span><span class="fl">0.5</span>, step <span class="op">*</span> <span class="va">self</span>.warmup_steps <span class="op">**</span> <span class="op">-</span><span class="fl">1.5</span>)</span></code></pre></div>
+<p>数値の特徴量は<code>dense</code>で、カテゴリー型の特徴量は<code>embedding</code>でベクトル化するわけですね。あと、Titanicは2値分類なので、最後の<code>dense</code>の要素数を1にして、<code>sigmoid</code>（出力範囲を0～1にしてくれる）しました。他はVision
+Transformerと同じで楽ちんでした。</p>
+<h1 id="データセットを取得する-3">データセットを取得する</h1>
+<p>次はデータセットを取得するモジュールです。こんな感じ。</p>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb50-4"><a href="#cb50-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-5"><a href="#cb50-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> <span class="bu">reduce</span></span>
+<span id="cb50-6"><a href="#cb50-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> count, repeat</span>
+<span id="cb50-7"><a href="#cb50-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-8"><a href="#cb50-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-9"><a href="#cb50-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 数値型の特徴量のNaNを平均値で埋めます。</span></span>
+<span id="cb50-10"><a href="#cb50-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> fill_na(data_frame):</span>
+<span id="cb50-11"><a href="#cb50-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> feature <span class="kw">in</span> (<span class="st">&#39;Pclass&#39;</span>, <span class="st">&#39;Age&#39;</span>, <span class="st">&#39;SibSp&#39;</span>, <span class="st">&#39;Parch&#39;</span>, <span class="st">&#39;Fare&#39;</span>):</span>
+<span id="cb50-12"><a href="#cb50-12" aria-hidden="true" tabindex="-1"></a>        data_frame[feature] <span class="op">=</span> data_frame[feature].fillna(data_frame[feature].mean())</span>
+<span id="cb50-13"><a href="#cb50-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-14"><a href="#cb50-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame</span>
+<span id="cb50-15"><a href="#cb50-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-16"><a href="#cb50-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-17"><a href="#cb50-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 特徴量を追加します。</span></span>
+<span id="cb50-18"><a href="#cb50-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add_features(data_frame):</span>
+<span id="cb50-19"><a href="#cb50-19" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 肩書追加用の補助関数。</span></span>
+<span id="cb50-20"><a href="#cb50-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add_title(title_series, name_series, <span class="bu">id</span>, titles):</span>
+<span id="cb50-21"><a href="#cb50-21" aria-hidden="true" tabindex="-1"></a>        title_series[<span class="bu">reduce</span>(<span class="kw">lambda</span> acc, series: acc <span class="op">+</span> series, <span class="bu">map</span>(<span class="kw">lambda</span> title: name_series.<span class="bu">str</span>.contains(title), titles))] <span class="op">=</span> <span class="bu">id</span></span>
+<span id="cb50-22"><a href="#cb50-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-23"><a href="#cb50-23" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> title_series</span>
+<span id="cb50-24"><a href="#cb50-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-25"><a href="#cb50-25" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 肩書を追加します。</span></span>
+<span id="cb50-26"><a href="#cb50-26" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;Title&#39;</span>] <span class="op">=</span> <span class="bu">reduce</span>(<span class="kw">lambda</span> title_series, params: add_title(title_series, data_frame[<span class="st">&#39;Name&#39;</span>], <span class="op">*</span>params),</span>
+<span id="cb50-27"><a href="#cb50-27" aria-hidden="true" tabindex="-1"></a>                                 ((<span class="dv">0</span>, (<span class="st">&#39;Mr.&#39;</span>, <span class="st">&#39;Dr.&#39;</span>, <span class="st">&#39;Rev.&#39;</span>, <span class="st">&#39;Don.&#39;</span>, <span class="st">&#39;Col.&#39;</span>, <span class="st">&#39;Major.&#39;</span>, <span class="st">&#39;Capt.&#39;</span>)),</span>
+<span id="cb50-28"><a href="#cb50-28" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">1</span>, (<span class="st">&#39;Master.&#39;</span>,)),</span>
+<span id="cb50-29"><a href="#cb50-29" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">2</span>, (<span class="st">&#39;Mrs.&#39;</span>, <span class="st">&#39;Mme.&#39;</span>, <span class="st">&#39;Ms.&#39;</span>)),</span>
+<span id="cb50-30"><a href="#cb50-30" aria-hidden="true" tabindex="-1"></a>                                  (<span class="dv">3</span>, (<span class="st">&#39;Miss.&#39;</span>,))),</span>
+<span id="cb50-31"><a href="#cb50-31" aria-hidden="true" tabindex="-1"></a>                                 pd.Series(repeat(np.nan, <span class="bu">len</span>(data_frame[<span class="st">&#39;Name&#39;</span>])), dtype<span class="op">=</span><span class="st">&#39;object&#39;</span>))</span>
+<span id="cb50-32"><a href="#cb50-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-33"><a href="#cb50-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame</span>
+<span id="cb50-34"><a href="#cb50-34" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-35"><a href="#cb50-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-36"><a href="#cb50-36" aria-hidden="true" tabindex="-1"></a><span class="co"># カテゴリ型の特徴量を、どの数値に変換するかのdictを取得します。</span></span>
+<span id="cb50-37"><a href="#cb50-37" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_categorical_features(data_frame):</span>
+<span id="cb50-38"><a href="#cb50-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(<span class="bu">map</span>(<span class="kw">lambda</span> feature: (feature, <span class="bu">dict</span>(<span class="bu">zip</span>(data_frame[feature].factorize()[<span class="dv">1</span>], count(<span class="dv">1</span>)))), (<span class="st">&#39;Sex&#39;</span>, <span class="st">&#39;Embarked&#39;</span>, <span class="st">&#39;Title&#39;</span>)))  <span class="co"># NaNは0にして、カテゴリは1始まり。</span></span>
+<span id="cb50-39"><a href="#cb50-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-40"><a href="#cb50-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-41"><a href="#cb50-41" aria-hidden="true" tabindex="-1"></a><span class="co"># 数値型の特徴量の最小値と最大値を取得します。正規化のためです。</span></span>
+<span id="cb50-42"><a href="#cb50-42" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_feature_ranges(data_frame):</span>
+<span id="cb50-43"><a href="#cb50-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">dict</span>(<span class="bu">map</span>(<span class="kw">lambda</span> feature: (feature, (data_frame[feature].<span class="bu">min</span>(), data_frame[feature].<span class="bu">max</span>())), (<span class="st">&#39;Pclass&#39;</span>, <span class="st">&#39;Age&#39;</span>, <span class="st">&#39;SibSp&#39;</span>, <span class="st">&#39;Parch&#39;</span>, <span class="st">&#39;Fare&#39;</span>)))</span>
+<span id="cb50-44"><a href="#cb50-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-45"><a href="#cb50-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-46"><a href="#cb50-46" aria-hidden="true" tabindex="-1"></a><span class="co"># DataFrameを取得します。</span></span>
+<span id="cb50-47"><a href="#cb50-47" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_data_frame(filename):</span>
+<span id="cb50-48"><a href="#cb50-48" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> add_features(fill_na(pd.read_csv(path.join(<span class="st">&#39;..&#39;</span>, <span class="st">&#39;input&#39;</span>, <span class="st">&#39;titanic&#39;</span>, filename))))</span>
+<span id="cb50-49"><a href="#cb50-49" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-50"><a href="#cb50-50" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-51"><a href="#cb50-51" aria-hidden="true" tabindex="-1"></a><span class="co"># 訓練用DataFrameを取得します。</span></span>
+<span id="cb50-52"><a href="#cb50-52" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_train_data_frame():</span>
+<span id="cb50-53"><a href="#cb50-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;train.csv&#39;</span>)</span>
+<span id="cb50-54"><a href="#cb50-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-55"><a href="#cb50-55" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-56"><a href="#cb50-56" aria-hidden="true" tabindex="-1"></a><span class="co"># テスト用DataFrameを取得します。</span></span>
+<span id="cb50-57"><a href="#cb50-57" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_test_data_frame():</span>
+<span id="cb50-58"><a href="#cb50-58" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> get_data_frame(<span class="st">&#39;test.csv&#39;</span>)</span>
+<span id="cb50-59"><a href="#cb50-59" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-60"><a href="#cb50-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-61"><a href="#cb50-61" aria-hidden="true" tabindex="-1"></a><span class="co"># 入力データを取得します。</span></span>
+<span id="cb50-62"><a href="#cb50-62" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_xs(data_frame, categorical_features, feature_ranges):</span>
+<span id="cb50-63"><a href="#cb50-63" aria-hidden="true" tabindex="-1"></a>    <span class="co"># カテゴリ型の特徴量を、数値に変換します。</span></span>
+<span id="cb50-64"><a href="#cb50-64" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> feature, mapping <span class="kw">in</span> categorical_features.items():</span>
+<span id="cb50-65"><a href="#cb50-65" aria-hidden="true" tabindex="-1"></a>        data_frame[feature] <span class="op">=</span> data_frame[feature].<span class="bu">map</span>(mapping).fillna(<span class="dv">0</span>)</span>
+<span id="cb50-66"><a href="#cb50-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-67"><a href="#cb50-67" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 数値型の特徴量を、正規化します。</span></span>
+<span id="cb50-68"><a href="#cb50-68" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> feature, (<span class="bu">min</span>, <span class="bu">max</span>) <span class="kw">in</span> feature_ranges.items():</span>
+<span id="cb50-69"><a href="#cb50-69" aria-hidden="true" tabindex="-1"></a>        data_frame[feature] <span class="op">=</span> (data_frame[feature] <span class="op">-</span> <span class="bu">min</span>) <span class="op">/</span> (<span class="bu">max</span> <span class="op">-</span> <span class="bu">min</span>)</span>
+<span id="cb50-70"><a href="#cb50-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-71"><a href="#cb50-71" aria-hidden="true" tabindex="-1"></a>    <span class="co"># SexはNaNがないので、1を引いて0と1にします。</span></span>
+<span id="cb50-72"><a href="#cb50-72" aria-hidden="true" tabindex="-1"></a>    data_frame[<span class="st">&#39;Sex&#39;</span>] <span class="op">=</span> data_frame[<span class="st">&#39;Sex&#39;</span>] <span class="op">-</span> <span class="dv">1</span></span>
+<span id="cb50-73"><a href="#cb50-73" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-74"><a href="#cb50-74" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 予測に使用するカラムだけを抽出します。</span></span>
+<span id="cb50-75"><a href="#cb50-75" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[[<span class="st">&#39;Pclass&#39;</span>, <span class="st">&#39;Sex&#39;</span>, <span class="st">&#39;Age&#39;</span>, <span class="st">&#39;SibSp&#39;</span>, <span class="st">&#39;Parch&#39;</span>, <span class="st">&#39;Fare&#39;</span>, <span class="st">&#39;Embarked&#39;</span>, <span class="st">&#39;Title&#39;</span>]].values</span>
+<span id="cb50-76"><a href="#cb50-76" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-77"><a href="#cb50-77" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb50-78"><a href="#cb50-78" aria-hidden="true" tabindex="-1"></a><span class="co"># 出力データを取得します。</span></span>
+<span id="cb50-79"><a href="#cb50-79" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_ys(data_frame):</span>
+<span id="cb50-80"><a href="#cb50-80" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> data_frame[<span class="st">&#39;Survived&#39;</span>].values</span></code></pre></div>
+<p>深層学習なので正規化とかしなければならなくて大変でした。あと、四則演算で作成する程度の特徴量は行列演算する深層学習では無意味で、今回はそのような特徴量しか追加されていなかったので、特徴量エンジニアリングは無しです。</p>
+<h2 id="モデルを保存して読み込む-1">モデルを保存して読み込む</h2>
+<p>モデル（に入力するデータを作成するための情報）を保存したり読み込んだりするモジュール尾作成します。</p>
+<div class="sourceCode" id="cb51"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> os.path <span class="im">as</span> path</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pickle</span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a><span class="co"># カテゴリーの特徴量を保存します。</span></span>
+<span id="cb51-6"><a href="#cb51-6" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_categorical_features(categorical_features):</span>
+<span id="cb51-7"><a href="#cb51-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path.join(<span class="st">&#39;titanic-model&#39;</span>, <span class="st">&#39;categorical-features.pickle&#39;</span>), mode<span class="op">=</span><span class="st">&#39;wb&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb51-8"><a href="#cb51-8" aria-hidden="true" tabindex="-1"></a>        pickle.dump(categorical_features, f)</span>
+<span id="cb51-9"><a href="#cb51-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-10"><a href="#cb51-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-11"><a href="#cb51-11" aria-hidden="true" tabindex="-1"></a><span class="co"># カテゴリーの特徴量を読み込みます。</span></span>
+<span id="cb51-12"><a href="#cb51-12" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_categorical_features():</span>
+<span id="cb51-13"><a href="#cb51-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path.join(<span class="st">&#39;titanic-model&#39;</span>, <span class="st">&#39;categorical-features.pickle&#39;</span>), mode<span class="op">=</span><span class="st">&#39;rb&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb51-14"><a href="#cb51-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> pickle.load(f)</span>
+<span id="cb51-15"><a href="#cb51-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-16"><a href="#cb51-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-17"><a href="#cb51-17" aria-hidden="true" tabindex="-1"></a><span class="co"># 数値型の特徴量の最小値と最大値を保存します。</span></span>
+<span id="cb51-18"><a href="#cb51-18" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> save_feature_rangess(feature_ranges):</span>
+<span id="cb51-19"><a href="#cb51-19" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path.join(<span class="st">&#39;titanic-model&#39;</span>, <span class="st">&#39;feature-ranges.pickle&#39;</span>), mode<span class="op">=</span><span class="st">&#39;wb&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb51-20"><a href="#cb51-20" aria-hidden="true" tabindex="-1"></a>        pickle.dump(feature_ranges, f)</span>
+<span id="cb51-21"><a href="#cb51-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-22"><a href="#cb51-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb51-23"><a href="#cb51-23" aria-hidden="true" tabindex="-1"></a><span class="co"># 数値型の特徴量の最小値と最大値を読み込みます。</span></span>
+<span id="cb51-24"><a href="#cb51-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_feature_ranges():</span>
+<span id="cb51-25"><a href="#cb51-25" aria-hidden="true" tabindex="-1"></a>    <span class="cf">with</span> <span class="bu">open</span>(path.join(<span class="st">&#39;titanic-model&#39;</span>, <span class="st">&#39;feature-ranges.pickle&#39;</span>), mode<span class="op">=</span><span class="st">&#39;rb&#39;</span>) <span class="im">as</span> f:</span>
+<span id="cb51-26"><a href="#cb51-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> pickle.load(f)</span></code></pre></div>
+<p>数値型の特徴量の最大値と最小値の情報を追加しました。これを保存しておかないと、機械学習した時と同じ条件で正規化できなくなっちゃいますもんね。</p>
+<h2
+id="ハイパーパラメーターを設定する-1">ハイパー・パラメーターを設定する</h2>
+<p>Transformerのハイパー・パラメーターはこんな感じ。</p>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>NUM_BLOCKS <span class="op">=</span> <span class="dv">3</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>D_MODEL <span class="op">=</span> <span class="dv">256</span></span>
+<span id="cb52-3"><a href="#cb52-3" aria-hidden="true" tabindex="-1"></a>D_FF <span class="op">=</span> <span class="dv">1024</span></span>
+<span id="cb52-4"><a href="#cb52-4" aria-hidden="true" tabindex="-1"></a>NUM_HEADS <span class="op">=</span> <span class="dv">4</span></span>
+<span id="cb52-5"><a href="#cb52-5" aria-hidden="true" tabindex="-1"></a>DROPOUT_RATE <span class="op">=</span> <span class="fl">0.1</span></span></code></pre></div>
+<h2 id="予測モデルを作成する-4">予測モデルを作成する</h2>
+<p>準備が終わりましたので予測モデルを作成しましょう。</p>
+<div class="sourceCode" id="cb53"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb53-3"><a href="#cb53-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-4"><a href="#cb53-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_feature_ranges, get_train_data_frame, get_categorical_features, get_xs, get_ys</span>
+<span id="cb53-5"><a href="#cb53-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> funcy <span class="im">import</span> identity, juxt</span>
+<span id="cb53-6"><a href="#cb53-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model <span class="im">import</span> save_feature_rangess, save_categorical_features</span>
+<span id="cb53-7"><a href="#cb53-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> params <span class="im">import</span> NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, DROPOUT_RATE</span>
+<span id="cb53-8"><a href="#cb53-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> transformer <span class="im">import</span> LearningRateSchedule, transformer</span>
+<span id="cb53-9"><a href="#cb53-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-10"><a href="#cb53-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-11"><a href="#cb53-11" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb53-12"><a href="#cb53-12" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_train_data_frame()</span>
+<span id="cb53-13"><a href="#cb53-13" aria-hidden="true" tabindex="-1"></a>categorical_features <span class="op">=</span> get_categorical_features(data_frame)</span>
+<span id="cb53-14"><a href="#cb53-14" aria-hidden="true" tabindex="-1"></a>feature_ranges <span class="op">=</span> get_feature_ranges(data_frame)</span>
+<span id="cb53-15"><a href="#cb53-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-16"><a href="#cb53-16" aria-hidden="true" tabindex="-1"></a><span class="co"># データセットを取得します。</span></span>
+<span id="cb53-17"><a href="#cb53-17" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame, categorical_features, feature_ranges)</span>
+<span id="cb53-18"><a href="#cb53-18" aria-hidden="true" tabindex="-1"></a>ys <span class="op">=</span> get_ys(data_frame)</span>
+<span id="cb53-19"><a href="#cb53-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-20"><a href="#cb53-20" aria-hidden="true" tabindex="-1"></a><span class="co"># 機械学習します。</span></span>
+<span id="cb53-21"><a href="#cb53-21" aria-hidden="true" tabindex="-1"></a>op <span class="op">=</span> transformer(NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, np.shape(xs)[<span class="dv">1</span>], DROPOUT_RATE)</span>
+<span id="cb53-22"><a href="#cb53-22" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.Model(<span class="op">*</span>juxt(identity, op)(tf.keras.Input(shape<span class="op">=</span>np.shape(xs)[<span class="dv">1</span>:])))</span>
+<span id="cb53-23"><a href="#cb53-23" aria-hidden="true" tabindex="-1"></a>model.<span class="bu">compile</span>(tf.keras.optimizers.Adam(LearningRateSchedule(D_MODEL), beta_1<span class="op">=</span><span class="fl">0.9</span>, beta_2<span class="op">=</span><span class="fl">0.98</span>, epsilon<span class="op">=</span><span class="fl">1e-9</span>), loss<span class="op">=</span><span class="st">&#39;binary_crossentropy&#39;</span>, metrics<span class="op">=</span>(<span class="st">&#39;accuracy&#39;</span>,))</span>
+<span id="cb53-24"><a href="#cb53-24" aria-hidden="true" tabindex="-1"></a>model.fit(xs, ys, batch_size<span class="op">=</span><span class="dv">256</span>, epochs<span class="op">=</span><span class="dv">100</span>)</span>
+<span id="cb53-25"><a href="#cb53-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb53-26"><a href="#cb53-26" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを保存します。</span></span>
+<span id="cb53-27"><a href="#cb53-27" aria-hidden="true" tabindex="-1"></a>model.save(<span class="st">&#39;titanic-model&#39;</span>, include_optimizer<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb53-28"><a href="#cb53-28" aria-hidden="true" tabindex="-1"></a>save_categorical_features(categorical_features)</span>
+<span id="cb53-29"><a href="#cb53-29" aria-hidden="true" tabindex="-1"></a>save_feature_rangess(feature_ranges)</span></code></pre></div>
+<h2 id="解答を作成する-4">解答を作成する</h2>
+<p>最後。解答を作成するモジュールを作成します。</p>
+<div class="sourceCode" id="cb54"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> tensorflow <span class="im">as</span> tf</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataset <span class="im">import</span> get_test_data_frame, get_xs</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> model <span class="im">import</span> load_categorical_features, load_feature_ranges</span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a><span class="co"># モデルを読み込みます。</span></span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> tf.keras.models.load_model(<span class="st">&#39;titanic-model&#39;</span>)</span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a>categorical_features <span class="op">=</span> load_categorical_features()</span>
+<span id="cb54-12"><a href="#cb54-12" aria-hidden="true" tabindex="-1"></a>feature_ranges <span class="op">=</span> load_feature_ranges()</span>
+<span id="cb54-13"><a href="#cb54-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-14"><a href="#cb54-14" aria-hidden="true" tabindex="-1"></a><span class="co"># データを取得します。</span></span>
+<span id="cb54-15"><a href="#cb54-15" aria-hidden="true" tabindex="-1"></a>data_frame <span class="op">=</span> get_test_data_frame()</span>
+<span id="cb54-16"><a href="#cb54-16" aria-hidden="true" tabindex="-1"></a>xs <span class="op">=</span> get_xs(data_frame, categorical_features, feature_ranges)</span>
+<span id="cb54-17"><a href="#cb54-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-18"><a href="#cb54-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 提出量のCSVを作成します。</span></span>
+<span id="cb54-19"><a href="#cb54-19" aria-hidden="true" tabindex="-1"></a>submission <span class="op">=</span> pd.DataFrame({<span class="st">&#39;PassengerId&#39;</span>: data_frame[<span class="st">&#39;PassengerId&#39;</span>], <span class="st">&#39;Survived&#39;</span>: (model.predict(xs)[:, <span class="dv">0</span>] <span class="op">&gt;=</span> <span class="fl">0.5</span>).astype(np.int32)})</span>
+<span id="cb54-20"><a href="#cb54-20" aria-hidden="true" tabindex="-1"></a>submission.to_csv(<span class="st">&#39;submission.csv&#39;</span>, index<span class="op">=</span><span class="va">False</span>)</span></code></pre></div>
+<p>で、オチが予想できたとは思うのですけど、精度は0.74641（LightGBMの時は0.77990でした）とガタガタでした……。まぁ、大量のデータが必要なTransformerで、Titanicみたいなデータ量が少ない問題をやっているんですから当然ですな。でも、大量のデータがあるなら、もっと高い精度が出るかもしれません。</p>
+<p>というわけで、2022年3月現在はまだテーブル・データならLightGBMで良いと思うのですけど、使えるデータの量（または深層学習の進歩）次第、あと、GPUやTPUがあるなら、テーブル・データでも深層学習の方が良い時代が来るかもしれません。事前学習でデータに対する理解を深められる（本稿では紹介しなかったけど）ってのは、深層学習の大きなアドバンテージだと思うんですよね。</p>
+<h1 id="終わりに">終わりに</h1>
+<p>本稿で、機械学習は別に難しくない、というか、作業の多くはデータを読み込んだり整形したりのごく普通のプログラミングで私たちの得意分野なのだということをご理解いただければ幸いです。</p>
+<p>まぁ、深層学習のモデルのプログラミングは難しく思えたかもしれませんけど、紹介したTensorFlowのチュートリアルを読んで、あと、インターネットにゴロゴロしているお手本を参考にしながら作るのだから難しくはありません。</p>
+<p>「アルゴリズムを考えるのが面倒だから、とりあえず機械学習をやってみよう」という程度の、気楽に使ってよい道具なんだと思いますよ。ぜひ、機械学習で楽してみてください。</p>
 </article>
 </body>
 </html>

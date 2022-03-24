@@ -273,9 +273,7 @@ class Loss(tf.keras.losses.Loss):
 
 あと、深層学習は入力や出力の型が決まっているという問題もあります。画像認識のような場合はこれが結構痛くて、画像の大きさをモデルが要求する大きさに合わせたりしなければなりません。自前で作成するなら、モデルの中身を調整できるのでこんな問題はありません。
 
-ただし、事前学習が必要なくらいに大きなニューラル・ネットワークの場合は、既存の実装を再利用するしかないですけどね……。まぁ、その場合でも自前で深層学習を実装したことによる深い理解は役に立つんじゃないかと。
-
-というわけで実装したTransformerを使用して機械学習してみましょう。TensorFlowのチュートリアルではポルトガル語から英語への翻訳をやっていますけど、ポルトガル語も英語も分からないので、今回は足し算と引き算でやります。`1 + 1`をTransformerにかけたら`2`が出力されるわけですね。
+というわけで実装したTransformerを使用して機械学習してみましょう。TensorFlowのチュートリアルではポルトガル語から英語への翻訳をやっていますけど、私はポルトガル語も英語も分からないので、足し算と引き算でやってみます。`1 + 1`をTransformerにかけたら`2`が出力されるわけですね。
 
 データセットは、以下のようになっています。
 
@@ -627,6 +625,17 @@ def vision_transformer(num_blocks, d_model, num_heads, d_ff, y_vocab_size, x_max
 
         return result[np.newaxis, ...]
 
+    def get_patches():
+        def op(inputs):
+            x = inputs
+
+            o = tf.image.extract_patches(x, (1, 4, 4, 1), (1, 4, 4, 1), (1, 1, 1, 1), 'VALID')
+            o = reshape((-1, tf.keras.backend.int_shape(o)[-1]))(o)
+
+            return o
+
+        return op
+
     def encoder(num_blocks, d_model, num_heads, d_ff, maximum_position, dropout_rate):
         normalize_factor = tf.math.sqrt(tf.cast(d_model, tf.float32))
         positional_encoding = get_positional_encoding(maximum_position, d_model)
@@ -634,7 +643,8 @@ def vision_transformer(num_blocks, d_model, num_heads, d_ff, y_vocab_size, x_max
         def op(inputs):
             x = inputs
 
-            o = dropout(dropout_rate)(x * normalize_factor + positional_encoding)
+            o = get_patches()(x)
+            o = dropout(dropout_rate)(o * normalize_factor + positional_encoding)
 
             for _ in range(num_blocks):
                 o = encoder_block(d_model, num_heads, d_ff, dropout_rate)((o))
@@ -662,7 +672,7 @@ class LearningRateSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
         return self.d_model ** -0.5 * tf.math.minimum(step ** -0.5, step * self.warmup_steps ** -1.5)
 ~~~
 
-自然言語処理では単語を埋め込み（embedding）してベクトル化して入力にするのですけど、Vision Transformerでは画像を例えば16×16のパッチに分けて、それぞれのパッチをベクトルとして扱って入力としているのがキモです（だから、`encoder()`の最初の`embedding`がなくなっています）。
+自然言語処理では単語を埋め込み（embedding）してベクトル化して入力にするのですけど、Vision Transformerでは画像を例えば16×16（上のコードでは4×4）のパッチに分けて、それぞれのパッチをベクトルとして扱って入力としているのがキモです。
 
 あとは、デコーダーが不要だったり、先読みが無関係なのでマスクがいらなかったり、Layer Normalizationが先だったりReLUの代わりにGERUを使ったりと、少しだけニューラル・ネットワークが違うくらい。Transformerのコードがあるなら、その修正で簡単に作成できます。
 
@@ -676,8 +686,6 @@ Vision Transformerが出来たので、次は、データセットを取得す�
 import numpy as np
 import pandas as pd
 import os.path as path
-
-from params import D_MODEL_HEIGHT, D_MODEL_WIDTH
 
 
 # DataFrameを取得します。
@@ -695,30 +703,9 @@ def get_test_data_frame():
     return get_data_frame('test.csv')
 
 
-# 画像をパッチに分割します。
-def encode(image):
-    def impl():
-        for i in range(28 // D_MODEL_HEIGHT):
-            for j in range(28 // D_MODEL_WIDTH):
-                yield image[i * D_MODEL_HEIGHT: i * D_MODEL_HEIGHT + D_MODEL_HEIGHT, j * D_MODEL_WIDTH: j * D_MODEL_WIDTH + D_MODEL_WIDTH].flatten()
-
-    return np.array(tuple(impl()))
-
-
-# パッチを画像に戻します。
-def decode(encoded):
-    result = np.zeros((28, 28), dtype=np.float32)
-
-    for i in range(28 // D_MODEL_HEIGHT):
-        for j in range(28 // D_MODEL_WIDTH):
-            result[i * D_MODEL_HEIGHT: i * D_MODEL_HEIGHT + D_MODEL_HEIGHT, j * D_MODEL_WIDTH: j * D_MODEL_WIDTH + D_MODEL_WIDTH] = np.reshape(encoded[i * 28 // D_MODEL_WIDTH + j], (D_MODEL_WIDTH, D_MODEL_HEIGHT))
-
-    return result
-
-
 # 入力データを取得します。
 def get_xs(data_frame):
-    return np.array(tuple(map(encode, np.reshape(data_frame[list(map(lambda i: f'pixel{i}', range(784)))].values / 255, (-1, 28, 28)))))
+    return np.reshape(data_frame[list(map(lambda i: f'pixel{i}', range(784)))].values / 255, (-1, 28, 28, 1))
 
 
 # 出力データを取得します。
@@ -726,9 +713,7 @@ def get_ys(data_frame):
     return data_frame['label'].values
 ~~~
 
-KerasのVision Transformer実装では画像をパッチに分割する処理がニューラル・ネットワークに含まれていたのですけど、今回は、今後の解説の都合によりデータセット読み込み時にパッチに分割しました（ごめんなさい。後で述べるデータの水増しができないので少々不利なやり方です……）。
-
-あと、`get_xs()`の中で255で割っているのは、データ中は0～255になっているのを0～1に正規化するためです。深層学習のハイパー・パラメーターはデータが正規化されていることを前提にしているので、0～255のような大きな値だと学習が正常に進まないんですよ。
+`get_xs()`の中で255で割っているのは、データ中は0～255になっているのを0～1に正規化するためです。深層学習のハイパー・パラメーターはデータが正規化されていることを前提にしているので、0～255のような大きな値だと学習が正常に進まないんですよ。
 
 ## ハイパー・パラメーターを設定する
 
@@ -868,15 +853,15 @@ submission = pd.DataFrame({'ImageId': data_frame.index + 1, 'Label': np.argmax(m
 submission.to_csv('submission.csv', index=False)
 ~~~
 
-さて、テスト・データでの精度は、0.98232でした。エポック数を増やした分だけ精度が上がったような気がしますが、それでもやっぱり2,000人くらい中の900番目くらい。Digit Recognizerでもやっぱりカンニングしている連中はいるけど、それにしたって低すぎます。2020年に画像認識の革命と大騒ぎになったVision Transformerを使っているのにどういうこと？
+さて、テスト・データでの精度は、0.98285でした。エポック数を増やした分だけ精度が上がったような気がしますが、それでも2,000人くらい中の900番目くらい。Digit Recognizerでもやっぱりカンニングしている連中はいるけど、それにしたって低すぎます。2020年に画像認識の革命と大騒ぎになったVision Transformerを使っているのにどういうこと？
 
 ……ここまで真面目に読んでくださった皆様ごめんなさい。たぶんこんな結果になると、実は知ってました。
 
-というのも、Transformer系って、大量のデータがないと精度が高くならないんですよ。Transformerの後に自然言語処理で人間を超えたと話題になったBERTはBooksCorpusという8億ワードのデータとWikipediaの25億ワードのデータで事前学習しましたし、Vision Transformerで最高の精度を出したときはGoogle社のプライベートなデータセットであるJFT-300Mという3億枚の画像を使用して事前学習しています。データの単位は億なんですな。
+というのも、Transformer系って、大量のデータがないと精度が高くならないんですよ。Transformerの後に自然言語処理で人間を超えたと話題になったBERTはBooksCorpusという8億ワードのデータとWikipediaの25億ワードのデータで事前学習しましたし、Vision Transformerで最高の精度を出したときはGoogle社のプライベートなデータセットであるJFT-300Mという3億枚の画像を使用して事前学習しています。データの単位が億なんですな。
 
 それと比較して今回は、事前学習がゼロで、学習に使用したデータは4万2千……。そりゃ、精度なんか出ませんよね。
 
-こんな感じで、実用という意味では、深層学習の最先端は我々一般人の手が届かない遥か彼方に行ってしまいました。そもそもデータが集まらないし、仮にデータが集まっても一般人の手に入るレベルの計算リソースだととても学習させられないし。
+こんな感じで、実用という意味では、深層学習の最先端は我々一般人の手が届かない遥か彼方に行ってしまった感があります。そもそもデータが集まらないし、仮にデータが集まっても一般人の手に入るレベルの計算リソースだととても学習させられないし。
 
 というわけで、事前学習済みのモデルに転移学習（fine tuning）するような場合にしか使えないんじゃないかなぁと。貴方の目的に合う事前学習と入力のものが運良く見つかったならば、ですけど。
 
@@ -1006,7 +991,7 @@ def get_test_data_frame():
 
 # 入力データを取得します。
 def get_xs(data_frame):
-    return np.array(np.reshape(data_frame[list(map(lambda i: f'pixel{i}', range(784)))].values / 255, (-1, 28, 28, 1)))
+    return np.reshape(data_frame[list(map(lambda i: f'pixel{i}', range(784)))].values / 255, (-1, 28, 28, 1))
 
 
 # 出力データを取得します。
@@ -1014,7 +999,7 @@ def get_ys(data_frame):
     return data_frame['label'].values
 ~~~
 
-画像をパッチに分ける必要がなくなったので、Vision Transformerより簡単です。あ、255で割っているのは0～1に正規化するためで、正規化しないと学習が正常に進まないのはVision Transformerのところで述べた通りです。
+ごめんなさい。Vision Transformerの時と全く同じです。繰り返しになりますけど、255で割っているのは0～1に正規化するためで、正規化しないと学習が正常に進まないので気を付けてください。
 
 ## 機械学習する
 
@@ -1169,4 +1154,355 @@ submission.to_csv('submission.csv', index=False)
 
 # Transformerでテーブル・データもやってみた
 
+と、こんな感じで画像（とか音声とか自然言語）なら深層学習でしょうって感じなのですが、テーブル・データではどうなのでしょうか？
 
+伝統的には、テーブル・データの場合は全結合を重ねただけのMLP（Multilayer Perceptron）を使うのですけど、畳み込みもアテンションも使わないのでは精度が上がらなそう。だから畳み込み……は、テーブル・データの場合はカラムの順序に意味がない（年齢→身長→体重と並べても、体重→身長→年齢と並べてもよい）のでちょっと使えません。というわけで、アテンションを使ってみましょう。Transformerを改造して、Titanicをやってみます。
+
+## 特徴量をベクトル化する方法
+
+Transformerを使うためには、特徴量をベクトルに変換できなければなりません。カテゴリー型の特徴量なら`embedding`が使えますけど、数値型の特長量はどうしましょうか？
+
+テーブル・データと深層学習でGoogle検索したら見つけた[Preferred Networks社のBlog](https://tech.preferred.jp/ja/blog/deep-table/)からソース・コードを辿ってみたら全結合を使ってベクトル化していたので、この方式を採用しましょう。Blogが参照している論文のどこかに全結合で良い理由が書いてあるのでしょうけど、すみません、参照先の論文はまだ読んでいません……。
+
+## Transformer改を作成する
+
+ともあれ、方針が決まりましたので、Transformer（を元に作成したVision Transformer）を改造します。
+
+~~~python
+import numpy as np
+import tensorflow as tf
+
+from funcy import func_partial, rcompose
+
+
+def transformer(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropout_rate):
+    # KerasやTensorflowのレイヤーや関数をラップします。
+
+    def dense(units):
+        return tf.keras.layers.Dense(units)
+
+    def dropout(rate):
+        return tf.keras.layers.Dropout(rate)
+
+    def embedding(input_dim, output_dim):
+        return tf.keras.layers.Embedding(input_dim, output_dim)
+
+    def flatten():
+        return tf.keras.layers.Flatten()
+
+    def gelu():
+        return tf.keras.activations.gelu
+
+    def layer_normalization():
+        return tf.keras.layers.LayerNormalization(epsilon=1e-6)
+
+    def reshape(target_shape):
+        return tf.keras.layers.Reshape(target_shape)
+
+    def sigmoid():
+        return tf.keras.layers.Activation('sigmoid')
+
+    def transpose(perm):
+        return func_partial(tf.transpose, perm=perm)
+
+    # Transformerに必要な演算を定義します。
+
+    def scaled_dot_product_attention(x):
+        query, key, value = x
+
+        return tf.matmul(tf.nn.softmax(tf.matmul(query, key, transpose_b=True) / tf.math.sqrt(tf.cast(tf.shape(key)[-1], tf.float32)), axis=-1), value)
+
+    def multi_head_attention(d_model, num_heads):
+        split = rcompose(reshape((-1, num_heads, d_model // num_heads)),  # noqa: E221
+                          transpose((0, 2, 1, 3)))
+        concat = rcompose(transpose((0, 2, 1, 3)),
+                          reshape((-1, d_model)))
+
+        def op(inputs):
+            q, k, v = inputs
+
+            o = scaled_dot_product_attention((split(dense(d_model)(q)),
+                                              split(dense(d_model)(k)),
+                                              split(dense(d_model)(v))))
+            o = concat(o)
+            o = dense(d_model)(o)
+
+            return o
+
+        return op
+
+    def point_wise_feed_forward(d_model, d_ff):
+        return rcompose(dense(d_ff),
+                        gelu(),
+                        dense(d_model))
+
+    def encoder_block(d_model, num_heads, d_ff, dropout_rate):
+        def op(inputs):
+            x = inputs
+
+            o = layer_normalization()(x)
+            o = dropout(dropout_rate)(multi_head_attention(d_model, num_heads)((o, o, o))) + o
+            o = layer_normalization()(o)
+            o = dropout(dropout_rate)(point_wise_feed_forward(d_model, d_ff)(o)) + o
+
+            return o
+
+        return op
+
+    def get_positional_encoding(maximum_position, d_model):
+        result = embedding(maximum_position, d_model)(tf.range(0, maximum_position))
+
+        return result[np.newaxis, ...]
+
+    def encoder(num_blocks, d_model, num_heads, d_ff, maximum_position, dropout_rate):
+        normalize_factor = tf.math.sqrt(tf.cast(d_model, tf.float32))
+        positional_encoding = get_positional_encoding(maximum_position, d_model)
+
+        def op(inputs):
+            x = inputs
+
+            # 特徴量をベクトル化します。数値の特長量は、全結合でベクトル化します。
+            x0, x1, x2, x3, x4, x5, x6, x7 = tf.split(x, [1, 1, 1, 1, 1, 1, 1, 1], 1)
+            o = tf.concat((tf.stack((dense(d_model)(x0),   # PClass
+                                    dense(d_model)(x2),   # Age
+                                    dense(d_model)(x3),   # SibSp
+                                    dense(d_model)(x4),   # Parch
+                                    dense(d_model)(x5)),  # Fare
+                                    axis=1),
+                           embedding(2, d_model)(x1),      # Sex。マジック・ナンバーが入ってしまってごめんなさい……
+                           embedding(4, d_model)(x6),      # Embarked。マジック・ナンバーが入ってしまってごめんなさい……
+                           embedding(5, d_model)(x7)),     # Title。マジック・ナンバーが入ってしまってごめんなさい……
+                          axis=1)
+
+            o = dropout(dropout_rate)(o * normalize_factor + positional_encoding)
+
+            for _ in range(num_blocks):
+                o = encoder_block(d_model, num_heads, d_ff, dropout_rate)((o))
+
+            return o
+
+        return op
+
+    def op(inputs):
+        x = inputs
+
+        return sigmoid()(dense(1)(flatten()(encoder(num_blocks, d_model, num_heads, d_ff, x_maximum_position, dropout_rate)(x))))
+
+    return op
+
+
+class LearningRateSchedule(tf.keras.optimizers.schedules.LearningRateSchedule):
+    def __init__(self, d_model, warmup_steps=4000):
+        super(LearningRateSchedule, self).__init__()
+
+        self.d_model = tf.cast(d_model, tf.float32)
+        self.warmup_steps = warmup_steps
+
+    def __call__(self, step):
+        return self.d_model ** -0.5 * tf.math.minimum(step ** -0.5, step * self.warmup_steps ** -1.5)
+~~~
+
+数値の特徴量は`dense`で、カテゴリー型の特徴量は`embedding`でベクトル化するわけですね。あと、Titanicは2値分類なので、最後の`dense`の要素数を1にして、`sigmoid`（出力範囲を0～1にしてくれる）しました。他はVision Transformerと同じで楽ちんでした。
+
+# データセットを取得する
+
+次はデータセットを取得するモジュールです。こんな感じ。
+
+~~~python
+import numpy as np
+import pandas as pd
+import os.path as path
+
+from functools import reduce
+from funcy import count, repeat
+
+
+# 数値型の特徴量のNaNを平均値で埋めます。
+def fill_na(data_frame):
+    for feature in ('Pclass', 'Age', 'SibSp', 'Parch', 'Fare'):
+        data_frame[feature] = data_frame[feature].fillna(data_frame[feature].mean())
+
+    return data_frame
+
+
+# 特徴量を追加します。
+def add_features(data_frame):
+    # 肩書追加用の補助関数。
+    def add_title(title_series, name_series, id, titles):
+        title_series[reduce(lambda acc, series: acc + series, map(lambda title: name_series.str.contains(title), titles))] = id
+
+        return title_series
+
+    # 肩書を追加します。
+    data_frame['Title'] = reduce(lambda title_series, params: add_title(title_series, data_frame['Name'], *params),
+                                 ((0, ('Mr.', 'Dr.', 'Rev.', 'Don.', 'Col.', 'Major.', 'Capt.')),
+                                  (1, ('Master.',)),
+                                  (2, ('Mrs.', 'Mme.', 'Ms.')),
+                                  (3, ('Miss.',))),
+                                 pd.Series(repeat(np.nan, len(data_frame['Name'])), dtype='object'))
+
+    return data_frame
+
+
+# カテゴリ型の特徴量を、どの数値に変換するかのdictを取得します。
+def get_categorical_features(data_frame):
+    return dict(map(lambda feature: (feature, dict(zip(data_frame[feature].factorize()[1], count(1)))), ('Sex', 'Embarked', 'Title')))  # NaNは0にして、カテゴリは1始まり。
+
+
+# 数値型の特徴量の最小値と最大値を取得します。正規化のためです。
+def get_feature_ranges(data_frame):
+    return dict(map(lambda feature: (feature, (data_frame[feature].min(), data_frame[feature].max())), ('Pclass', 'Age', 'SibSp', 'Parch', 'Fare')))
+
+
+# DataFrameを取得します。
+def get_data_frame(filename):
+    return add_features(fill_na(pd.read_csv(path.join('..', 'input', 'titanic', filename))))
+
+
+# 訓練用DataFrameを取得します。
+def get_train_data_frame():
+    return get_data_frame('train.csv')
+
+
+# テスト用DataFrameを取得します。
+def get_test_data_frame():
+    return get_data_frame('test.csv')
+
+
+# 入力データを取得します。
+def get_xs(data_frame, categorical_features, feature_ranges):
+    # カテゴリ型の特徴量を、数値に変換します。
+    for feature, mapping in categorical_features.items():
+        data_frame[feature] = data_frame[feature].map(mapping).fillna(0)
+
+    # 数値型の特徴量を、正規化します。
+    for feature, (min, max) in feature_ranges.items():
+        data_frame[feature] = (data_frame[feature] - min) / (max - min)
+
+    # SexはNaNがないので、1を引いて0と1にします。
+    data_frame['Sex'] = data_frame['Sex'] - 1
+
+    # 予測に使用するカラムだけを抽出します。
+    return data_frame[['Pclass', 'Sex', 'Age', 'SibSp', 'Parch', 'Fare', 'Embarked', 'Title']].values
+
+
+# 出力データを取得します。
+def get_ys(data_frame):
+    return data_frame['Survived'].values
+~~~
+
+深層学習なので正規化とかしなければならなくて大変でした。あと、四則演算で作成する程度の特徴量は行列演算する深層学習では無意味で、今回はそのような特徴量しか追加されていなかったので、特徴量エンジニアリングは無しです。
+
+## モデルを保存して読み込む
+
+モデル（に入力するデータを作成するための情報）を保存したり読み込んだりするモジュール尾作成します。
+
+~~~python
+import os.path as path
+import pickle
+
+
+# カテゴリーの特徴量を保存します。
+def save_categorical_features(categorical_features):
+    with open(path.join('titanic-model', 'categorical-features.pickle'), mode='wb') as f:
+        pickle.dump(categorical_features, f)
+
+
+# カテゴリーの特徴量を読み込みます。
+def load_categorical_features():
+    with open(path.join('titanic-model', 'categorical-features.pickle'), mode='rb') as f:
+        return pickle.load(f)
+
+
+# 数値型の特徴量の最小値と最大値を保存します。
+def save_feature_rangess(feature_ranges):
+    with open(path.join('titanic-model', 'feature-ranges.pickle'), mode='wb') as f:
+        pickle.dump(feature_ranges, f)
+
+
+# 数値型の特徴量の最小値と最大値を読み込みます。
+def load_feature_ranges():
+    with open(path.join('titanic-model', 'feature-ranges.pickle'), mode='rb') as f:
+        return pickle.load(f)
+~~~
+
+数値型の特徴量の最大値と最小値の情報を追加しました。これを保存しておかないと、機械学習した時と同じ条件で正規化できなくなっちゃいますもんね。
+
+## ハイパー・パラメーターを設定する
+
+Transformerのハイパー・パラメーターはこんな感じ。
+
+~~~python
+NUM_BLOCKS = 3
+D_MODEL = 256
+D_FF = 1024
+NUM_HEADS = 4
+DROPOUT_RATE = 0.1
+~~~
+
+## 予測モデルを作成する
+
+準備が終わりましたので予測モデルを作成しましょう。
+
+~~~python
+import numpy as np
+import tensorflow as tf
+
+from dataset import get_feature_ranges, get_train_data_frame, get_categorical_features, get_xs, get_ys
+from funcy import identity, juxt
+from model import save_feature_rangess, save_categorical_features
+from params import NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, DROPOUT_RATE
+from transformer import LearningRateSchedule, transformer
+
+
+# データを取得します。
+data_frame = get_train_data_frame()
+categorical_features = get_categorical_features(data_frame)
+feature_ranges = get_feature_ranges(data_frame)
+
+# データセットを取得します。
+xs = get_xs(data_frame, categorical_features, feature_ranges)
+ys = get_ys(data_frame)
+
+# 機械学習します。
+op = transformer(NUM_BLOCKS, D_MODEL, NUM_HEADS, D_FF, np.shape(xs)[1], DROPOUT_RATE)
+model = tf.keras.Model(*juxt(identity, op)(tf.keras.Input(shape=np.shape(xs)[1:])))
+model.compile(tf.keras.optimizers.Adam(LearningRateSchedule(D_MODEL), beta_1=0.9, beta_2=0.98, epsilon=1e-9), loss='binary_crossentropy', metrics=('accuracy',))
+model.fit(xs, ys, batch_size=256, epochs=100)
+
+# モデルを保存します。
+model.save('titanic-model', include_optimizer=False)
+save_categorical_features(categorical_features)
+save_feature_rangess(feature_ranges)
+~~~
+
+## 解答を作成する
+
+最後。解答を作成するモジュールを作成します。
+
+~~~python
+import numpy as np
+import pandas as pd
+import tensorflow as tf
+
+from dataset import get_test_data_frame, get_xs
+from model import load_categorical_features, load_feature_ranges
+
+
+# モデルを読み込みます。
+model = tf.keras.models.load_model('titanic-model')
+categorical_features = load_categorical_features()
+feature_ranges = load_feature_ranges()
+
+# データを取得します。
+data_frame = get_test_data_frame()
+xs = get_xs(data_frame, categorical_features, feature_ranges)
+
+# 提出量のCSVを作成します。
+submission = pd.DataFrame({'PassengerId': data_frame['PassengerId'], 'Survived': (model.predict(xs)[:, 0] >= 0.5).astype(np.int32)})
+submission.to_csv('submission.csv', index=False)
+~~~
+
+で、オチが予想できたとは思うのですけど、精度は0.74641（LightGBMの時は0.77990でした）とガタガタでした……。まぁ、大量のデータが必要なTransformerで、Titanicみたいなデータ量が少ない問題をやっているんですから当然ですな。でも、大量のデータがあるなら、もっと高い精度が出るかもしれません。
+
+というわけで、2022年3月現在はまだテーブル・データならLightGBMで良いと思うのですけど、使えるデータの量（または深層学習の進歩）次第、あと、GPUやTPUがあるなら、テーブル・データでも深層学習の方が良い時代が来るかもしれません。事前学習でデータに対する理解を深められる（本稿では紹介しなかったけど）ってのは、深層学習の大きなアドバンテージだと思うんですよね。
